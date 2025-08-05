@@ -233,11 +233,3 @@ const Reports = () => {
 };
 
 export default Reports;
-        </div>
-      </div>
-      </div>
-    </div>
-  );
-};
-
-export default Reports;
