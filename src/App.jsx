@@ -20,7 +20,6 @@ function AppContent() {
     const path = location.pathname;
     if (path === '/status') return 'status';
     if (path === '/reports') return 'reports';
-    if (path === '/feedback') return 'feedback';
     if (path === '/dashboard') return 'dashboard';
     return 'dashboard';
   };
@@ -45,7 +44,6 @@ function AppContent() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/status" element={<Status />} />
             <Route path="/reports" element={<Reports />} />
-            <Route path="/feedback" element={<Feedback />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </main>

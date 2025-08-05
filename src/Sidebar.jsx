@@ -10,11 +10,15 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
     { id: 'dashboard', icon: Home, label: 'Dashboard', path: '/dashboard' },
     { id: 'status', icon: TrendingUp, label: 'Status', path: '/status' },
     { id: 'reports', icon: FileText, label: 'Reports', path: '/reports' },
-    { id: 'feedback', icon: MessageCircle, label: 'Feedback', path: '/feedback' },
+    { id: 'feedback', icon: MessageCircle, label: 'Feedback', path: 'https://ggogle.com' },
   ];
 
   const handleNavigation = (path) => {
-    navigate(path);
+    if (path === 'https://ggogle.com') {
+      window.open(path, '_blank');
+    } else {
+      navigate(path);
+    }
   };
 
   return (
