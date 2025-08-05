@@ -39,7 +39,7 @@ const Header = () => {
   };
 
   return (
-    <header className="header">
+    <header className="header animate-fade-in-down">
       <div className="header__content">
         {/* Left side - Title */}
         <div className="flex items-center gap-4">
@@ -51,7 +51,7 @@ const Header = () => {
           <div className="dropdown" ref={dropdownRef}>
             <button 
               onClick={() => setShowDropdown(!showDropdown)}
-              className="btn btn--ghost btn--icon-only text-inverse"
+              className="btn btn--glass btn--icon-only hover-glow"
             >
               <User className="w-6 h-6" />
             </button>
@@ -65,7 +65,7 @@ const Header = () => {
                 </div>
                 <button
                   onClick={handleSignOut}
-                  className="dropdown__item"
+                  className="dropdown__item hover-slide"
                 >
                   <LogOut className="w-4 h-4" />
                   Sign Out
@@ -76,7 +76,7 @@ const Header = () => {
           <img 
             src="/image copy.png" 
             alt="Discover Logo" 
-            className="logo"
+            className="logo hover-lift"
           />
         </div>
       </div>

@@ -27,17 +27,17 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
   };
 
   return (
-    <div className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : 'sidebar--expanded'}`}>
+    <div className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : 'sidebar--expanded'} animate-fade-in-left`}>
       {/* Header with hamburger menu */}
       <div className="sidebar__header">
         <button
           onClick={onToggleCollapse}
-          className="btn btn--ghost btn--icon-only text-inverse"
+          className="btn btn--glass btn--icon-only hover-glow"
         >
           {isCollapsed ? <Menu size={20} /> : <X size={20} />}
         </button>
         {!isCollapsed && (
-          <div className="ml-md">
+          <div className="ml-md animate-fade-in-right">
             <h1 className="text-inverse text-xl font-bold">ESQM</h1>
             <p className="text-inverse opacity-75 text-sm">(DLIFE)</p>
           </div>
@@ -45,8 +45,8 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="sidebar__nav">
-        <ul className="sidebar__nav-list">
+      <nav className="sidebar__nav animate-fade-in-up">
+        <ul className="sidebar__nav-list stagger-children">
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -55,7 +55,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
               <li key={item.id}>
                 <button
                   onClick={() => handleNavigation(item.path)}
-                  className={`nav-item ${isActive ? 'nav-item--active' : ''} ${isCollapsed ? 'nav-item--collapsed' : ''}`}
+                  className={`nav-item ${isActive ? 'nav-item--active' : ''} ${isCollapsed ? 'nav-item--collapsed' : ''} hover-lift ripple`}
                   title={isCollapsed ? item.label : ''}
                 >
                   <Icon size={20} className="nav-item__icon" />
