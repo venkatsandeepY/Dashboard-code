@@ -26,12 +26,12 @@
   --bg-blur: rgba(255, 255, 255, 0.8);
   
   /* Text Colors */
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #94a3b8;
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-tertiary: #cbd5e1;
   --text-inverse: #ffffff;
   --text-accent: #6366f1;
-  --text-muted: #64748b;
+  --text-muted: #94a3b8;
   
   /* Border Colors */
   --border-primary: #e2e8f0;

@@ -12,7 +12,8 @@ const Dashboard = () => {
           </div>
         </div>
         <h2 className="text-3xl font-bold text-gray-900 mb-4 animate-fade-in-up">Development Starts Here</h2>
-        <p className="text-gray-600 text-lg animate-fade-in-up">Dashboard component ready for implementation</p>
+        <h2 className="text-3xl font-bold text-white mb-4 animate-fade-in-up">Development Starts Here</h2>
+        <p className="text-gray-200 text-lg animate-fade-in-up">Dashboard component ready for implementation</p>
       </div>
     </div>
   );
