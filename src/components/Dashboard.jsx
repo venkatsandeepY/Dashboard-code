@@ -190,11 +190,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-        </div>
-      </div>
-      </div>
-    </div>
-  );
-};
-
-export default Dashboard;
