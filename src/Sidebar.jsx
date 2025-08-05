@@ -14,7 +14,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
   ];
 
   const handleNavigation = (path) => {
-    if (path === 'https://ggogle.com') {
+    if (path.startsWith('http')) {
       window.open(path, '_blank');
     } else {
       navigate(path);
