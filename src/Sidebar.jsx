@@ -19,7 +19,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
     
     if (path.startsWith('http')) {
       console.log('Opening external URL in new tab');
-      window.open(path, '_blank');
+      window.open(path, '_blank', 'noopener,noreferrer');
     } else {
       console.log('Navigating internally');
       navigate(path);
@@ -53,7 +53,41 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
             
             return (
               <li key={item.id}>
-                <button
+                {item.path.startsWith('http') ? (
+                  <a
+                    href={item.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`nav-item ${isActive ? 'nav-item--active' : ''} ${isCollapsed ? 'nav-item--collapsed' : ''}`}
+                    title={isCollapsed ? item.label : ''}
+                  >
+                    <Icon size={20} className="nav-item__icon" />
+                    {!isCollapsed && (
+                      <span className="nav-item__label capitalize">{item.label}</span>
+                    )}
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => handleNavigation(item.path)}
+                    className={`nav-item ${isActive ? 'nav-item--active' : ''} ${isCollapsed ? 'nav-item--collapsed' : ''}`}
+                    title={isCollapsed ? item.label : ''}
+                  >
+                    <Icon size={20} className="nav-item__icon" />
+                    {!isCollapsed && (
+                      <span className="nav-item__label capitalize">{item.label}</span>
+                    )}
+                  </button>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </div>
+  );
+};
+
+export default Sidebar;
                   onClick={() => handleNavigation(item.path)}
                   className={`nav-item ${isActive ? 'nav-item--active' : ''} ${isCollapsed ? 'nav-item--collapsed' : ''}`}
                   title={isCollapsed ? item.label : ''}
