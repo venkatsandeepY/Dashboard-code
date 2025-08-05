@@ -1,12 +1,12 @@
 import React from 'react';
 
-const Header = ({ title }) => {
+const Header = () => {
   return (
     <header className="bg-[#1F1246] text-white shadow-sm">
       <div className="px-6 py-4 flex items-center justify-between">
         {/* Left side - Title */}
         <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold">{title}</h1>
+          <h1 className="text-2xl font-bold">ESQM Operations Dashboard</h1>
         </div>
 
         {/* Right side - Dummy Image */}
@@ -17,12 +17,10 @@ const Header = ({ title }) => {
             </div>
             <span>DISCOVER</span>
           </div>
-        <h1 className="text-2xl font-bold">ESQM Operations Dashboard</h1>
+        </div>
       </div>
     </header>
   );
 };
 
 export default Header;
-  )
-}
