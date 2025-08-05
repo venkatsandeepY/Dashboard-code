@@ -29,8 +29,6 @@ function App() {
     setIsCollapsed(!isCollapsed);
   };
 
-  return (
-    <div className="flex min-h-screen bg-gray-50 app-container">
   const getActiveItem = () => {
     const path = location.pathname;
     if (path === '/status') return 'status';
@@ -46,6 +44,10 @@ function App() {
       reports: '/reports',
       feedback: '/feedback'
     };
+  };
+
+  return (
+    <div className="flex min-h-screen bg-gray-50 app-container">
       <div className="flex min-h-screen bg-gray-50 app-container">
         {/* Sidebar */}
         <Tabs 
@@ -74,6 +76,7 @@ function App() {
           <Footer />
         </div>
       </div>
+    </div>
   );
 }
 
