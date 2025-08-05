@@ -7,7 +7,6 @@ import Status from './Status';
 import Reports from './Reports';
 import Feedback from './Feedback';
 import Footer from './components/common/Footer';
-import './App.css';
 
 function AppContent() {
   const [isCollapsed, setIsCollapsed] = useState(false);

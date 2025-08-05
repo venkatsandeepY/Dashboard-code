@@ -39,29 +39,50 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-[#1F1246] text-white shadow-sm">
-      <div className="px-6 py-4 flex items-center justify-between">
+    <header className="header">
+      <div className="header__content">
         {/* Left side - Title */}
-        <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold">ESQM Operations Dashboard</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="header__title">ESQM Operations Dashboard</h1>
         </div>
 
         {/* Right side - Dummy Image */}
-        <div className="flex items-center space-x-4 relative">
-          <div className="relative" ref={dropdownRef}>
+        <div className="header__actions">
+          <div className="dropdown" ref={dropdownRef}>
             <button 
               onClick={() => setShowDropdown(!showDropdown)}
-              className="p-2 text-white hover:bg-purple-700 hover:bg-opacity-50 rounded-lg transition-colors duration-200"
+              className="btn btn--ghost btn--icon-only text-inverse"
             >
-            <User className="w-6 h-6" />
-          </button>
+              <User className="w-6 h-6" />
+            </button>
             
             {/* Profile Dropdown */}
-            {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                <div className="px-4 py-2 border-b border-gray-200">
-                  <p className="text-sm font-medium text-gray-900">{username}</p>
-                  <p className="text-xs text-gray-500">Logged in</p>
+            <div className={`dropdown__menu ${showDropdown ? 'dropdown__menu--open' : ''}`}>
+              <div className="dropdown__header">
+                <p className="dropdown__header-title">{username}</p>
+                <p className="dropdown__header-subtitle">Logged in</p>
+              </div>
+              <button
+                onClick={handleSignOut}
+                className="dropdown__item"
+              >
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </button>
+            </div>
+          </div>
+          <img 
+            src="/image copy.png" 
+            alt="Discover Logo" 
+            className="logo"
+          />
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
                 </div>
                 <button
                   onClick={handleSignOut}

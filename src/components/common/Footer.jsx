@@ -2,22 +2,22 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#1F1246] text-white py-6 mt-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="text-sm text-purple-200 mb-4 md:mb-0">
+    <footer className="footer">
+      <div className="footer__content">
+        <div className="footer__grid md:flex md:justify-between md:items-center">
+          <div className="footer__copyright">
             © 2024 ESQM (DLIFE) • All rights reserved
           </div>
-          <div className="flex space-x-6 text-sm">
-            <a href="#" className="text-purple-200 hover:text-white transition-colors duration-200">
+          <div className="footer__links">
+            <a href="#" className="footer__link">
               Privacy Policy
             </a>
-            <span className="text-purple-400">•</span>
-            <a href="#" className="text-purple-200 hover:text-white transition-colors duration-200">
+            <span className="footer__separator">•</span>
+            <a href="#" className="footer__link">
               Terms of Service
             </a>
-            <span className="text-purple-400">•</span>
-            <a href="#" className="text-purple-200 hover:text-white transition-colors duration-200">
+            <span className="footer__separator">•</span>
+            <a href="#" className="footer__link">
               Contact
             </a>
           </div>
