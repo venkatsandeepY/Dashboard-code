@@ -88,22 +88,3 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
 };
 
 export default Sidebar;
-                  onClick={() => handleNavigation(item.path)}
-                  className={`nav-item ${isActive ? 'nav-item--active' : ''} ${isCollapsed ? 'nav-item--collapsed' : ''}`}
-                  title={isCollapsed ? item.label : ''}
-                >
-                  <Icon size={20} className="nav-item__icon" />
-                  {!isCollapsed && (
-                    <span className="nav-item__label capitalize">{item.label}</span>
-                  )}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </div>
-  );
-};
-
-export default Sidebar;
