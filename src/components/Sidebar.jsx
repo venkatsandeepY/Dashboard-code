@@ -34,9 +34,9 @@ const Sidebar = ({ activeItem, onItemClick, isCollapsed, onToggleCollapse }) => 
       {/* Navigation */}
       <nav className="flex-1 p-4">
         {!isCollapsed && (
-        <p className="text-purple-300 text-xs uppercase tracking-wider font-medium mb-4">
-          NAVIGATION
-        </p>
+          <p className="text-purple-300 text-xs uppercase tracking-wider font-medium mb-4">
+            NAVIGATION
+          </p>
         )}
         <ul className="space-y-2">
           {navigationItems.map((item) => {
@@ -47,7 +47,7 @@ const Sidebar = ({ activeItem, onItemClick, isCollapsed, onToggleCollapse }) => 
               <li key={item.id}>
                 <button
                   onClick={() => onItemClick(item.id)}
-                  className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'} px-4 py-3 rounded-lg transition-all duration-200 ${
+                  className={`w-full flex items-center ${isCollapsed ? 'justify-center px-2' : 'justify-start px-4'} py-3 rounded-lg transition-all duration-200 ${
                     isActive
                       ? 'bg-white text-gray-900 font-medium shadow-sm'
                       : 'text-white hover:bg-purple-700 hover:bg-opacity-50'
