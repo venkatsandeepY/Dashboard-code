@@ -33,11 +33,6 @@ const Sidebar = ({ activeItem, onItemClick, isCollapsed, onToggleCollapse }) => 
 
       {/* Navigation */}
       <nav className="flex-1 p-4">
-        {!isCollapsed && (
-          <p className="text-purple-300 text-xs uppercase tracking-wider font-medium mb-4">
-            NAVIGATION
-          </p>
-        )}
         <ul className="space-y-2">
           {navigationItems.map((item) => {
             const Icon = item.icon;
