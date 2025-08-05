@@ -1,4 +1,5 @@
 import React from 'react';
+import { User } from 'lucide-react';
 
 const Header = () => {
   return (
@@ -10,7 +11,10 @@ const Header = () => {
         </div>
 
         {/* Right side - Dummy Image */}
-        <div className="flex items-center">
+        <div className="flex items-center space-x-4">
+          <button className="p-2 text-white hover:bg-purple-700 hover:bg-opacity-50 rounded-lg transition-colors duration-200">
+            <User className="w-6 h-6" />
+          </button>
           <img 
             src="/image copy.png" 
             alt="Discover Logo" 
