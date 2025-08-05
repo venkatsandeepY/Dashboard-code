@@ -24,10 +24,10 @@ const Sidebar = ({ activeItem, onItemClick, isCollapsed, onToggleCollapse }) => 
           {isCollapsed ? <Menu size={20} /> : <X size={20} />}
         </button>
         {!isCollapsed && (
-        <div className="ml-3">
-          <h1 className="text-white text-xl font-bold">ESQM</h1>
-          <p className="text-purple-200 text-sm">(DLIFE)</p>
-        </div>
+          <div className="ml-3">
+            <h1 className="text-white text-xl font-bold">ESQM</h1>
+            <p className="text-purple-200 text-sm">(DLIFE)</p>
+          </div>
         )}
       </div>
 
@@ -47,7 +47,9 @@ const Sidebar = ({ activeItem, onItemClick, isCollapsed, onToggleCollapse }) => 
               <li key={item.id}>
                 <button
                   onClick={() => onItemClick(item.id)}
-                  className={`w-full flex items-center ${isCollapsed ? 'justify-center px-2' : 'justify-start px-4'} py-3 rounded-lg transition-all duration-200 ${
+                  className={`w-full flex items-center ${
+                    isCollapsed ? 'justify-center px-2' : 'justify-start px-4'
+                  } py-3 rounded-lg transition-all duration-200 ${
                     isActive
                       ? 'bg-white text-gray-900 font-medium shadow-sm'
                       : 'text-white hover:bg-purple-700 hover:bg-opacity-50'
