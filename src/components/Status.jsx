@@ -203,11 +203,3 @@ const Status = () => {
 };
 
 export default Status;
-        </div>
-      </div>
-      </div>
-    </div>
-  );
-};
-
-export default Status;
