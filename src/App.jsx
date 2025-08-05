@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Tabs from './Tabs';
+import Sidebar from './Sidebar';
 import Header from './components/common/Header';
 import Dashboard from './pages/Dashboard';
 import Status from './pages/Status';
@@ -37,7 +37,7 @@ function App() {
         onItemClick={setActiveItem}
         isCollapsed={isCollapsed}
         onToggleCollapse={handleToggleCollapse}
-      />
+      <Tabs 
       
       {/* Main Content */}
       <div className="flex-1 flex flex-col main-content">
