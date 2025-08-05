@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Home, TrendingUp, FileText, MessageCircle, Menu, X } from 'lucide-react';
 
-const Sidebar = ({ activeItem, onItemClick, isCollapsed, onToggleCollapse }) => {
+const Tabs = ({ activeItem, onItemClick, isCollapsed, onToggleCollapse }) => {
   const navigationItems = [
     { id: 'dashboard', icon: Home, label: 'Dashboard' },
     { id: 'status', icon: TrendingUp, label: 'Status' },
@@ -65,4 +65,4 @@ const Sidebar = ({ activeItem, onItemClick, isCollapsed, onToggleCollapse }) => 
   );
 };
 
-export default Sidebar;
+export default Tabs;

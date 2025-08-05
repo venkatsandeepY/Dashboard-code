@@ -1,8 +1,64 @@
 // API service for backend communication
+const USE_MOCK_DATA = import.meta.env.VITE_MOCK_API === 'true';
 const API_BASE_URL = import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Generic API request function
 const apiRequest = async (endpoint, options = {}) => {
+  if (USE_MOCK_DATA) {
+    // Return mock data based on endpoint
+    const method = options.method || 'GET';
+    
+    // Add delay to simulate network request
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Dashboard endpoints
+    if (endpoint === '/dashboard/overview') return Promise.resolve(mockData.dashboard.overview);
+    if (endpoint === '/dashboard/metrics') return Promise.resolve(mockData.dashboard.metrics);
+    if (endpoint === '/dashboard/activities') return Promise.resolve(mockData.dashboard.activities);
+    if (endpoint.startsWith('/dashboard/performance')) return Promise.resolve(mockData.dashboard.metrics);
+    
+    // Status endpoints
+    if (endpoint === '/status/system') return Promise.resolve(mockData.status.system);
+    if (endpoint === '/status/services') return Promise.resolve(mockData.status.services);
+    if (endpoint === '/status/uptime') return Promise.resolve(mockData.status.system);
+    if (endpoint === '/status/alerts') return Promise.resolve(mockData.status.alerts);
+    
+    // Reports endpoints
+    if (endpoint === '/reports') return Promise.resolve(mockData.reports);
+    if (endpoint.startsWith('/reports/') && endpoint.includes('/download')) {
+      return Promise.resolve({ message: 'Download started' });
+    }
+    if (endpoint.startsWith('/reports/') && !endpoint.includes('/download')) {
+      const reportId = endpoint.split('/')[2];
+      const report = mockData.reports.find(r => r.id === parseInt(reportId));
+      return Promise.resolve(report || mockData.reports[0]);
+    }
+    if (endpoint === '/reports/generate' && method === 'POST') {
+      return Promise.resolve({ id: Date.now(), status: 'generating' });
+    }
+    
+    // Feedback endpoints
+    if (endpoint.startsWith('/feedback') && !endpoint.includes('/')) {
+      return Promise.resolve(mockData.feedback);
+    }
+    if (endpoint === '/feedback' && method === 'POST') {
+      return Promise.resolve({ id: Date.now(), status: 'submitted' });
+    }
+    if (endpoint.includes('/feedback/') && endpoint.includes('/status') && method === 'PATCH') {
+      return Promise.resolve({ success: true });
+    }
+    if (endpoint === '/feedback/analytics') {
+      return Promise.resolve({
+        totalFeedback: mockData.feedback.length,
+        openFeedback: mockData.feedback.filter(f => f.status === 'open').length,
+        resolvedFeedback: mockData.feedback.filter(f => f.status === 'resolved').length
+      });
+    }
+    
+    // Default fallback
+    return Promise.resolve({ message: 'Mock data not found for endpoint: ' + endpoint });
+  }
+  
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
