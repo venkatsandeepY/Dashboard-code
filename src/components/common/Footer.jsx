@@ -2,22 +2,22 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="footer animate-fade-in-up">
+    <footer className="footer">
       <div className="footer__content">
         <div className="footer__grid md:flex md:justify-between md:items-center">
           <div className="footer__copyright">
             © 2024 ESQM (DLIFE) • All rights reserved
           </div>
           <div className="footer__links">
-            <a href="#" className="footer__link hover-lift">
+            <a href="#" className="footer__link">
               Privacy Policy
             </a>
             <span className="footer__separator">•</span>
-            <a href="#" className="footer__link hover-lift">
+            <a href="#" className="footer__link">
               Terms of Service
             </a>
             <span className="footer__separator">•</span>
-            <a href="#" className="footer__link hover-lift">
+            <a href="#" className="footer__link">
               Contact
             </a>
           </div>

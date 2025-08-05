@@ -25,7 +25,7 @@ function AppContent() {
   };
 
   return (
-    <div className="app-container">
+    <div className="flex min-h-screen bg-gray-50 app-container">
       {/* Sidebar */}
       <Sidebar 
         activeItem={getActiveItem()} 
@@ -34,12 +34,12 @@ function AppContent() {
       />
       
       {/* Main Content */}
-      <div className="main-content">
+      <div className="flex-1 flex flex-col main-content">
         {/* Header */}
         <Header />
 
         {/* Content Area */}
-        <main className="content-area">
+        <main className="flex-1 px-8 py-8 content-area">
           <Routes>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/status" element={<Status />} />
