@@ -31,29 +31,57 @@ function App() {
 
   return (
     <div className="flex min-h-screen bg-gray-50 app-container">
-      {/* Sidebar */}
-      <Tabs 
-        activeItem={activeItem} 
-        onItemClick={setActiveItem}
-        isCollapsed={isCollapsed}
-        onToggleCollapse={handleToggleCollapse}
-      <Tabs 
-      
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col main-content">
-        {/* Header */}
-        <Header />
+  const getActiveItem = () => {
+    const path = location.pathname;
+    if (path === '/status') return 'status';
+    if (path === '/reports') return 'reports';
+    if (path === '/feedback') return 'feedback';
+    return 'dashboard';
+  };
 
-        {/* Content Area */}
-        <main className="flex-1 px-8 py-8 content-area">
-          {renderContent()}
-        </main>
+  const handleItemClick = (itemId) => {
+    const routes = {
+      dashboard: '/',
+      status: '/status',
+      reports: '/reports',
+      feedback: '/feedback'
+    };
+      <div className="flex min-h-screen bg-gray-50 app-container">
+        {/* Sidebar */}
+        <Tabs 
+          activeItem={getActiveItem()} 
+          onItemClick={handleItemClick}
+          isCollapsed={isCollapsed}
+          onToggleCollapse={handleToggleCollapse}
+        />
+        
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col main-content">
+          {/* Header */}
+          <Header />
 
-        {/* Footer */}
-        <Footer />
+          {/* Content Area */}
+          <main className="flex-1 px-8 py-8 content-area">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/status" element={<Status />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/feedback" element={<Feedback />} />
+            </Routes>
+          </main>
+
+          {/* Footer */}
+          <Footer />
+        </div>
       </div>
-    </div>
-  )
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
