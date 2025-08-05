@@ -1,79 +1,86 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import {
-  Home,
-  TrendingUp,
-  FileText,
-  MessageCircle,
-  Menu,
-  X
-} from 'lucide-react';
+import React, { useState } from 'react';
+import Sidebar from './Sidebar';
+import Header from './components/common/Header';
+import Dashboard from './pages/Dashboard';
+import Status from './pages/Status';
+import Reports from './pages/Reports';
+import Feedback from './pages/Feedback';
+import Footer from './components/common/Footer';
+import './App.css';
 
-const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
-  const location = useLocation();
+function App() {
+  const [activeItem, setActiveItem] = useState('dashboard');
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const navigationItems = [
-    { id: 'dashboard', icon: Home, label: 'Dashboard', path: '/' },
-    { id: 'status', icon: TrendingUp, label: 'Status', path: '/status' },
-    { id: 'reports', icon: FileText, label: 'Reports', path: '/reports' },
-    { id: 'feedback', icon: MessageCircle, label: 'Feedback', path: '/feedback' },
-  ];
+  const renderContent = () => {
+    switch (activeItem) {
+      case 'status':
+        return <Status />;
+      case 'reports':
+        return <Reports />;
+      case 'feedback':
+        return <Feedback />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
+  const handleToggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   return (
-    <div 
-      className={`bg-[#1F1246] min-h-screen flex flex-col transition-all duration-300 ease-in-out ${
-        isCollapsed ? 'w-16' : 'w-64'
-      }`}
-    >
-      {/* Header with hamburger menu */}
-      <div className="p-4 border-b border-purple-700 flex items-center">
-        <button
-          onClick={onToggleCollapse}
-          className="text-white hover:bg-purple-700 hover:bg-opacity-50 p-2 rounded-lg transition-colors duration-200"
-        >
-          {isCollapsed ? <Menu size={20} /> : <X size={20} />}
-        </button>
+    <div className="flex min-h-screen bg-gray-50 app-container">
+  const getActiveItem = () => {
+    const path = location.pathname;
+    if (path === '/status') return 'status';
+    if (path === '/reports') return 'reports';
+    if (path === '/feedback') return 'feedback';
+    return 'dashboard';
+  };
 
-        {!isCollapsed && (
-          <div className="ml-3">
-            <h1 className="text-white text-xl font-bold">ESQM</h1>
-            <p className="text-purple-200 text-sm">(DLIFE)</p>
-          </div>
-        )}
+  const handleItemClick = (itemId) => {
+    const routes = {
+      dashboard: '/',
+      status: '/status',
+      <Sidebar 
+      <div className="flex min-h-screen bg-gray-50 app-container">
+        {/* Sidebar */}
+        <Tabs 
+          activeItem={getActiveItem()} 
+          onItemClick={handleItemClick}
+          isCollapsed={isCollapsed}
+          onToggleCollapse={handleToggleCollapse}
+        />
+        
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col main-content">
+          {/* Header */}
+          <Header />
+
+          {/* Content Area */}
+          <main className="flex-1 px-8 py-8 content-area">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/status" element={<Status />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/feedback" element={<Feedback />} />
+            </Routes>
+          </main>
+
+          {/* Footer */}
+          <Footer />
+        </div>
       </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-
-            return (
-              <li key={item.id}>
-                <Link
-                  to={item.path}
-                  className={`w-full flex items-center ${
-                    isCollapsed ? 'justify-center px-2' : 'justify-start px-4'
-                  } py-3 rounded-lg transition-all duration-200 ${
-                    isActive
-                      ? 'bg-white text-gray-900 font-medium shadow-sm'
-                      : 'text-white hover:bg-purple-700 hover:bg-opacity-50'
-                  }`}
-                  title={isCollapsed ? item.label : ''}
-                >
-                  <Icon size={20} className={isActive ? 'text-gray-700' : 'text-white'} />
-                  {!isCollapsed && (
-                    <span className="ml-3 capitalize">{item.label}</span>
-                  )}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </div>
   );
-};
+}
 
-export default Sidebar;
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}
+
+export default App;
