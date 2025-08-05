@@ -17,7 +17,7 @@ const Header = ({ title }) => {
             </div>
             <span>DISCOVER</span>
           </div>
-        </div>
+        <h1 className="text-2xl font-bold">ESQM Operations Dashboard</h1>
       </div>
     </header>
   );
