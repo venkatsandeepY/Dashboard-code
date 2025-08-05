@@ -24,19 +24,6 @@ function App() {
     }
   };
 
-  const getPageTitle = () => {
-    switch (activeItem) {
-      case 'status':
-        return 'Status';
-      case 'reports':
-        return 'Reports';
-      case 'feedback':
-        return 'Feedback';
-      default:
-        return 'Dashboard';
-    }
-  };
-
   const handleToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -54,7 +41,7 @@ function App() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <Header title={getPageTitle()} />
+        <Header />
 
         {/* Content Area */}
         <main className="flex-1 px-8 py-8">
