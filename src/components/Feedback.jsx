@@ -330,11 +330,3 @@ const Feedback = () => {
 };
 
 export default Feedback;
-        </div>
-      </div>
-      </div>
-    </div>
-  );
-};
-
-export default Feedback;
