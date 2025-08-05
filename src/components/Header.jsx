@@ -11,12 +11,11 @@ const Header = () => {
 
         {/* Right side - Dummy Image */}
         <div className="flex items-center">
-          <div className="bg-white text-[#1F1246] px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-2">
-            <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs font-bold">D</span>
-            </div>
-            <span>DISCOVER</span>
-          </div>
+          <img 
+            src="/image copy.png" 
+            alt="Discover Logo" 
+            className="h-10 rounded-lg hover:opacity-90 transition-opacity duration-200"
+          />
         </div>
       </div>
     </header>
