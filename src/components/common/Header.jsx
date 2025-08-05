@@ -57,38 +57,17 @@ const Header = () => {
             </button>
             
             {/* Profile Dropdown */}
-            <div className={`dropdown__menu ${showDropdown ? 'dropdown__menu--open' : ''}`}>
-              <div className="dropdown__header">
-                <p className="dropdown__header-title">{username}</p>
-                <p className="dropdown__header-subtitle">Logged in</p>
-              </div>
-              <button
-                onClick={handleSignOut}
-                className="dropdown__item"
-              >
-                <LogOut className="w-4 h-4" />
-                Sign Out
-              </button>
-            </div>
-          </div>
-          <img 
-            src="/image copy.png" 
-            alt="Discover Logo" 
-            className="logo"
-          />
-        </div>
-      </div>
-    </header>
-  );
-};
-
-export default Header;
+            {showDropdown && (
+              <div className={`dropdown__menu ${showDropdown ? 'dropdown__menu--open' : ''}`}>
+                <div className="dropdown__header">
+                  <p className="dropdown__header-title">{username}</p>
+                  <p className="dropdown__header-subtitle">Logged in</p>
                 </div>
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                  className="dropdown__item"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
+                  <LogOut className="w-4 h-4" />
                   Sign Out
                 </button>
               </div>
@@ -97,7 +76,7 @@ export default Header;
           <img 
             src="/image copy.png" 
             alt="Discover Logo" 
-            className="h-10 rounded-lg hover:opacity-90 transition-opacity duration-200"
+            className="logo"
           />
         </div>
       </div>
