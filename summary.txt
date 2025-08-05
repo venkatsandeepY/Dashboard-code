@@ -1,0 +1,57 @@
+ESQM (DLIFE) Dashboard Application - Project Summary
+===================================================
+
+Project Overview:
+- React.js application built with Vite
+- Uses TailwindCSS and Bootstrap for styling
+- Dashboard application for ESQM operations management
+
+Key Features:
+- Dashboard with system metrics and overview
+- Status monitoring and health checks
+- Reports generation and management
+- Feedback collection and management
+- User authentication and profile management
+
+Technology Stack:
+- Frontend: React.js (JavaScript)
+- Build Tool: Vite
+- Styling: TailwindCSS + Bootstrap
+- Icons: Lucide React
+- Testing: Jest (configured)
+- Linting: ESLint
+- Code Quality: SonarQube integration
+
+Project Structure:
+src/
+├── __tests__/          # Test files
+├── assets/             # Static assets
+├── components/         # Reusable components
+│   └── common/         # Common components (Header, Footer)
+├── functions/          # Utility functions and contexts
+├── img/                # Images
+├── pages/              # Page components
+├── hooks/              # Custom React hooks
+├── services/           # API services
+├── Tabs.jsx            # Navigation tabs component
+├── App.css             # App-specific styles
+├── App.jsx             # Main application component
+├── index.css           # Global styles
+└── main.jsx            # Application entry point
+
+Development Status:
+- Basic project structure implemented
+- Navigation and routing set up
+- API integration placeholders ready
+- Components structured for backend integration
+- Ready for feature development
+
+Next Steps:
+- Implement actual API endpoints
+- Add comprehensive testing
+- Enhance UI/UX design
+- Add data visualization components
+- Implement real-time updates
+
+Contact: Development Team
+Last Updated: 2024

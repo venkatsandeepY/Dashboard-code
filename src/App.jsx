@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-import Dashboard from './components/Dashboard';
-import Status from './components/Status';
-import Reports from './components/Reports';
-import Feedback from './components/Feedback';
-import Footer from './components/Footer';
+import Tabs from './Tabs';
+import Header from './components/common/Header';
+import Dashboard from './pages/Dashboard';
+import Status from './pages/Status';
+import Reports from './pages/Reports';
+import Feedback from './pages/Feedback';
+import Footer from './components/common/Footer';
+import './App.css';
 
 function App() {
   const [activeItem, setActiveItem] = useState('dashboard');
@@ -29,9 +30,9 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 app-container">
       {/* Sidebar */}
-      <Sidebar 
+      <Tabs 
         activeItem={activeItem} 
         onItemClick={setActiveItem}
         isCollapsed={isCollapsed}
@@ -39,12 +40,12 @@ function App() {
       />
       
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col main-content">
         {/* Header */}
         <Header />
 
         {/* Content Area */}
-        <main className="flex-1 px-8 py-8">
+        <main className="flex-1 px-8 py-8 content-area">
           {renderContent()}
         </main>
 

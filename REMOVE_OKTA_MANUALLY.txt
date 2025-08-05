@@ -1,0 +1,39 @@
+OKTA REMOVAL INSTRUCTIONS
+========================
+
+This file contains instructions for manually removing OKTA authentication from the project.
+
+STEPS TO REMOVE OKTA:
+
+1. Remove OKTA dependencies from package.json:
+   - @okta/okta-auth-js
+   - @okta/okta-react
+   - @okta/okta-signin-widget
+
+2. Remove OKTA configuration files:
+   - okta.config.js
+   - Any OKTA-related environment variables
+
+3. Update authentication logic:
+   - Remove OKTA provider wrapping in App.jsx
+   - Replace OKTA authentication hooks with custom auth
+   - Update login/logout functionality
+
+4. Remove OKTA imports from components:
+   - Remove useOktaAuth hooks
+   - Remove OKTA security components
+   - Update protected route logic
+
+5. Update environment variables:
+   - Remove OKTA_CLIENT_ID
+   - Remove OKTA_ISSUER
+   - Remove OKTA_REDIRECT_URI
+
+6. Test authentication flow:
+   - Verify login functionality
+   - Verify logout functionality
+   - Test protected routes
+
+IMPORTANT: Make sure to backup your project before making these changes.
+
+For questions, contact the development team.
