@@ -1,5 +1,5 @@
 // API service for backend communication
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Generic API request function
 const apiRequest = async (endpoint, options = {}) => {
