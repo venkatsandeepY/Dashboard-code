@@ -220,11 +220,6 @@
   transition: all 0.3s ease;
 }
 
-.nav-item--collapsed .nav-item__icon {
-  width: 1.75rem;
-  height: 1.75rem;
-}
-
 .nav-item:hover .nav-item__icon {
   transform: scale(1.1);
 }
