@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, Clock, Play, History, RefreshCw, CheckCircle, AlertCircle, Eye, Calendar, FileText, Download } from 'lucide-react';
 import { fetchBatchData, fetchJobsData, fetchHistoryData } from '../data/mockData';
 
@@ -6,6 +6,10 @@ const Status = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [batchData, setBatchData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedRow, setExpandedRow] = useState(null);
+  const [expandedType, setExpandedType] = useState(null);
+  const [dropdownData, setDropdownData] = useState({});
+  const [loadingDropdown, setLoadingDropdown] = useState(false);
 
   // Update current time every second
   useEffect(() => {
@@ -67,226 +71,36 @@ const Status = () => {
     return { date: dateStr, time: timeStr };
   };
 
-  const JobsDropdown = ({ environment }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [jobs, setJobs] = useState([]);
-    const [loadingJobs, setLoadingJobs] = useState(false);
-    const dropdownRef = useRef(null);
-    
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-          setIsOpen(false);
+  const handleDropdownToggle = async (environment, type) => {
+    // If clicking the same row and type, close it
+    if (expandedRow === environment && expandedType === type) {
+      setExpandedRow(null);
+      setExpandedType(null);
+      return;
+    }
+
+    // Close any open dropdown and open the new one
+    setExpandedRow(environment);
+    setExpandedType(type);
+
+    // Load data if not already loaded
+    const key = `${environment}-${type}`;
+    if (!dropdownData[key]) {
+      setLoadingDropdown(true);
+      try {
+        let data;
+        if (type === 'jobs') {
+          data = await fetchJobsData(environment);
+        } else {
+          data = await fetchHistoryData(environment);
         }
-      };
-
-      if (isOpen) {
-        document.addEventListener('mousedown', handleClickOutside);
+        setDropdownData(prev => ({ ...prev, [key]: data }));
+      } catch (error) {
+        console.error(`Error loading ${type} data:`, error);
+      } finally {
+        setLoadingDropdown(false);
       }
-
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, [isOpen]);
-    
-    // Load jobs data when dropdown opens
-    useEffect(() => {
-      if (isOpen && jobs.length === 0) {
-        const loadJobs = async () => {
-          try {
-            setLoadingJobs(true);
-            const jobsData = await fetchJobsData(environment);
-            setJobs(jobsData);
-          } catch (error) {
-            console.error('Error loading jobs:', error);
-          } finally {
-            setLoadingJobs(false);
-          }
-        };
-        loadJobs();
-      }
-    }, [isOpen, environment, jobs.length]);
-
-
-    return (
-      <div className="relative group" ref={dropdownRef}>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-600 bg-white border border-gray-300 rounded-md hover:bg-blue-50 hover:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
-        >
-          <Play className="w-4 h-4" />
-          Jobs
-          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-        </button>
-        {isOpen && (
-          <div className="absolute right-0 mt-1 w-72 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-            <div className="max-h-60 overflow-y-auto">
-              {loadingJobs ? (
-                <div className="p-3 text-center text-gray-500 text-sm">Loading jobs...</div>
-              ) : jobs.length > 0 ? (
-                jobs.map((job, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="p-3 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 last:border-b-0"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-2 h-2 rounded-full ${
-                            job.status === 'Running' ? 'bg-blue-500' :
-                            job.status === 'Completed' ? 'bg-green-500' :
-                            job.status === 'Queued' ? 'bg-yellow-500' :
-                            'bg-red-500'
-                          }`}></div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">{job.name}</p>
-                            <p className="text-xs text-gray-500">{job.startTime}</p>
-                          </div>
-                        </div>
-                        <span className={`px-2 py-0.5 text-xs font-medium rounded ${
-                          job.status === 'Running' ? 'bg-blue-100 text-blue-700' :
-                          job.status === 'Completed' ? 'bg-green-100 text-green-700' :
-                          job.status === 'Queued' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-red-100 text-red-700'
-                        }`}>
-                          {job.status}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="p-3 text-center text-gray-500 text-sm">
-                  No recent jobs found for {environment}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  const HistoryDropdown = ({ environment }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [history, setHistory] = useState([]);
-    const [loadingHistory, setLoadingHistory] = useState(false);
-    const dropdownRef = useRef(null);
-    
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-          setIsOpen(false);
-        }
-      };
-
-      if (isOpen) {
-        document.addEventListener('mousedown', handleClickOutside);
-      }
-
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, [isOpen]);
-    
-    // Load history data when dropdown opens
-    useEffect(() => {
-      if (isOpen && history.length === 0) {
-        const loadHistory = async () => {
-          try {
-            setLoadingHistory(true);
-            const historyData = await fetchHistoryData(environment);
-            setHistory(historyData);
-          } catch (error) {
-            console.error('Error loading history:', error);
-          } finally {
-            setLoadingHistory(false);
-          }
-        };
-        loadHistory();
-      }
-    }, [isOpen, environment, history.length]);
-
-    return (
-      <div className="relative group" ref={dropdownRef}>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-600 bg-white border border-gray-300 rounded-md hover:bg-blue-50 hover:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
-        >
-          <History className="w-4 h-4" />
-          History
-          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-        </button>
-        {isOpen && (
-          <div className="absolute right-0 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-            <div className="p-3 border-b border-gray-100 bg-blue-50">
-              <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                <History className="w-4 h-4 text-blue-600" />
-                Batch History - {environment}
-              </h3>
-              <p className="text-xs text-gray-600 mt-1">Recent batch execution history</p>
-            </div>
-            <div className="max-h-60 overflow-y-auto">
-              {loadingHistory ? (
-                <div className="p-3 text-center text-gray-500 text-sm">Loading history...</div>
-              ) : history.length > 0 ? (
-                history.map((batch, index) => {
-                  const formatted = formatDateTime(batch.completedAt);
-                  return (
-                    <div
-                      key={index}
-                      className="p-3 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 last:border-b-0"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-2 h-2 rounded-full ${
-                            batch.status === 'Success' ? 'bg-green-500' : 'bg-yellow-500'
-                          }`}></div>
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded">
-                              {batch.type}
-                            </span>
-                            <span className={`px-2 py-0.5 text-xs font-medium rounded ${
-                              batch.status === 'Success' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                            }`}>
-                              {batch.status}
-                            </span>
-                          </div>
-                            <div className="text-xs text-gray-500">
-                              {formatted.date} at {formatted.time}
-                            </div>
-                            <div className="text-xs text-gray-500 mt-1">
-                              {batch.duration} • {batch.records} records
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="p-3 text-center text-gray-500 text-sm">
-                  No batch history found for {environment}
-                </div>
-              )}
-            </div>
-            <div className="p-3 border-t border-gray-100 bg-gray-50">
-              <div className="flex gap-2">
-                <button className="flex-1 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors duration-150 flex items-center justify-center gap-1">
-                  <FileText className="w-3 h-3" />
-                  Full Report
-                </button>
-                <button className="flex-1 px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition-colors duration-150 flex items-center justify-center gap-1">
-                  <Download className="w-3 h-3" />
-                  Export
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
+    }
   };
 
   const ProgressBar = ({ progress, status }) => {
@@ -307,6 +121,134 @@ const Status = () => {
         {status}
       </span>
     );
+  };
+
+  const CollapsibleRow = ({ environment, type }) => {
+    const key = `${environment}-${type}`;
+    const data = dropdownData[key] || [];
+
+    if (type === 'jobs') {
+      return (
+        <tr className="bg-blue-50 border-l-4 border-blue-400">
+          <td colSpan="7" className="px-6 py-4">
+            <div className="bg-white rounded-lg border border-blue-200 overflow-hidden">
+              <div className="px-4 py-3 bg-blue-100 border-b border-blue-200">
+                <h4 className="text-sm font-semibold text-blue-900 flex items-center gap-2">
+                  <Play className="w-4 h-4" />
+                  Active Jobs - {environment}
+                </h4>
+              </div>
+              <div className="divide-y divide-gray-200">
+                {loadingDropdown ? (
+                  <div className="p-4 text-center text-gray-500 text-sm">Loading jobs...</div>
+                ) : data.length > 0 ? (
+                  data.map((job, index) => (
+                    <div key={index} className="p-4 hover:bg-gray-50 transition-colors duration-150">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-2 h-2 rounded-full ${
+                            job.status === 'Running' ? 'bg-blue-500' :
+                            job.status === 'Completed' ? 'bg-green-500' :
+                            job.status === 'Queued' ? 'bg-yellow-500' :
+                            'bg-red-500'
+                          }`}></div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{job.name}</p>
+                            <p className="text-xs text-gray-500">Started: {job.startTime}</p>
+                          </div>
+                        </div>
+                        <span className={`px-2 py-1 text-xs font-medium rounded ${
+                          job.status === 'Running' ? 'bg-blue-100 text-blue-700' :
+                          job.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                          job.status === 'Queued' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-red-100 text-red-700'
+                        }`}>
+                          {job.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-gray-500 text-sm">
+                    No active jobs found for {environment}
+                  </div>
+                )}
+              </div>
+            </div>
+          </td>
+        </tr>
+      );
+    } else {
+      return (
+        <tr className="bg-purple-50 border-l-4 border-purple-400">
+          <td colSpan="7" className="px-6 py-4">
+            <div className="bg-white rounded-lg border border-purple-200 overflow-hidden">
+              <div className="px-4 py-3 bg-purple-100 border-b border-purple-200">
+                <h4 className="text-sm font-semibold text-purple-900 flex items-center gap-2">
+                  <History className="w-4 h-4" />
+                  Batch History - {environment}
+                </h4>
+              </div>
+              <div className="divide-y divide-gray-200">
+                {loadingDropdown ? (
+                  <div className="p-4 text-center text-gray-500 text-sm">Loading history...</div>
+                ) : data.length > 0 ? (
+                  data.map((batch, index) => {
+                    const formatted = formatDateTime(batch.completedAt);
+                    return (
+                      <div key={index} className="p-4 hover:bg-gray-50 transition-colors duration-150">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-2 h-2 rounded-full ${
+                              batch.status === 'Success' ? 'bg-green-500' : 
+                              batch.status === 'Running' ? 'bg-blue-500' : 
+                              'bg-yellow-500'
+                            }`}></div>
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded">
+                                  {batch.type}
+                                </span>
+                                <span className={`px-2 py-0.5 text-xs font-medium rounded ${
+                                  batch.status === 'Success' ? 'bg-green-100 text-green-700' : 
+                                  batch.status === 'Running' ? 'bg-blue-100 text-blue-700' : 
+                                  'bg-yellow-100 text-yellow-700'
+                                }`}>
+                                  {batch.status}
+                                </span>
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {formatted.date} at {formatted.time} • {batch.duration} • {batch.records} records
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="p-4 text-center text-gray-500 text-sm">
+                    No batch history found for {environment}
+                  </div>
+                )}
+              </div>
+              <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+                <div className="flex gap-2">
+                  <button className="flex-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded hover:bg-purple-100 transition-colors duration-150 flex items-center justify-center gap-1">
+                    <FileText className="w-3 h-3" />
+                    Full Report
+                  </button>
+                  <button className="flex-1 px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition-colors duration-150 flex items-center justify-center gap-1">
+                    <Download className="w-3 h-3" />
+                    Export
+                  </button>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      );
+    }
   };
 
   return (
@@ -373,81 +315,103 @@ const Status = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {batchData.map((row, index) => (
-                    <tr key={index} className="hover:bg-gray-50 transition-colors duration-200">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                          <span className="text-sm font-medium text-gray-900">{row.environment}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-medium text-gray-500">BANK:</span>
-                            <StatusBadge status={row.bank.status} />
+                    <React.Fragment key={index}>
+                      <tr className="hover:bg-gray-50 transition-colors duration-200">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                            <span className="text-sm font-medium text-gray-900">{row.environment}</span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-medium text-gray-500">CARD:</span>
-                            <StatusBadge status={row.card.status} />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="space-y-4">
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-xs font-medium text-gray-500">BANK</span>
-                              <span className="text-xs font-medium text-gray-700">{row.bank.progress}%</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-medium text-gray-500">BANK:</span>
+                              <StatusBadge status={row.bank.status} />
                             </div>
-                            <ProgressBar progress={row.bank.progress} status={row.bank.status} />
-                          </div>
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-xs font-medium text-gray-500">CARD</span>
-                              <span className="text-xs font-medium text-gray-700">{row.card.progress}%</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-medium text-gray-500">CARD:</span>
+                              <StatusBadge status={row.card.status} />
                             </div>
-                            <ProgressBar progress={row.card.progress} status={row.card.status} />
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div className="flex items-start gap-2">
-                          <Clock className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <div className="font-medium">{formatDateTime(row.lastRun).date}</div>
-                            <div className="text-xs text-gray-500">{formatDateTime(row.lastRun).time}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="space-y-4">
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-medium text-gray-500">BANK</span>
+                                <span className="text-xs font-medium text-gray-700">{row.bank.progress}%</span>
+                              </div>
+                              <ProgressBar progress={row.bank.progress} status={row.bank.status} />
+                            </div>
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-medium text-gray-500">CARD</span>
+                                <span className="text-xs font-medium text-gray-700">{row.card.progress}%</span>
+                              </div>
+                              <ProgressBar progress={row.card.progress} status={row.card.status} />
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div className="flex items-start gap-2">
-                          <Calendar className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <div className="font-medium">{formatDateTime(row.eta).date}</div>
-                            <div className="text-xs text-gray-500">{formatDateTime(row.eta).time}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div className="flex items-start gap-2">
+                            <Clock className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <div className="font-medium">{formatDateTime(row.lastRun).date}</div>
+                              <div className="text-xs text-gray-500">{formatDateTime(row.lastRun).time}</div>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                          {row.runtime}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-3">
-                          <JobsDropdown environment={row.environment} />
-                          <HistoryDropdown environment={row.environment} />
-                        </div>
-                      </td>
-                    </tr>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div className="flex items-start gap-2">
+                            <Calendar className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <div className="font-medium">{formatDateTime(row.eta).date}</div>
+                              <div className="text-xs text-gray-500">{formatDateTime(row.eta).time}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                            {row.runtime}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-4">
+                            <button
+                              onClick={() => handleDropdownToggle(row.environment, 'jobs')}
+                              className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors duration-150"
+                            >
+                              <Play className="w-4 h-4" />
+                              Jobs
+                              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                                expandedRow === row.environment && expandedType === 'jobs' ? 'rotate-180' : ''
+                              }`} />
+                            </button>
+                            <button
+                              onClick={() => handleDropdownToggle(row.environment, 'history')}
+                              className="flex items-center gap-1 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors duration-150"
+                            >
+                              <History className="w-4 h-4" />
+                              History
+                              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                                expandedRow === row.environment && expandedType === 'history' ? 'rotate-180' : ''
+                              }`} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      {expandedRow === row.environment && (
+                        <CollapsibleRow environment={row.environment} type={expandedType} />
+                      )}
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
             </div>
           )}
         </div>
-
       </div>
     </div>
   );
