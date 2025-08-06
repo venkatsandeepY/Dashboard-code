@@ -546,10 +546,8 @@ const Status = () => {
                         <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full transition-all duration-300 transform hover:scale-105 ${
                           run.status === 'Success' ? 'text-green-700 bg-green-100 shadow-green-200' : 'text-yellow-700 bg-yellow-100 shadow-yellow-200'
                         } shadow-sm`}>
-                            {row.card.status}
-                          </span>
-                        </div>
-                      </div>
+                          {run.status}
+                        </span>
                     </td>
                   </tr>
                 ))}
