@@ -104,7 +104,7 @@ const Status = () => {
       month: 'numeric',
       day: 'numeric',
       year: 'numeric',
-      hour: '1-digit',
+      hour: 'numeric',
       minute: '2-digit',
       second: '2-digit',
       hour12: true
