@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code, MessageCircle } from 'lucide-react';
+import { Code, MessageCircle } from 'react-feather';
 
 const Feedback = () => {
   return (

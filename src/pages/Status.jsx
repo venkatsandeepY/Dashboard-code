@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Clock, Play, History, RefreshCw, Calendar, FileText, Download } from 'lucide-react';
+import { ChevronDown, Clock, Play, RotateCcw, Calendar, FileText, Download } from 'react-feather';
 import { fetchBatchData, fetchJobsData, fetchHistoryData } from '../data/mockData';
 
 const Status = () => {
@@ -290,6 +290,7 @@ const Status = () => {
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+              <RotateCcw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh
             </button>
           </div>
@@ -415,7 +416,7 @@ const Status = () => {
                               onClick={() => handleDropdownToggle(row.environment, 'history')}
                               className="flex items-center gap-1 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors duration-150"
                             >
-                              <History className="w-4 h-4" />
+                              <Clock className="w-4 h-4" />
                               History
                               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                                 expandedRow === row.environment && expandedType === 'history' ? 'rotate-180' : ''

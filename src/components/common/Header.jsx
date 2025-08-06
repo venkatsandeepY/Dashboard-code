@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, LogOut } from 'lucide-react';
+import { User, LogOut } from 'react-feather';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Header = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code, FileText } from 'lucide-react';
+import { Code, FileText } from 'react-feather';
 
 const Reports = () => {
   return (

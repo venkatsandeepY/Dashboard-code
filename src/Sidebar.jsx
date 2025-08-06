@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, TrendingUp, FileText, MessageCircle, Menu, X } from 'lucide-react';
+import { Home, TrendingUp, FileText, MessageCircle, Menu, X } from 'react-feather';
 
 const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
   const navigate = useNavigate();

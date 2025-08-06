@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code, Rocket } from 'lucide-react';
+import { Code, Zap } from 'react-feather';
 
 const Dashboard = () => {
   return (
@@ -7,7 +7,7 @@ const Dashboard = () => {
       <div className="text-center">
         <div className="flex justify-center mb-6">
           <div className="relative">
-            <Rocket className="w-16 h-16 text-blue-500" />
+            <Zap className="w-16 h-16 text-blue-500" />
             <Code className="w-8 h-8 text-purple-500 absolute -bottom-2 -right-2" />
           </div>
         </div>
