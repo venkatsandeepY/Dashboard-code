@@ -445,6 +445,7 @@
   transform: translateY(0) scale(0.95) rotate(0deg);
   transition: transform 0.15s ease;
 }
+}
 
 .header__actions {
   display: flex;
