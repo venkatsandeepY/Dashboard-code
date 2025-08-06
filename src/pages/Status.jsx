@@ -118,6 +118,7 @@ const Status = () => {
 
   const JobsDropdown = ({ environment }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [timeoutId, setTimeoutId] = useState(null);
     
     const recentJobs = [
       { name: 'Daily Processing', status: 'Running', startTime: '08:30 AM', icon: Play, color: 'text-blue-600' },
@@ -126,10 +127,28 @@ const Status = () => {
       { name: 'Backup Process', status: 'Failed', startTime: '06:30 AM', icon: AlertCircle, color: 'text-red-600' }
     ];
 
+    const handleMouseEnter = () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        setTimeoutId(null);
+      }
+      setIsOpen(true);
+    };
+
+    const handleMouseLeave = () => {
+      const id = setTimeout(() => {
+        setIsOpen(false);
+      }, 300);
+      setTimeoutId(id);
+    };
+
+    React.useEffect(() => {
+      return () => timeoutId && clearTimeout(timeoutId);
+    }, [timeoutId]);
+
     return (
-      <div className="relative group">
+      <div className="relative group" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <button
-          onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md"
         >
           <Play className="w-4 h-4" />
@@ -137,57 +156,54 @@ const Status = () => {
           <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
         </button>
         {isOpen && (
-          <>
-            <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)}></div>
-            <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-20 animate-in slide-in-from-top-2 duration-200">
-              <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
-                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                  <Play className="w-4 h-4 text-blue-600" />
-                  Recent Jobs - {environment}
-                </h3>
-                <p className="text-xs text-gray-600 mt-1">Active and recent job executions</p>
-              </div>
-              <div className="max-h-64 overflow-y-auto">
-                {recentJobs.map((job, index) => (
-                  <div
-                    key={index}
-                    className="p-3 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-50 last:border-b-0 animate-in fade-in duration-300"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <job.icon className={`w-4 h-4 ${job.color}`} />
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{job.name}</p>
-                          <p className="text-xs text-gray-500">Started: {job.startTime}</p>
-                        </div>
+          <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-in slide-in-from-top-2 duration-200">
+            <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <Play className="w-4 h-4 text-blue-600" />
+                Recent Jobs - {environment}
+              </h3>
+              <p className="text-xs text-gray-600 mt-1">Active and recent job executions</p>
+            </div>
+            <div className="max-h-64 overflow-y-auto">
+              {recentJobs.map((job, index) => (
+                <div
+                  key={index}
+                  className="p-3 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-50 last:border-b-0 animate-in fade-in duration-300"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <job.icon className={`w-4 h-4 ${job.color}`} />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{job.name}</p>
+                        <p className="text-xs text-gray-500">Started: {job.startTime}</p>
                       </div>
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        job.status === 'Running' ? 'bg-blue-100 text-blue-700' :
-                        job.status === 'Completed' ? 'bg-green-100 text-green-700' :
-                        job.status === 'Queued' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-red-100 text-red-700'
-                      }`}>
-                        {job.status}
-                      </span>
                     </div>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      job.status === 'Running' ? 'bg-blue-100 text-blue-700' :
+                      job.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                      job.status === 'Queued' ? 'bg-yellow-100 text-yellow-700' :
+                      'bg-red-100 text-red-700'
+                    }`}>
+                      {job.status}
+                    </span>
                   </div>
-                ))}
-              </div>
-              <div className="p-3 border-t border-gray-100 bg-gray-50 rounded-b-xl">
-                <div className="flex gap-2">
-                  <button className="flex-1 px-3 py-2 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-150 flex items-center justify-center gap-1">
-                    <Eye className="w-3 h-3" />
-                    View All
-                  </button>
-                  <button className="flex-1 px-3 py-2 text-xs font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors duration-150 flex items-center justify-center gap-1">
-                    <Play className="w-3 h-3" />
-                    Start New
-                  </button>
                 </div>
+              ))}
+            </div>
+            <div className="p-3 border-t border-gray-100 bg-gray-50 rounded-b-xl">
+              <div className="flex gap-2">
+                <button className="flex-1 px-3 py-2 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-150 flex items-center justify-center gap-1">
+                  <Eye className="w-3 h-3" />
+                  View All
+                </button>
+                <button className="flex-1 px-3 py-2 text-xs font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors duration-150 flex items-center justify-center gap-1">
+                  <Play className="w-3 h-3" />
+                  Start New
+                </button>
               </div>
             </div>
-          </>
+          </div>
         )}
       </div>
     );
@@ -195,6 +211,7 @@ const Status = () => {
 
   const HistoryDropdown = ({ environment }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [timeoutId, setTimeoutId] = useState(null);
     
     const recentHistory = [
       { type: 'BANK', completedAt: new Date('2025-01-09T08:30:00'), duration: '2h 15m', status: 'Success', records: '1.2M' },
@@ -203,10 +220,28 @@ const Status = () => {
       { type: 'CARD', completedAt: new Date('2025-01-09T05:30:00'), duration: '1h 20m', status: 'Success', records: '920K' }
     ];
 
+    const handleMouseEnter = () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        setTimeoutId(null);
+      }
+      setIsOpen(true);
+    };
+
+    const handleMouseLeave = () => {
+      const id = setTimeout(() => {
+        setIsOpen(false);
+      }, 300);
+      setTimeoutId(id);
+    };
+
+    React.useEffect(() => {
+      return () => timeoutId && clearTimeout(timeoutId);
+    }, [timeoutId]);
+
     return (
-      <div className="relative group">
+      <div className="relative group" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <button
-          onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md"
         >
           <History className="w-4 h-4" />
@@ -214,71 +249,68 @@ const Status = () => {
           <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
         </button>
         {isOpen && (
-          <>
-            <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)}></div>
-            <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-xl shadow-xl z-20 animate-in slide-in-from-top-2 duration-200">
-              <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl">
-                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                  <History className="w-4 h-4 text-purple-600" />
-                  Batch History - {environment}
-                </h3>
-                <p className="text-xs text-gray-600 mt-1">Recent batch execution history</p>
-              </div>
-              <div className="max-h-72 overflow-y-auto">
-                {recentHistory.map((batch, index) => {
-                  const formatted = formatDateTime(batch.completedAt);
-                  return (
-                    <div
-                      key={index}
-                      className="p-4 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-50 last:border-b-0 animate-in fade-in duration-300"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">
-                              {batch.type}
-                            </span>
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                              batch.status === 'Success' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                            }`}>
-                              {batch.status}
-                            </span>
+          <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-in slide-in-from-top-2 duration-200">
+            <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <History className="w-4 h-4 text-purple-600" />
+                Batch History - {environment}
+              </h3>
+              <p className="text-xs text-gray-600 mt-1">Recent batch execution history</p>
+            </div>
+            <div className="max-h-72 overflow-y-auto">
+              {recentHistory.map((batch, index) => {
+                const formatted = formatDateTime(batch.completedAt);
+                return (
+                  <div
+                    key={index}
+                    className="p-4 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-50 last:border-b-0 animate-in fade-in duration-300"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">
+                            {batch.type}
+                          </span>
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                            batch.status === 'Success' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {batch.status}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Calendar className="w-3 h-3 text-gray-400" />
+                            <span className="font-medium text-gray-900">{formatted.date}</span>
                           </div>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-sm">
-                              <Calendar className="w-3 h-3 text-gray-400" />
-                              <span className="font-medium text-gray-900">{formatted.date}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <Clock className="w-3 h-3 text-gray-400" />
-                              <span>{formatted.time}</span>
-                            </div>
-                            <div className="flex items-center gap-4 text-xs text-gray-500 mt-2">
-                              <span>Duration: {batch.duration}</span>
-                              <span>Records: {batch.records}</span>
-                            </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Clock className="w-3 h-3 text-gray-400" />
+                            <span>{formatted.time}</span>
+                          </div>
+                          <div className="flex items-center gap-4 text-xs text-gray-500 mt-2">
+                            <span>Duration: {batch.duration}</span>
+                            <span>Records: {batch.records}</span>
                           </div>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-              <div className="p-3 border-t border-gray-100 bg-gray-50 rounded-b-xl">
-                <div className="flex gap-2">
-                  <button className="flex-1 px-3 py-2 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors duration-150 flex items-center justify-center gap-1">
-                    <FileText className="w-3 h-3" />
-                    Full Report
-                  </button>
-                  <button className="flex-1 px-3 py-2 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-150 flex items-center justify-center gap-1">
-                    <Download className="w-3 h-3" />
-                    Export
-                  </button>
-                </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="p-3 border-t border-gray-100 bg-gray-50 rounded-b-xl">
+              <div className="flex gap-2">
+                <button className="flex-1 px-3 py-2 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors duration-150 flex items-center justify-center gap-1">
+                  <FileText className="w-3 h-3" />
+                  Full Report
+                </button>
+                <button className="flex-1 px-3 py-2 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-150 flex items-center justify-center gap-1">
+                  <Download className="w-3 h-3" />
+                  Export
+                </button>
               </div>
             </div>
-          </>
+          </div>
         )}
       </div>
     );
@@ -374,7 +406,7 @@ const Status = () => {
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-6 pb-8">
         {/* Main Batch Status Table */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mb-8 animate-in slide-in-from-bottom duration-500">
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
@@ -479,79 +511,6 @@ const Status = () => {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Recent Batch Runs Section */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-in slide-in-from-bottom duration-700">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Batch Runs</h2>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Environment
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Completed At
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Duration
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {recentRuns.map((run, index) => {
-                  const formatted = formatDateTime(run.completedAt);
-                  return (
-                    <tr key={index} className="hover:bg-gray-50 transition-all duration-200 animate-in fade-in" style={{ animationDelay: `${(index + batchData.length) * 100}ms` }}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></div>
-                          <span className="text-sm font-medium text-gray-900">{run.environment}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full animate-in scale-in duration-300">
-                          {run.type}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div className="flex items-start gap-2">
-                          <Clock className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <div className="font-medium">{formatted.date}</div>
-                            <div className="text-xs text-gray-500">{formatted.time}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                          {run.duration}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full transition-all duration-300 transform hover:scale-105 ${
-                          run.status === 'Success' ? 'text-green-700 bg-green-100 shadow-green-200' : 'text-yellow-700 bg-yellow-100 shadow-yellow-200'
-                        } shadow-sm`}>
-                          {run.status}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
               </tbody>
             </table>
           </div>
