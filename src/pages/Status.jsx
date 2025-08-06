@@ -101,7 +101,7 @@ const Status = () => {
 
   const formatDateTime = (date) => {
     return date.toLocaleString('en-US', {
-      month: '1-digit',
+      month: 'numeric',
       day: '1-digit',
       year: 'numeric',
       hour: '1-digit',
