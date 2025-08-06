@@ -102,7 +102,7 @@ const Status = () => {
   const formatDateTime = (date) => {
     return date.toLocaleString('en-US', {
       month: 'numeric',
-      day: '1-digit',
+      day: 'numeric',
       year: 'numeric',
       hour: '1-digit',
       minute: '2-digit',
