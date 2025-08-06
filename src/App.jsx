@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './components/common/Header';
-import Dashboard from './Dashboard';
-import Status from './Status';
-import Reports from './Reports';
-import Feedback from './Feedback';
+import Dashboard from './pages/Dashboard';
+import Status from './pages/Status';
+import Reports from './pages/Reports';
+import Feedback from './pages/Feedback';
 import Footer from './components/common/Footer';
 
 function AppContent() {
