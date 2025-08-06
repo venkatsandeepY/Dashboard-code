@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code, Zap } from 'react-feather';
+import { Code, Zap } from 'lucide-react';
 
 const Dashboard = () => {
   return (
