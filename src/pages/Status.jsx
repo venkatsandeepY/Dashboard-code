@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Clock, Play, History, RefreshCw, CheckCircle, AlertCircle, Eye, Calendar, FileText, Download } from 'lucide-react';
+import { ChevronDown, Clock, Play, History, RefreshCw, Calendar, FileText, Download } from 'lucide-react';
 import { fetchBatchData, fetchJobsData, fetchHistoryData } from '../data/mockData';
 
 const Status = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [batchData, setBatchData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
   const [expandedType, setExpandedType] = useState(null);
   const [dropdownData, setDropdownData] = useState({});
@@ -21,20 +22,37 @@ const Status = () => {
 
   // Load batch data on component mount
   useEffect(() => {
-    const loadBatchData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchBatchData();
-        setBatchData(data);
-      } catch (error) {
-        console.error('Error loading batch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadBatchData();
   }, []);
+
+  const loadBatchData = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchBatchData();
+      setBatchData(data);
+    } catch (error) {
+      console.error('Error loading batch data:', error);
+      // Handle error state here if needed
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      const data = await fetchBatchData();
+      setBatchData(data);
+      // Clear any open dropdowns on refresh
+      setExpandedRow(null);
+      setExpandedType(null);
+      setDropdownData({});
+    } catch (error) {
+      console.error('Error refreshing batch data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -266,8 +284,12 @@ const Status = () => {
             <div className="text-sm text-gray-600">
               Last Updated: {formatDateTime(currentTime).date} at {formatDateTime(currentTime).time}
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-              <RefreshCw className="w-4 h-4" />
+            <button 
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh
             </button>
           </div>
@@ -314,8 +336,8 @@ const Status = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {batchData.map((row, index) => (
-                    <React.Fragment key={index}>
+                  {batchData.map((row) => (
+                    <React.Fragment key={row.id}>
                       <tr className="hover:bg-gray-50 transition-colors duration-200">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">

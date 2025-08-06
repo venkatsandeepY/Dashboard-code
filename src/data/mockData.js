@@ -2,6 +2,7 @@
 
 export const mockBatchData = [
   {
+    id: 1,
     environment: 'ASYS',
     bank: { status: 'Completed', progress: 100 },
     card: { status: 'In Progress', progress: 78 },
@@ -10,6 +11,7 @@ export const mockBatchData = [
     runtime: '45m 32s'
   },
   {
+    id: 2,
     environment: 'TSYS',
     bank: { status: 'In Progress', progress: 65 },
     card: { status: 'Completed', progress: 100 },
@@ -18,6 +20,7 @@ export const mockBatchData = [
     runtime: '1h 12m 18s'
   },
   {
+    id: 3,
     environment: 'MST0',
     bank: { status: 'Not Started', progress: 0 },
     card: { status: 'Not Started', progress: 0 },
@@ -26,6 +29,7 @@ export const mockBatchData = [
     runtime: '0m 0s'
   },
   {
+    id: 4,
     environment: 'OSYS',
     bank: { status: 'Completed', progress: 100 },
     card: { status: 'Completed', progress: 100 },
@@ -34,6 +38,7 @@ export const mockBatchData = [
     runtime: '2h 30m 45s'
   },
   {
+    id: 5,
     environment: 'ECT0',
     bank: { status: 'In Progress', progress: 42 },
     card: { status: 'In Progress', progress: 38 },
@@ -42,6 +47,7 @@ export const mockBatchData = [
     runtime: '32m 15s'
   },
   {
+    id: 6,
     environment: 'QSYS',
     bank: { status: 'Completed', progress: 100 },
     card: { status: 'In Progress', progress: 85 },
@@ -50,6 +56,7 @@ export const mockBatchData = [
     runtime: '1h 28m 42s'
   },
   {
+    id: 7,
     environment: 'VST0',
     bank: { status: 'Not Started', progress: 0 },
     card: { status: 'Not Started', progress: 0 },
@@ -145,7 +152,11 @@ export const mockHistoryData = {
 };
 
 // API simulation functions
-export const fetchBatchData = () => {
+export const fetchBatchData = async () => {
+  // TODO: Replace with actual Java REST API call
+  // const response = await fetch('/api/batch-status');
+  // return response.json();
+  
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(mockBatchData);
@@ -153,7 +164,11 @@ export const fetchBatchData = () => {
   });
 };
 
-export const fetchJobsData = (environment) => {
+export const fetchJobsData = async (environment) => {
+  // TODO: Replace with actual Java REST API call
+  // const response = await fetch(`/api/environments/${environment}/jobs`);
+  // return response.json();
+  
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(mockJobsData[environment] || []);
@@ -161,7 +176,11 @@ export const fetchJobsData = (environment) => {
   });
 };
 
-export const fetchHistoryData = (environment) => {
+export const fetchHistoryData = async (environment) => {
+  // TODO: Replace with actual Java REST API call
+  // const response = await fetch(`/api/environments/${environment}/history`);
+  // return response.json();
+  
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(mockHistoryData[environment] || []);
