@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Clock, Play, History, MoreHorizontal, RefreshCw, CheckCircle, AlertCircle, Pause, RotateCcw, Download, FileText, Eye, Calendar } from 'lucide-react';
 
 const Status = () => {
@@ -118,7 +118,23 @@ const Status = () => {
 
   const JobsDropdown = ({ environment }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [timeoutId, setTimeoutId] = useState(null);
+    const dropdownRef = useRef(null);
+    
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsOpen(false);
+        }
+      };
+
+      if (isOpen) {
+        document.addEventListener('mousedown', handleClickOutside);
+      }
+
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [isOpen]);
     
     const recentJobs = [
       { name: 'Daily Processing', status: 'Running', startTime: '08:30 AM', icon: Play, color: 'text-blue-600' },
@@ -127,28 +143,10 @@ const Status = () => {
       { name: 'Backup Process', status: 'Failed', startTime: '06:30 AM', icon: AlertCircle, color: 'text-red-600' }
     ];
 
-    const handleMouseEnter = () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-        setTimeoutId(null);
-      }
-      setIsOpen(true);
-    };
-
-    const handleMouseLeave = () => {
-      const id = setTimeout(() => {
-        setIsOpen(false);
-      }, 300);
-      setTimeoutId(id);
-    };
-
-    React.useEffect(() => {
-      return () => timeoutId && clearTimeout(timeoutId);
-    }, [timeoutId]);
-
     return (
-      <div className="relative group" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <div className="relative group" ref={dropdownRef}>
         <button
+          onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md"
         >
           <Play className="w-4 h-4" />
@@ -211,7 +209,23 @@ const Status = () => {
 
   const HistoryDropdown = ({ environment }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [timeoutId, setTimeoutId] = useState(null);
+    const dropdownRef = useRef(null);
+    
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsOpen(false);
+        }
+      };
+
+      if (isOpen) {
+        document.addEventListener('mousedown', handleClickOutside);
+      }
+
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [isOpen]);
     
     const recentHistory = [
       { type: 'BANK', completedAt: new Date('2025-01-09T08:30:00'), duration: '2h 15m', status: 'Success', records: '1.2M' },
@@ -220,28 +234,10 @@ const Status = () => {
       { type: 'CARD', completedAt: new Date('2025-01-09T05:30:00'), duration: '1h 20m', status: 'Success', records: '920K' }
     ];
 
-    const handleMouseEnter = () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-        setTimeoutId(null);
-      }
-      setIsOpen(true);
-    };
-
-    const handleMouseLeave = () => {
-      const id = setTimeout(() => {
-        setIsOpen(false);
-      }, 300);
-      setTimeoutId(id);
-    };
-
-    React.useEffect(() => {
-      return () => timeoutId && clearTimeout(timeoutId);
-    }, [timeoutId]);
-
     return (
-      <div className="relative group" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <div className="relative group" ref={dropdownRef}>
         <button
+          onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md"
         >
           <History className="w-4 h-4" />
@@ -406,7 +402,7 @@ const Status = () => {
         </div>
       </div>
 
-      <div className="p-6 pb-8">
+      <div className="p-6">
         {/* Main Batch Status Table */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mb-8 animate-in slide-in-from-bottom duration-500">
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
@@ -511,6 +507,79 @@ const Status = () => {
                     </td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Recent Batch Runs Section */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-in slide-in-from-bottom duration-700">
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h2 className="text-lg font-semibold text-gray-900">Recent Batch Runs</h2>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Environment
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Type
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Completed At
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Duration
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {recentRuns.map((run, index) => {
+                  const formatted = formatDateTime(run.completedAt);
+                  return (
+                    <tr key={index} className="hover:bg-gray-50 transition-all duration-200 animate-in fade-in" style={{ animationDelay: `${(index + batchData.length) * 100}ms` }}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+                          <span className="text-sm font-medium text-gray-900">{run.environment}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full animate-in scale-in duration-300">
+                          {run.type}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div className="flex items-start gap-2">
+                          <Clock className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <div className="font-medium">{formatted.date}</div>
+                            <div className="text-xs text-gray-500">{formatted.time}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                          {run.duration}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full transition-all duration-300 transform hover:scale-105 ${
+                          run.status === 'Success' ? 'text-green-700 bg-green-100 shadow-green-200' : 'text-yellow-700 bg-yellow-100 shadow-yellow-200'
+                        } shadow-sm`}>
+                          {run.status}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
