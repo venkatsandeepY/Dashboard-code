@@ -551,7 +551,7 @@ const Status = () => {
                       </td>
                     </tr>
                   );
-                })};
+                });}
               </tbody>
             </table>
           </div>
