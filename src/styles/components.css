@@ -215,9 +215,14 @@
 
 .nav-item__icon {
   flex-shrink: 0;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
   transition: all 0.3s ease;
+}
+
+.nav-item--collapsed .nav-item__icon {
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 .nav-item:hover .nav-item__icon {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, TrendingUp, FileText, MessageCircle, Menu, X, Sparkles } from 'lucide-react';
+import { Home, TrendingUp, FileText, MessageCircle, Menu, X } from 'lucide-react';
 
 const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
   const navigate = useNavigate();
@@ -40,10 +40,9 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
           <div className="ml-md flex items-center">
             <div>
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-yellow-300" />
                 <h1 className="text-inverse text-xl font-bold tracking-wide">ESQM</h1>
               </div>
-              <p className="text-inverse opacity-75 text-sm font-medium">(DLIFE) Operations</p>
+              <p className="text-inverse opacity-75 text-sm font-medium">(DLIFE)</p>
             </div>
           </div>
         )}
