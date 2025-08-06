@@ -1,37 +1,52 @@
-/* CSS Custom Properties (Variables) */
+/* Modern CSS Custom Properties with Unique Design System */
 :root {
-  /* Colors - Light Theme */
-  --color-primary: #1F1246;
-  --color-primary-light: #2D1B69;
-  --color-primary-dark: #16102E;
-  --color-secondary: #7C3AED;
-  --color-accent: #A855F7;
+  /* Primary Brand Colors - Unique Purple-Blue Gradient System */
+  --color-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color-primary-solid: #667eea;
+  --color-primary-dark: #5a67d8;
+  --color-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --color-secondary-solid: #f093fb;
+  --color-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --color-accent-solid: #4facfe;
   
-  /* Background Colors */
+  /* Glassmorphism Colors */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  
+  /* Background System - Modern Gradients */
   --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-tertiary: #f3f4f6;
-  --bg-overlay: rgba(0, 0, 0, 0.5);
+  --bg-secondary: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --bg-tertiary: rgba(255, 255, 255, 0.8);
+  --bg-overlay: rgba(0, 0, 0, 0.4);
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-sidebar: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
   
-  /* Text Colors */
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
-  --text-tertiary: #9ca3af;
+  /* Text Colors with Better Contrast */
+  --text-primary: #2d3748;
+  --text-secondary: #4a5568;
+  --text-tertiary: #718096;
   --text-inverse: #ffffff;
-  --text-accent: #7c3aed;
+  --text-accent: #667eea;
+  --text-muted: #a0aec0;
   
-  /* Border Colors */
-  --border-primary: #e5e7eb;
-  --border-secondary: #d1d5db;
-  --border-accent: #7c3aed;
+  /* Border System */
+  --border-primary: rgba(255, 255, 255, 0.3);
+  --border-secondary: rgba(255, 255, 255, 0.2);
+  --border-accent: #667eea;
+  --border-glass: rgba(255, 255, 255, 0.18);
   
-  /* Status Colors */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  /* Status Colors - Vibrant and Modern */
+  --color-success: linear-gradient(135deg, #81FBB8 0%, #28C76F 100%);
+  --color-success-solid: #28C76F;
+  --color-warning: linear-gradient(135deg, #FFE16A 0%, #FF9F43 100%);
+  --color-warning-solid: #FF9F43;
+  --color-error: linear-gradient(135deg, #FF8A80 0%, #EA5455 100%);
+  --color-error-solid: #EA5455;
+  --color-info: linear-gradient(135deg, #84D0FF 0%, #1E88E5 100%);
+  --color-info-solid: #1E88E5;
   
-  /* Spacing */
+  /* Advanced Spacing System */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -39,9 +54,13 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
+  --spacing-4xl: 6rem;
   
-  /* Typography */
-  --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  /* Typography - Modern Font Stack */
+  --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-family-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace;
+  
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
@@ -50,6 +69,7 @@
   --font-size-2xl: 1.5rem;
   --font-size-3xl: 1.875rem;
   --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
   
   /* Line Heights */
   --line-height-tight: 1.25;
@@ -57,31 +77,40 @@
   --line-height-relaxed: 1.75;
   
   /* Font Weights */
+  --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
   
-  /* Border Radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
+  /* Modern Border Radius System */
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
   --radius-full: 9999px;
   
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  /* Advanced Shadow System */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --shadow-glow: 0 0 20px rgba(102, 126, 234, 0.4);
   
-  /* Transitions */
-  --transition-fast: 150ms ease-in-out;
-  --transition-normal: 200ms ease-in-out;
-  --transition-slow: 300ms ease-in-out;
+  /* Transition System */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
   
-  /* Z-Index */
+  /* Z-Index System */
   --z-dropdown: 1000;
   --z-sticky: 1020;
   --z-fixed: 1030;
@@ -89,23 +118,58 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+  
+  /* Custom Properties for Unique Effects */
+  --blur-sm: blur(4px);
+  --blur-md: blur(8px);
+  --blur-lg: blur(16px);
+  --backdrop-blur: blur(10px);
 }
 
-/* Dark Theme Variables */
+/* Dark Theme - Sophisticated Dark Mode */
 [data-theme="dark"] {
-  /* Background Colors */
-  --bg-primary: #111827;
-  --bg-secondary: #1f2937;
-  --bg-tertiary: #374151;
-  --bg-overlay: rgba(0, 0, 0, 0.8);
+  --bg-primary: #0f172a;
+  --bg-secondary: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  --bg-tertiary: rgba(30, 41, 59, 0.8);
+  --bg-card: rgba(30, 41, 59, 0.95);
+  --bg-sidebar: linear-gradient(180deg, #1e293b 0%, #334155 100%);
   
-  /* Text Colors */
-  --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --text-tertiary: #9ca3af;
-  --text-inverse: #111827;
+  --text-primary: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --text-tertiary: #cbd5e1;
+  --text-inverse: #0f172a;
+  --text-muted: #64748b;
   
-  /* Border Colors */
-  --border-primary: #374151;
-  --border-secondary: #4b5563;
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.05);
+  --border-glass: rgba(255, 255, 255, 0.1);
+  
+  --glass-bg: rgba(30, 41, 59, 0.3);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* System Preferences */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #0f172a;
+    --bg-secondary: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    --bg-tertiary: rgba(30, 41, 59, 0.8);
+    --bg-card: rgba(30, 41, 59, 0.95);
+    --bg-sidebar: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #e2e8f0;
+    --text-tertiary: #cbd5e1;
+    --text-inverse: #0f172a;
+    --text-muted: #64748b;
+    
+    --border-primary: rgba(255, 255, 255, 0.1);
+    --border-secondary: rgba(255, 255, 255, 0.05);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    
+    --glass-bg: rgba(30, 41, 59, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  }
 }

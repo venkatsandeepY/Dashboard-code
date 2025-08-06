@@ -1,4 +1,6 @@
-/* Base Styles and Reset */
+/* Modern Base Styles with Unique Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 *,
 *::before,
 *::after {
@@ -13,6 +15,7 @@ html {
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
   tab-size: 4;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -21,42 +24,90 @@ body {
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-normal);
   color: var(--text-primary);
-  background-color: var(--bg-secondary);
+  background: var(--bg-secondary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Typography */
+/* Modern Typography System */
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-display);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   color: var(--text-primary);
   margin-bottom: var(--spacing-md);
+  letter-spacing: -0.025em;
 }
 
-h1 { font-size: var(--font-size-4xl); }
-h2 { font-size: var(--font-size-3xl); }
-h3 { font-size: var(--font-size-2xl); }
-h4 { font-size: var(--font-size-xl); }
-h5 { font-size: var(--font-size-lg); }
-h6 { font-size: var(--font-size-base); }
+h1 { 
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-extrabold);
+  background: var(--color-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+h2 { 
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+}
+
+h3 { 
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+h4 { 
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+h5 { 
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+h6 { 
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
 
 p {
   margin-bottom: var(--spacing-md);
   color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
 }
 
 a {
   color: var(--text-accent);
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  position: relative;
 }
 
 a:hover {
-  color: var(--color-secondary);
+  color: var(--color-primary-solid);
+  transform: translateY(-1px);
 }
 
-/* Lists */
+a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background: var(--color-accent);
+  transition: width var(--transition-fast);
+}
+
+a:hover::after {
+  width: 100%;
+}
+
+/* Enhanced Lists */
 ul, ol {
   margin-bottom: var(--spacing-md);
   padding-left: var(--spacing-lg);
@@ -64,71 +115,135 @@ ul, ol {
 
 li {
   margin-bottom: var(--spacing-xs);
+  line-height: var(--line-height-relaxed);
 }
 
-/* Code */
+/* Modern Code Styling */
 code {
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-family: var(--font-family-mono);
   font-size: 0.875em;
-  background-color: var(--bg-tertiary);
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
+  border: 1px solid var(--border-glass);
 }
 
-/* Images */
+pre {
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-glass);
+}
+
+/* Enhanced Images */
 img {
   max-width: 100%;
   height: auto;
   display: block;
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-normal);
 }
 
-/* Form Elements */
+img:hover {
+  transform: scale(1.02);
+}
+
+/* Modern Form Elements */
 input, textarea, select, button {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
 }
 
-/* Focus Styles */
+input, textarea, select {
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--color-accent-solid);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Enhanced Focus Styles */
 :focus {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-accent-solid);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 :focus:not(:focus-visible) {
   outline: none;
 }
 
-/* Selection */
-::selection {
-  background-color: var(--color-accent);
-  color: var(--text-inverse);
+:focus-visible {
+  outline: 2px solid var(--color-accent-solid);
+  outline-offset: 2px;
 }
 
-/* Scrollbar Styles */
+/* Beautiful Selection */
+::selection {
+  background: var(--color-accent-solid);
+  color: var(--text-inverse);
+  text-shadow: none;
+}
+
+/* Custom Scrollbar - Glassmorphism Style */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
+  border-radius: var(--radius-full);
+  margin: var(--spacing-xs);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-secondary);
-  border-radius: var(--radius-sm);
-  transition: background-color var(--transition-fast);
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: all var(--transition-fast);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-tertiary);
+  background: var(--color-secondary);
+  transform: scale(1.1);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* Firefox Scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--border-secondary) var(--bg-tertiary);
+  scrollbar-color: var(--color-primary-solid) var(--glass-bg);
+}
+
+/* Smooth Animations for All Elements */
+* {
+  transition: background-color var(--transition-fast), 
+              border-color var(--transition-fast), 
+              color var(--transition-fast), 
+              fill var(--transition-fast), 
+              stroke var(--transition-fast), 
+              opacity var(--transition-fast), 
+              box-shadow var(--transition-fast), 
+              transform var(--transition-fast);
 }
