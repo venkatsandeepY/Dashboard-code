@@ -76,9 +76,11 @@
 .header {
   background-color: var(--color-primary);
   color: var(--text-inverse);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-lg);
   position: relative;
   z-index: var(--z-sticky);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  border-bottom: 3px solid var(--color-accent);
 }
 
 .header__content {
@@ -86,6 +88,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .header__title {
@@ -93,6 +96,9 @@
   font-weight: var(--font-weight-bold);
   color: var(--text-inverse);
   margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  position: relative;
 }
 
 .header__actions {

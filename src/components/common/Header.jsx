@@ -51,7 +51,14 @@ const Header = () => {
           <div className="dropdown" ref={dropdownRef}>
             <button 
               onClick={() => setShowDropdown(!showDropdown)}
-              className="btn btn--ghost btn--icon-only text-inverse"
+              className="btn btn--ghost btn--icon-only text-inverse hover-glow"
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '12px',
+                transition: 'all 0.3s ease'
+              }}
             >
               <User className="w-6 h-6" />
             </button>
@@ -60,8 +67,8 @@ const Header = () => {
             {showDropdown && (
               <div className={`dropdown__menu ${showDropdown ? 'dropdown__menu--open' : ''}`}>
                 <div className="dropdown__header">
-                  <p className="dropdown__header-title">{username}</p>
-                  <p className="dropdown__header-subtitle">Logged in</p>
+                  <p className="dropdown__header-title">👤 {username}</p>
+                  <p className="dropdown__header-subtitle">🟢 Online • Active Session</p>
                 </div>
                 <button
                   onClick={handleSignOut}
