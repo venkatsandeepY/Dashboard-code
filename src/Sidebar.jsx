@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, TrendingUp, FileText, MessageCircle, Menu, X } from 'lucide-react';
+import { Home, TrendingUp, FileText, MessageCircle, Menu, X, Zap, Star, Sparkles } from 'lucide-react';
 
 const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
   const navigate = useNavigate();
@@ -32,20 +32,32 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
       <div className="sidebar__header">
         <button
           onClick={onToggleCollapse}
-          className="btn btn--ghost btn--icon-only text-inverse"
+          className="sidebar__toggle-btn"
         >
           {isCollapsed ? <Menu size={20} /> : <X size={20} />}
         </button>
         {!isCollapsed && (
-          <div className="ml-md">
-            <h1 className="text-inverse text-xl font-bold">ESQM</h1>
-            <p className="text-inverse opacity-75 text-sm">(DLIFE)</p>
+          <div className="sidebar__brand">
+            <div className="sidebar__brand-icon">
+              <Zap className="w-6 h-6" />
+              <Sparkles className="sidebar__brand-sparkle" />
+            </div>
+            <div className="sidebar__brand-text">
+              <h1 className="sidebar__brand-title">ESQM</h1>
+              <p className="sidebar__brand-subtitle">(DLIFE)</p>
+            </div>
           </div>
         )}
       </div>
 
       {/* Navigation */}
       <nav className="sidebar__nav">
+        {!isCollapsed && (
+          <div className="sidebar__nav-header">
+            <Star className="w-4 h-4" />
+            <span>Navigation</span>
+          </div>
+        )}
         <ul className="sidebar__nav-list">
           {navigationItems.map((item) => {
             const Icon = item.icon;
@@ -55,13 +67,17 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
               <li key={item.id}>
                 <button
                   onClick={() => handleNavigation(item.path)}
-                  className={`nav-item ${isActive ? 'nav-item--active' : ''} ${isCollapsed ? 'nav-item--collapsed' : ''}`}
+                  className={`sidebar__nav-item ${isActive ? 'sidebar__nav-item--active' : ''} ${isCollapsed ? 'sidebar__nav-item--collapsed' : ''}`}
                   title={isCollapsed ? item.label : ''}
                 >
-                  <Icon size={20} className="nav-item__icon" />
+                  <div className="sidebar__nav-item-icon">
+                    <Icon size={20} />
+                    <div className="sidebar__nav-item-glow"></div>
+                  </div>
                   {!isCollapsed && (
-                    <span className="nav-item__label capitalize">{item.label}</span>
+                    <span className="sidebar__nav-item-label">{item.label}</span>
                   )}
+                  <div className="sidebar__nav-item-trail"></div>
                 </button>
               </li>
             );

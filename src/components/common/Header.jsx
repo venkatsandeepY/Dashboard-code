@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [username, setUsername] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,24 +41,6 @@ const Header = () => {
     setShowDropdown(false);
   };
 
-  const navigationItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: Home },
-    { path: '/status', label: 'Status', icon: TrendingUp },
-    { path: '/reports', label: 'Reports', icon: FileText },
-  ];
-
-  const handleNavClick = (path) => {
-    navigate(path);
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      console.log('Searching for:', searchQuery);
-      // Add search functionality here
-    }
-  };
-
   return (
     <header className="header">
       <div className="header__content">
@@ -71,48 +52,8 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Center - Search & Navigation */}
-        <div className="header__center">
-          <div className="header__search">
-            <Search className="header__search-icon w-5 h-5" />
-            <form onSubmit={handleSearchSubmit}>
-              <input
-                type="text"
-                placeholder="Search operations..."
-                className="header__search-input"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
-          </div>
-        </div>
-
-        {/* Right side - Navigation & Actions */}
+        {/* Right side - User Profile & Logo */}
         <div className="header__right">
-          {/* Floating Navigation */}
-          <nav className="header__nav">
-            {navigationItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              return (
-                <button
-                  key={item.path}
-                  onClick={() => handleNavClick(item.path)}
-                  className={`header__nav-item ${isActive ? 'header__nav-item--active' : ''}`}
-                  title={item.label}
-                >
-                  <Icon className="w-4 h-4" />
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* Notifications */}
-          <div className="header__notification">
-            <Bell className="w-5 h-5" style={{ color: 'rgba(255, 255, 255, 0.9)' }} />
-            <div className="header__notification-badge"></div>
-          </div>
-
           {/* User Profile */}
           <div className="dropdown" ref={dropdownRef}>
             <button 
