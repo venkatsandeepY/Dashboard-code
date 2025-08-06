@@ -399,6 +399,7 @@ const Status = () => {
 
       <div className="p-6">
         <>
+        <>
         {/* Main Batch Status Table */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
@@ -586,6 +587,7 @@ const Status = () => {
           </div>
           )}
         </div>
+        </>
         </>
       </div>
     </div>
