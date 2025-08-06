@@ -74,11 +74,11 @@ const Header = () => {
         {/* Center - Search & Navigation */}
         <div className="header__center">
           <div className="header__search">
-            <Search className="header__search-icon w-4 h-4" />
+            <Search className="header__search-icon w-5 h-5" />
             <form onSubmit={handleSearchSubmit}>
               <input
                 type="text"
-                placeholder="Search operations, reports, status..."
+                placeholder="Search operations..."
                 className="header__search-input"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -109,7 +109,7 @@ const Header = () => {
 
           {/* Notifications */}
           <div className="header__notification">
-            <Bell className="w-5 h-5 text-white" />
+            <Bell className="w-5 h-5" style={{ color: 'rgba(255, 255, 255, 0.9)' }} />
             <div className="header__notification-badge"></div>
           </div>
 
@@ -117,17 +117,13 @@ const Header = () => {
           <div className="dropdown" ref={dropdownRef}>
             <button 
               onClick={() => setShowDropdown(!showDropdown)}
-              className="btn btn--ghost btn--icon-only text-inverse hover-glow"
+              className="header__notification"
               style={{
-                background: 'rgba(255, 255, 255, 0.15)',
-                backdropFilter: 'blur(15px)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '15px',
-                transition: 'all 0.3s ease',
-                padding: '12px'
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
               }}
             >
-              <User className="w-6 h-6" />
+              <User className="w-5 h-5" style={{ color: 'rgba(255, 255, 255, 0.9)' }} />
             </button>
             
             {/* Enhanced Profile Dropdown */}
@@ -163,47 +159,13 @@ const Header = () => {
           <img 
             src="/image copy.png" 
             alt="Discover Logo" 
-            className="logo"
-            style={{ height: '2.5rem', borderRadius: '8px' }}
-          />
-        </div>
-        <div className="header__actions">
-          <div className="dropdown" ref={dropdownRef}>
-            <button 
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="btn btn--ghost btn--icon-only text-inverse hover-glow"
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '12px',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              <User className="w-6 h-6" />
-            </button>
-            
-            {/* Profile Dropdown */}
-            {showDropdown && (
-              <div className={`dropdown__menu ${showDropdown ? 'dropdown__menu--open' : ''}`}>
-                <div className="dropdown__header">
-                  <p className="dropdown__header-title">👤 {username}</p>
-                  <p className="dropdown__header-subtitle">🟢 Online • Active Session</p>
-                </div>
-                <button
-                  onClick={handleSignOut}
-                  className="dropdown__item"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Sign Out
-                </button>
-              </div>
-            )}
-          </div>
-          <img 
-            src="/image copy.png" 
-            alt="Discover Logo" 
-            className="logo"
+            style={{ 
+              height: '40px', 
+              borderRadius: '8px',
+              transition: 'opacity 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.target.style.opacity = '0.9'}
+            onMouseLeave={(e) => e.target.style.opacity = '1'}
           />
         </div>
       </div>
