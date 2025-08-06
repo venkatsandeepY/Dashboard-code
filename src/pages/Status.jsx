@@ -548,9 +548,10 @@ const Status = () => {
                         } shadow-sm`}>
                           {run.status}
                         </span>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
