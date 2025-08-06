@@ -25,7 +25,7 @@ function AppContent() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50 app-container">
+    <div className="flex min-h-screen bg-gray-50 app-container" style={{ margin: 0, padding: 0 }}>
       {/* Sidebar */}
       <Sidebar 
         activeItem={getActiveItem()} 
@@ -34,7 +34,7 @@ function AppContent() {
       />
       
       {/* Main Content */}
-      <div className="flex-1 flex flex-col main-content">
+      <div className="flex-1 flex flex-col main-content" style={{ margin: 0, padding: 0 }}>
         {/* Header */}
         <Header />
 
