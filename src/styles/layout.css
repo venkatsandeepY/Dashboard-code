@@ -114,16 +114,7 @@
   align-items: center;
   gap: var(--spacing-xl);
   flex: 0 0 auto;
-  min-width: 200px;
-}
-
-.header__center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex: 1;
-  max-width: 500px;
-  margin: 0 var(--spacing-lg);
 }
 
 .header__right {
@@ -131,7 +122,6 @@
   align-items: center;
   gap: var(--spacing-lg);
   flex: 0 0 auto;
-  min-width: 300px;
   justify-content: flex-end;
 }
 
