@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Clock, Play, RotateCcw, Calendar, FileText, Download, Clock as History } from 'react-feather';
+import { ChevronDown, Clock, Play, RotateCcw, Calendar, FileText, Download } from 'react-feather';
 import { fetchBatchData, fetchJobsData, fetchHistoryData } from '../data/mockData';
 
 const Status = () => {
@@ -203,7 +203,7 @@ const Status = () => {
             <div className="bg-white rounded-lg border border-purple-200 overflow-hidden">
               <div className="px-4 py-3 bg-purple-100 border-b border-purple-200">
                 <h4 className="text-sm font-semibold text-purple-900 flex items-center gap-2">
-                  <History className="w-4 h-4" />
+                  <Clock className="w-4 h-4" />
                   Batch History - {environment}
                 </h4>
               </div>
