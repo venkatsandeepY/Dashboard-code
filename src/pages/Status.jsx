@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Clock, Play, RefreshCw, Calendar, FileText, Download, History } from 'lucide-react';
+import { ChevronDown, Clock, Play, RotateCcw, Calendar, FileText, Download, Clock as History } from 'react-feather';
 import { fetchBatchData, fetchJobsData, fetchHistoryData } from '../data/mockData';
 
 const Status = () => {
@@ -289,8 +289,7 @@ const Status = () => {
               disabled={refreshing}
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+              <RotateCcw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh
             </button>
           </div>
