@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, LogOut } from 'react-feather';
+import { User, LogOut, Search } from 'react-feather';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Header = () => {
@@ -47,8 +47,20 @@ const Header = () => {
         {/* Left side - Brand */}
         <div className="header__left">
           <div>
-            <h1 className="header__title">ESQM</h1>
+            <h1 className="header__title" style={{ fontSize: '1.5rem' }}>ESQM</h1>
             <p className="header__subtitle">Operations Dashboard</p>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="header__search">
+            <div className="header__search-icon">
+              <Search size={16} />
+            </div>
+            <input
+              type="text"
+              placeholder="Search..."
+              className="header__search-input"
+            />
           </div>
         </div>
 
@@ -62,12 +74,8 @@ const Header = () => {
             <button 
               onClick={() => setShowDropdown(!showDropdown)}
               className="header__notification"
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
-              }}
             >
-              <User className="w-5 h-5" style={{ color: 'rgba(255, 255, 255, 0.9)' }} />
+              <User size={18} style={{ color: 'var(--text-primary)' }} />
             </button>
             
             {/* Enhanced Profile Dropdown */}
