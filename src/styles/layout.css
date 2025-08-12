@@ -63,11 +63,11 @@
 }
 
 .sidebar--collapsed {
-  width: 4rem;
+  width: 5.97rem;
 }
 
 .sidebar--expanded {
-  width: 14rem;
+  width: 20.9rem;
 }
 
 .sidebar__header {
@@ -124,8 +124,13 @@
 .header__left {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xl);
   flex: 0 0 auto;
+}
+
+.header__center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 1;
 }
 
@@ -157,9 +162,7 @@
 
 .header__search {
   position: relative;
-  width: 100%;
-  max-width: 280px;
-  min-width: 200px;
+  width: 320px;
 }
 
 .header__search-input {

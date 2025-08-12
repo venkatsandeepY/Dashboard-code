@@ -50,8 +50,10 @@ const Header = () => {
             <h1 className="header__title" style={{ fontSize: '1.5rem' }}>ESQM</h1>
             <p className="header__subtitle">Operations Dashboard</p>
           </div>
-          
-          {/* Search Bar */}
+        </div>
+
+        {/* Centered Search Bar */}
+        <div className="header__center">
           <div className="header__search">
             <div className="header__search-icon">
               <Search size={16} />
@@ -63,7 +65,6 @@ const Header = () => {
             />
           </div>
         </div>
-
 
         {/* Right side - Actions */}
         <div className="header__right">
