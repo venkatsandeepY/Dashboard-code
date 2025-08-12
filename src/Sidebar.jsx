@@ -14,38 +14,43 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
   ];
 
   const handleNavigation = (path) => {
+    console.log('Navigating to:', path);
+    console.log('Is external URL:', path.startsWith('http'));
+    
     if (path.startsWith('http')) {
+      console.log('Opening external URL in new tab');
       window.open(path, '_blank');
     } else {
+      console.log('Navigating internally');
       navigate(path);
     }
   };
 
   return (
-    <div className={`bg-gradient-to-b from-indigo-900 to-purple-900 min-h-screen flex flex-col transition-all duration-300 ${
-      isCollapsed ? 'w-16' : 'w-56'
-    }`}>
-      {/* Header */}
-      <div className="p-3 border-b border-indigo-700">
-        <div className="flex items-center">
-          <button
-            onClick={onToggleCollapse}
-            className="p-2 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-colors duration-200"
-          >
-            {isCollapsed ? <Menu size={18} /> : <X size={18} />}
-          </button>
-          {!isCollapsed && (
-            <div className="ml-3">
-              <h1 className="text-white text-lg font-bold">ESQM</h1>
-              <p className="text-indigo-200 text-xs font-medium">(DLIFE)</p>
+    <div className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : 'sidebar--expanded'}`}>
+      {/* Header with hamburger menu */}
+      <div className="sidebar__header">
+        <button
+          onClick={onToggleCollapse}
+          className="btn btn--ghost btn--icon-only text-inverse hover-lift"
+        >
+          {isCollapsed ? <Menu size={20} /> : <X size={20} />}
+        </button>
+        {!isCollapsed && (
+          <div className="ml-md flex items-center">
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-inverse text-xl font-bold tracking-wide">ESQM</h1>
+              </div>
+              <p className="text-inverse opacity-75 text-sm font-medium">(DLIFE)</p>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3">
-        <ul className="space-y-2">
+      <nav className="sidebar__nav">
+        <ul className="sidebar__nav-list">
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -54,16 +59,12 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
               <li key={item.id}>
                 <button
                   onClick={() => handleNavigation(item.path)}
-                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
-                    isActive
-                      ? 'bg-white text-indigo-900'
-                      : 'text-white hover:bg-white hover:bg-opacity-10'
-                  } ${isCollapsed ? 'justify-center' : 'justify-start'}`}
+                  className={`nav-item ${isActive ? 'nav-item--active' : ''} ${isCollapsed ? 'nav-item--collapsed' : ''}`}
                   title={isCollapsed ? item.label : ''}
                 >
-                  <Icon size={18} className="flex-shrink-0" />
+                  <Icon size={20} className="nav-item__icon" />
                   {!isCollapsed && (
-                    <span className="ml-3">{item.label}</span>
+                    <span className="nav-item__label capitalize">{item.label}</span>
                   )}
                 </button>
               </li>
