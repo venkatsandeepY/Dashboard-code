@@ -18,18 +18,13 @@
   min-height: 100vh;
   background-color: var(--bg-secondary);
   display: flex;
-  transform: scale(0.75); /* Scale applied */
-  transform-origin: top left;
-  height: 100%;
-  transition: transform 0.3s ease;
 }
 
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  font-size: calc(1vw + 1vh);  /* Dynamic scaling for font sizes */
+  min-height: 100vh;
 }
 
 .content-area {
@@ -68,11 +63,11 @@
 }
 
 .sidebar--collapsed {
-  width: 4rem;
+  width: 5.97rem;
 }
 
 .sidebar--expanded {
-  width: 14rem;
+  width: 20.9rem;
 }
 
 .sidebar__header {
