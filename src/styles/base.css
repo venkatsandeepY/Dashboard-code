@@ -10,9 +10,12 @@
 html {
   font-family: var(--font-family-primary);
   line-height: var(--line-height-normal);
+  font-size: 16px;
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
   tab-size: 4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -22,8 +25,6 @@ body {
   line-height: var(--line-height-normal);
   color: var(--text-primary);
   background-color: var(--bg-secondary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Typography */
@@ -34,12 +35,12 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--spacing-md);
 }
 
-h1 { font-size: var(--font-size-4xl); }
-h2 { font-size: var(--font-size-3xl); }
-h3 { font-size: var(--font-size-2xl); }
-h4 { font-size: var(--font-size-xl); }
-h5 { font-size: var(--font-size-lg); }
-h6 { font-size: var(--font-size-base); }
+h1 { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); }
+h2 { font-size: var(--font-size-2xl); font-weight: var(--font-weight-semibold); }
+h3 { font-size: var(--font-size-xl); font-weight: var(--font-weight-semibold); }
+h4 { font-size: var(--font-size-lg); font-weight: var(--font-weight-medium); }
+h5 { font-size: var(--font-size-base); font-weight: var(--font-weight-medium); }
+h6 { font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); }
 
 p {
   margin-bottom: var(--spacing-md);
@@ -64,16 +65,18 @@ ul, ol {
 
 li {
   margin-bottom: var(--spacing-xs);
+  line-height: var(--line-height-relaxed);
 }
 
 /* Code */
 code {
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-family: var(--font-family-mono);
   font-size: 0.875em;
   background-color: var(--bg-tertiary);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
 }
 
 /* Images */

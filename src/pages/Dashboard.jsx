@@ -11,8 +11,8 @@ const Dashboard = () => {
             <Code className="w-8 h-8 text-purple-500 absolute -bottom-2 -right-2" />
           </div>
         </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Development Starts Here</h2>
-        <p className="text-gray-600 text-lg">Dashboard component ready for implementation</p>
+        <h2 className="text-4xl font-bold text-gray-900 mb-4 tracking-tight">Development Starts Here</h2>
+        <p className="text-gray-600 text-lg font-medium">Dashboard component ready for implementation</p>
       </div>
     </div>
   );

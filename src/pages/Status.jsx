@@ -403,7 +403,7 @@ const Status = () => {
                           <div className="flex items-center gap-4">
                             <button
                               onClick={() => handleDropdownToggle(row.environment, 'jobs')}
-                              className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors duration-150"
+                              className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-150"
                             >
                               <Play className="w-4 h-4" />
                               Jobs
@@ -413,7 +413,7 @@ const Status = () => {
                             </button>
                             <button
                               onClick={() => handleDropdownToggle(row.environment, 'history')}
-                              className="flex items-center gap-1 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors duration-150"
+                              className="flex items-center gap-1 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors duration-150"
                             >
                               <Clock className="w-4 h-4" />
                               History

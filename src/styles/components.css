@@ -7,7 +7,7 @@
   justify-content: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-tight);
   border: 1px solid transparent;
@@ -17,6 +17,7 @@
   text-decoration: none;
   user-select: none;
   white-space: nowrap;
+  letter-spacing: 0.025em;
 }
 
 .btn:disabled {
@@ -100,7 +101,7 @@
   align-items: center;
   width: 100%;
   padding: var(--spacing-md) var(--spacing-lg);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   color: var(--text-inverse);
   background: linear-gradient(135deg, 
@@ -117,6 +118,7 @@
   margin-bottom: var(--spacing-sm);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
+  letter-spacing: 0.025em;
 }
 
 .nav-item:hover {
@@ -174,8 +176,8 @@
 
 .nav-item__label {
   transition: all var(--transition-fast);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.5px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.025em;
 }
 
 .nav-item--collapsed .nav-item__label {
@@ -204,16 +206,18 @@
 }
 
 .card__title {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
   margin: 0;
+  letter-spacing: -0.025em;
 }
 
 .card__subtitle {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   margin: var(--spacing-xs) 0 0 0;
+  font-weight: var(--font-weight-normal);
 }
 
 .card__body {
@@ -270,6 +274,7 @@
   transition: background-color var(--transition-fast);
   text-decoration: none;
   gap: var(--spacing-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 .dropdown__item:hover {
@@ -294,7 +299,7 @@
 }
 
 .dropdown__header-title {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
   color: var(--text-inverse);
   margin: 0;
@@ -303,6 +308,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  letter-spacing: 0.025em;
 }
 
 .dropdown__header-subtitle {
@@ -315,6 +321,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+  font-weight: var(--font-weight-normal);
 }
 
 .dropdown__user-avatar {
