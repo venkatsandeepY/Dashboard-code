@@ -47,7 +47,7 @@ const Header = () => {
         {/* Left side - Brand */}
         <div className="header__left">
           <div>
-            <h1 className="header__title" style={{ fontSize: '1.5rem' }}>ESQM</h1>
+            <h1 className="header__title">ESQM</h1>
             <p className="header__subtitle">Operations Dashboard</p>
           </div>
         </div>
