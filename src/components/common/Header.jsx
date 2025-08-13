@@ -1,45 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, LogOut, Search } from 'react-feather';
+import { Search } from 'react-feather';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Header = () => {
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [username, setUsername] = useState('');
-  const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get username from localStorage on component mount
-  useEffect(() => {
-    const storedUsername = localStorage.getItem('username') || 'Guest User';
-    setUsername(storedUsername);
-  }, []);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const handleSignOut = () => {
-    // Clear user data from localStorage
-    localStorage.removeItem('username');
-    localStorage.removeItem('token');
-    localStorage.removeItem('userRole');
-    // You can add more localStorage items to clear as needed
-    
-    // Redirect to login page or refresh
-    window.location.reload();
-    setShowDropdown(false);
-  };
 
   return (
     <header className="header">
@@ -68,46 +34,6 @@ const Header = () => {
 
         {/* Right side - Actions */}
         <div className="header__right">
-
-
-          {/* User Profile */}
-          <div className="dropdown" ref={dropdownRef}>
-            <button 
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="header__notification"
-            >
-              <User size={18} style={{ color: 'var(--text-primary)' }} />
-            </button>
-            
-            {/* Enhanced Profile Dropdown */}
-            {showDropdown && (
-              <div className={`dropdown__menu ${showDropdown ? 'dropdown__menu--open' : ''}`}>
-                <div className="dropdown__header">
-                  <div className="dropdown__user-avatar">
-                    {username.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="dropdown__user-info">
-                    <p className="dropdown__header-title">
-                      <User className="w-4 h-4" />
-                      {username}
-                    </p>
-                    <p className="dropdown__header-subtitle">
-                      <span style={{ color: '#10b981' }}>●</span>
-                      Online • Active Session
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={handleSignOut}
-                  className="dropdown__item"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Sign Out
-                </button>
-              </div>
-            )}
-          </div>
-
           {/* Logo */}
           <img 
             src="/image copy.png" 
