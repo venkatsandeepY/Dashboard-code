@@ -34,9 +34,9 @@ const Sidebar = ({ isCollapsed }) => {
           {!isCollapsed && (
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-inverse text-xl font-bold tracking-wide">ESQM</h1>
+                <h1 className="sidebar__title">ESQM</h1>
               </div>
-              <p className="text-inverse opacity-75 text-sm font-medium">(DLIFE)</p>
+              <p className="sidebar__subtitle">(DLIFE)</p>
             </div>
           )}
         </div>

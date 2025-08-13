@@ -81,6 +81,25 @@
   padding-left: 1rem;
 }
 
+.sidebar__title {
+  background: linear-gradient(to bottom, #4d4274, #7c60ac);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xl);
+  letter-spacing: 0.025em;
+}
+
+.sidebar__subtitle {
+  background: linear-gradient(to bottom, #4d4274, #7c60ac);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.8;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
 .sidebar__nav {
   flex: 1;
   padding: 0.75rem 0.5rem;
