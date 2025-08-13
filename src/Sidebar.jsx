@@ -30,7 +30,7 @@ const Sidebar = ({ isCollapsed }) => {
     <div className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : 'sidebar--expanded'}`}>
       {/* Header */}
       <div className="sidebar__header">
-        <div className="flex items-center justify-center w-full">
+        <div className="flex items-start justify-start w-full">
           {!isCollapsed && (
             <div>
               <div className="flex items-center gap-2">
