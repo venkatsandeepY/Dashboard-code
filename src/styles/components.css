@@ -121,7 +121,6 @@
 
 .nav-item:hover {
   background: rgba(255, 255, 255, 0.1);
-  transform: translateX(4px);
 }
 
 .nav-item--active {
@@ -131,7 +130,6 @@
   color: var(--color-primary);
   font-weight: var(--font-weight-semibold);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateX(6px);
   border-color: rgba(168, 85, 247, 0.3);
   margin: 0 var(--spacing-sm);
   border-radius: var(--radius-lg);
@@ -142,25 +140,25 @@
     rgba(255, 255, 255, 0.98) 0%, 
     rgba(255, 255, 255, 0.95) 100%);
   color: var(--color-primary);
-  transform: translateX(6px);
 }
 
 .nav-item--collapsed {
   justify-content: center;
   padding: var(--spacing-md);
-  transform: none;
 }
 
 .nav-item--collapsed:hover {
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .nav-item--collapsed.nav-item--active {
-  transform: scale(1.02);
+  margin: 0 var(--spacing-sm);
 }
 
 .nav-item--collapsed.nav-item--active:hover {
-  transform: scale(1.08);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(255, 255, 255, 0.95) 100%);
 }
 
 .nav-item__icon {
