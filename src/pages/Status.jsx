@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Clock, Play, RotateCcw, Calendar, FileText, Download } from 'react-feather';
+import { ChevronDown, Clock, Play, RotateCcw, Calendar, FileText, X } from 'react-feather';
 import { fetchBatchData, fetchJobsData, fetchHistoryData } from '../data/mockData';
 
 const Status = () => {
@@ -11,6 +11,9 @@ const Status = () => {
   const [expandedType, setExpandedType] = useState(null);
   const [dropdownData, setDropdownData] = useState({});
   const [loadingDropdown, setLoadingDropdown] = useState(false);
+  const [showFullReport, setShowFullReport] = useState(false);
+  const [fullReportData, setFullReportData] = useState([]);
+  const [fullReportEnvironment, setFullReportEnvironment] = useState('');
 
   // Update current time every second
   useEffect(() => {
@@ -119,6 +122,43 @@ const Status = () => {
         setLoadingDropdown(false);
       }
     }
+  };
+
+  const handleFullReport = async (environment) => {
+    setFullReportEnvironment(environment);
+    setShowFullReport(true);
+    
+    // Generate 10 days of batch history
+    const reportData = [];
+    for (let i = 0; i < 10; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      
+      // Generate 2-4 batches per day
+      const batchCount = Math.floor(Math.random() * 3) + 2;
+      for (let j = 0; j < batchCount; j++) {
+        const batchDate = new Date(date);
+        batchDate.setHours(Math.floor(Math.random() * 24), Math.floor(Math.random() * 60));
+        
+        reportData.push({
+          type: Math.random() > 0.5 ? 'BANK' : 'CARD',
+          completedAt: batchDate,
+          duration: `${Math.floor(Math.random() * 3) + 1}h ${Math.floor(Math.random() * 60)}m`,
+          status: Math.random() > 0.8 ? 'Warning' : 'Success',
+          environment: environment
+        });
+      }
+    }
+    
+    // Sort by date descending
+    reportData.sort((a, b) => b.completedAt - a.completedAt);
+    setFullReportData(reportData);
+  };
+
+  const closeFullReport = () => {
+    setShowFullReport(false);
+    setFullReportData([]);
+    setFullReportEnvironment('');
   };
 
   const ProgressBar = ({ progress, status }) => {
@@ -236,7 +276,7 @@ const Status = () => {
                                 </span>
                               </div>
                               <div className="text-xs text-gray-500">
-                                {formatted.date} at {formatted.time} • {batch.duration} • {batch.records} records
+                                {formatted.date} at {formatted.time} • {batch.duration}
                               </div>
                             </div>
                           </div>
@@ -252,13 +292,12 @@ const Status = () => {
               </div>
               <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
                 <div className="flex gap-2">
-                  <button className="flex-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded hover:bg-purple-100 transition-colors duration-150 flex items-center justify-center gap-1">
+                  <button 
+                    onClick={() => handleFullReport(environment)}
+                    className="flex-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded hover:bg-purple-100 transition-colors duration-150 flex items-center justify-center gap-1"
+                  >
                     <FileText className="w-3 h-3" />
                     Full Report
-                  </button>
-                  <button className="flex-1 px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition-colors duration-150 flex items-center justify-center gap-1">
-                    <Download className="w-3 h-3" />
-                    Export
                   </button>
                 </div>
               </div>
@@ -341,7 +380,6 @@ const Status = () => {
                       <tr className="hover:bg-gray-50 transition-colors duration-200">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
                             <span className="text-sm font-medium text-gray-900">{row.environment}</span>
                           </div>
                         </td>
@@ -435,6 +473,78 @@ const Status = () => {
           )}
         </div>
       </div>
+
+     {/* Full Report Modal */}
+     {showFullReport && (
+       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+         <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+           <div className="px-6 py-4 border-b border-gray-200 bg-purple-50 flex items-center justify-between">
+             <div>
+               <h2 className="text-xl font-bold text-purple-900">10-Day Batch History Report</h2>
+               <p className="text-sm text-purple-700 mt-1">Environment: {fullReportEnvironment}</p>
+             </div>
+             <button
+               onClick={closeFullReport}
+               className="p-2 hover:bg-purple-100 rounded-lg transition-colors duration-150"
+             >
+               <X className="w-5 h-5 text-purple-600" />
+             </button>
+           </div>
+           
+           <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+             <table className="w-full">
+               <thead className="bg-gray-50 sticky top-0">
+                 <tr>
+                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                     Date & Time
+                   </th>
+                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                     Type
+                   </th>
+                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                     Duration
+                   </th>
+                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                     Status
+                   </th>
+                 </tr>
+               </thead>
+               <tbody className="bg-white divide-y divide-gray-200">
+                 {fullReportData.map((batch, index) => {
+                   const formatted = formatDateTime(batch.completedAt);
+                   return (
+                     <tr key={index} className="hover:bg-gray-50">
+                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                         <div>
+                           <div className="font-medium">{formatted.date}</div>
+                           <div className="text-xs text-gray-500">{formatted.time}</div>
+                         </div>
+                       </td>
+                       <td className="px-6 py-4 whitespace-nowrap">
+                         <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded">
+                           {batch.type}
+                         </span>
+                       </td>
+                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                         {batch.duration}
+                       </td>
+                       <td className="px-6 py-4 whitespace-nowrap">
+                         <span className={`px-2 py-1 text-xs font-medium rounded ${
+                           batch.status === 'Success' ? 'bg-green-100 text-green-700' : 
+                           'bg-yellow-100 text-yellow-700'
+                         }`}>
+                           {batch.status}
+                         </span>
+                       </td>
+                     </tr>
+                   );
+                 })}
+               </tbody>
+             </table>
+           </div>
+         </div>
+       </div>
+     )}
     </div>
   );
 };
