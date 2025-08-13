@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, TrendingUp, FileText, MessageCircle, Menu, X } from 'react-feather';
+import { Home, TrendingUp, FileText, MessageCircle } from 'react-feather';
 
-const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
+const Sidebar = ({ isCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,24 +28,18 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
 
   return (
     <div className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : 'sidebar--expanded'}`}>
-      {/* Header with hamburger menu */}
+      {/* Header */}
       <div className="sidebar__header">
-        <button
-          onClick={onToggleCollapse}
-          className="btn btn--ghost btn--icon-only text-inverse hover-lift"
-        >
-          {isCollapsed ? <Menu size={20} /> : <X size={20} />}
-        </button>
-        {!isCollapsed && (
-          <div className="ml-md flex items-center">
+        <div className="flex items-center justify-center w-full">
+          {!isCollapsed && (
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-inverse text-xl font-bold tracking-wide">ESQM</h1>
               </div>
               <p className="text-inverse opacity-75 text-sm font-medium">(DLIFE)</p>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Navigation */}

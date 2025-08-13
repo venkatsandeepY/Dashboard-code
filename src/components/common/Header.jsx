@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search } from 'react-feather';
+import { Search, Menu, X } from 'react-feather';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ isCollapsed, onToggleCollapse }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -12,6 +12,12 @@ const Header = () => {
       <div className="header__content">
         {/* Left side - Brand */}
         <div className="header__left">
+          <button
+            onClick={onToggleCollapse}
+            className="btn btn--ghost btn--icon-only text-primary hover-lift mr-md"
+          >
+            {isCollapsed ? <Menu size={20} /> : <X size={20} />}
+          </button>
           <div>
             <h1 className="header__title" style={{ fontSize: '1.5rem' }}>ESQM</h1>
             <p className="header__subtitle">Operations Dashboard</p>

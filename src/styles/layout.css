@@ -67,14 +67,16 @@
 }
 
 .sidebar__header {
-  padding: 0.5rem;
+  padding: 1rem 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
+  justify-content: center;
   background: rgba(255, 255, 255, 0.1);
   position: relative;
   z-index: 2;
   border-radius: 0;
+  min-height: 60px;
 }
 
 .sidebar__nav {

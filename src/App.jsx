@@ -36,7 +36,10 @@ function AppContent() {
       {/* Main Content */}
       <div className="main-content" style={{ margin: 0, padding: 0 }}>
         {/* Header */}
-        <Header />
+        <Header 
+          isCollapsed={isCollapsed}
+          onToggleCollapse={handleToggleCollapse}
+        />
 
         {/* Content Area */}
         <main className="content-area">
