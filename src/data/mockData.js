@@ -110,44 +110,98 @@ export const mockJobsData = {
 
 export const mockHistoryData = {
   'ASYS': [
-    { type: 'BANK', completedAt: new Date('2025-01-09T08:30:00'), duration: '2h 15m', status: 'Success', records: '1.2M' },
-    { type: 'CARD', completedAt: new Date('2025-01-09T07:45:00'), duration: '1h 45m', status: 'Success', records: '850K' },
-    { type: 'BANK', completedAt: new Date('2025-01-09T06:15:00'), duration: '2h 30m', status: 'Warning', records: '1.1M' },
-    { type: 'CARD', completedAt: new Date('2025-01-09T05:30:00'), duration: '1h 20m', status: 'Success', records: '920K' }
+    { 
+      date: new Date('2025-01-09T08:30:00'), 
+      bank: { status: 'Success', duration: '2h 15m', completedAt: new Date('2025-01-09T08:30:00') },
+      card: { status: 'Success', duration: '1h 45m', completedAt: new Date('2025-01-09T07:45:00') }
+    },
+    { 
+      date: new Date('2025-01-08T22:30:00'), 
+      bank: { status: 'Warning', duration: '2h 30m', completedAt: new Date('2025-01-08T22:15:00') },
+      card: { status: 'Success', duration: '1h 20m', completedAt: new Date('2025-01-08T21:30:00') }
+    },
+    { 
+      date: new Date('2025-01-07T20:15:00'), 
+      bank: { status: 'Success', duration: '2h 10m', completedAt: new Date('2025-01-07T20:15:00') },
+      card: { status: 'Success', duration: '1h 35m', completedAt: new Date('2025-01-07T19:45:00') }
+    }
   ],
   'TSYS': [
-    { type: 'CARD', completedAt: new Date('2025-01-09T07:45:00'), duration: '1h 12m', status: 'Success', records: '980K' },
-    { type: 'BANK', completedAt: new Date('2025-01-09T06:30:00'), duration: '2h 05m', status: 'Success', records: '1.3M' },
-    { type: 'CARD', completedAt: new Date('2025-01-09T05:15:00'), duration: '1h 35m', status: 'Success', records: '875K' },
-    { type: 'BANK', completedAt: new Date('2025-01-09T04:00:00'), duration: '2h 20m', status: 'Warning', records: '1.1M' }
+    { 
+      date: new Date('2025-01-09T07:45:00'), 
+      bank: { status: 'Success', duration: '2h 05m', completedAt: new Date('2025-01-09T06:30:00') },
+      card: { status: 'Success', duration: '1h 12m', completedAt: new Date('2025-01-09T07:45:00') }
+    },
+    { 
+      date: new Date('2025-01-08T21:15:00'), 
+      bank: { status: 'Warning', duration: '2h 20m', completedAt: new Date('2025-01-08T21:00:00') },
+      card: { status: 'Success', duration: '1h 35m', completedAt: new Date('2025-01-08T20:15:00') }
+    },
+    { 
+      date: new Date('2025-01-07T19:30:00'), 
+      bank: { status: 'Success', duration: '2h 15m', completedAt: new Date('2025-01-07T19:30:00') },
+      card: { status: 'Success', duration: '1h 25m', completedAt: new Date('2025-01-07T18:45:00') }
+    }
   ],
   'MST0': [
-    { type: 'BANK', completedAt: new Date('2025-01-08T23:45:00'), duration: '2h 45m', status: 'Success', records: '1.4M' },
-    { type: 'CARD', completedAt: new Date('2025-01-08T22:30:00'), duration: '1h 50m', status: 'Success', records: '950K' },
-    { type: 'BANK', completedAt: new Date('2025-01-08T21:15:00'), duration: '2h 35m', status: 'Success', records: '1.3M' }
+    { 
+      date: new Date('2025-01-08T23:45:00'), 
+      bank: { status: 'Success', duration: '2h 45m', completedAt: new Date('2025-01-08T23:45:00') },
+      card: { status: 'Success', duration: '1h 50m', completedAt: new Date('2025-01-08T22:30:00') }
+    },
+    { 
+      date: new Date('2025-01-07T22:15:00'), 
+      bank: { status: 'Success', duration: '2h 35m', completedAt: new Date('2025-01-07T22:15:00') },
+      card: { status: 'Success', duration: '1h 40m', completedAt: new Date('2025-01-07T21:30:00') }
+    }
   ],
   'OSYS': [
-    { type: 'BANK', completedAt: new Date('2025-01-09T06:15:00'), duration: '2h 30m', status: 'Success', records: '1.5M' },
-    { type: 'CARD', completedAt: new Date('2025-01-09T05:45:00'), duration: '1h 40m', status: 'Success', records: '1.1M' },
-    { type: 'BANK', completedAt: new Date('2025-01-09T04:30:00'), duration: '2h 25m', status: 'Success', records: '1.4M' },
-    { type: 'CARD', completedAt: new Date('2025-01-09T03:15:00'), duration: '1h 30m', status: 'Success', records: '980K' }
+    { 
+      date: new Date('2025-01-09T06:15:00'), 
+      bank: { status: 'Success', duration: '2h 30m', completedAt: new Date('2025-01-09T06:15:00') },
+      card: { status: 'Success', duration: '1h 40m', completedAt: new Date('2025-01-09T05:45:00') }
+    },
+    { 
+      date: new Date('2025-01-08T20:30:00'), 
+      bank: { status: 'Success', duration: '2h 25m', completedAt: new Date('2025-01-08T20:30:00') },
+      card: { status: 'Success', duration: '1h 30m', completedAt: new Date('2025-01-08T19:15:00') }
+    }
   ],
   'ECT0': [
-    { type: 'BANK', completedAt: new Date('2025-01-09T08:00:00'), duration: '32m', status: 'Running', records: '600K' },
-    { type: 'CARD', completedAt: new Date('2025-01-09T07:30:00'), duration: '28m', status: 'Running', records: '450K' },
-    { type: 'BANK', completedAt: new Date('2025-01-09T06:45:00'), duration: '45m', status: 'Success', records: '750K' },
-    { type: 'CARD', completedAt: new Date('2025-01-09T06:00:00'), duration: '35m', status: 'Success', records: '520K' }
+    { 
+      date: new Date('2025-01-09T08:00:00'), 
+      bank: { status: 'Running', duration: '32m', completedAt: new Date('2025-01-09T08:00:00') },
+      card: { status: 'Running', duration: '28m', completedAt: new Date('2025-01-09T07:30:00') }
+    },
+    { 
+      date: new Date('2025-01-08T18:45:00'), 
+      bank: { status: 'Success', duration: '45m', completedAt: new Date('2025-01-08T18:45:00') },
+      card: { status: 'Success', duration: '35m', completedAt: new Date('2025-01-08T18:00:00') }
+    }
   ],
   'QSYS': [
-    { type: 'BANK', completedAt: new Date('2025-01-09T07:30:00'), duration: '1h 28m', status: 'Success', records: '1.1M' },
-    { type: 'CARD', completedAt: new Date('2025-01-09T06:45:00'), duration: '1h 15m', status: 'Running', records: '800K' },
-    { type: 'BANK', completedAt: new Date('2025-01-09T05:30:00'), duration: '1h 35m', status: 'Success', records: '1.2M' },
-    { type: 'CARD', completedAt: new Date('2025-01-09T04:15:00'), duration: '1h 20m', status: 'Success', records: '850K' }
+    { 
+      date: new Date('2025-01-09T07:30:00'), 
+      bank: { status: 'Success', duration: '1h 28m', completedAt: new Date('2025-01-09T07:30:00') },
+      card: { status: 'Running', duration: '1h 15m', completedAt: new Date('2025-01-09T06:45:00') }
+    },
+    { 
+      date: new Date('2025-01-08T17:30:00'), 
+      bank: { status: 'Success', duration: '1h 35m', completedAt: new Date('2025-01-08T17:30:00') },
+      card: { status: 'Success', duration: '1h 20m', completedAt: new Date('2025-01-08T16:15:00') }
+    }
   ],
   'VST0': [
-    { type: 'BANK', completedAt: new Date('2025-01-08T22:30:00'), duration: '3h 15m', status: 'Success', records: '1.6M' },
-    { type: 'CARD', completedAt: new Date('2025-01-08T21:15:00'), duration: '2h 45m', status: 'Success', records: '1.2M' },
-    { type: 'BANK', completedAt: new Date('2025-01-08T20:00:00'), duration: '3h 05m', status: 'Warning', records: '1.5M' }
+    { 
+      date: new Date('2025-01-08T22:30:00'), 
+      bank: { status: 'Success', duration: '3h 15m', completedAt: new Date('2025-01-08T22:30:00') },
+      card: { status: 'Success', duration: '2h 45m', completedAt: new Date('2025-01-08T21:15:00') }
+    },
+    { 
+      date: new Date('2025-01-07T20:00:00'), 
+      bank: { status: 'Warning', duration: '3h 05m', completedAt: new Date('2025-01-07T20:00:00') },
+      card: { status: 'Success', duration: '2h 30m', completedAt: new Date('2025-01-07T19:00:00') }
+    }
   ]
 };
 

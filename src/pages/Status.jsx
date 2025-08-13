@@ -128,30 +128,34 @@ const Status = () => {
     setFullReportEnvironment(environment);
     setShowFullReport(true);
     
-    // Generate 10 days of batch history
+    // Generate 10 days of combined batch history
     const reportData = [];
     for (let i = 0; i < 10; i++) {
       const date = new Date();
       date.setDate(date.getDate() - i);
       
-      // Generate 2-4 batches per day
-      const batchCount = Math.floor(Math.random() * 3) + 2;
-      for (let j = 0; j < batchCount; j++) {
-        const batchDate = new Date(date);
-        batchDate.setHours(Math.floor(Math.random() * 24), Math.floor(Math.random() * 60));
-        
-        reportData.push({
-          type: Math.random() > 0.5 ? 'BANK' : 'CARD',
-          completedAt: batchDate,
-          duration: `${Math.floor(Math.random() * 3) + 1}h ${Math.floor(Math.random() * 60)}m`,
+      // Generate one combined batch per day
+      const batchDate = new Date(date);
+      batchDate.setHours(Math.floor(Math.random() * 24), Math.floor(Math.random() * 60));
+      
+      reportData.push({
+        date: batchDate,
+        bank: {
           status: Math.random() > 0.8 ? 'Warning' : 'Success',
-          environment: environment
-        });
-      }
+          duration: `${Math.floor(Math.random() * 3) + 1}h ${Math.floor(Math.random() * 60)}m`,
+          completedAt: new Date(batchDate.getTime() + Math.random() * 3600000) // Random time within an hour
+        },
+        card: {
+          status: Math.random() > 0.8 ? 'Warning' : 'Success',
+          duration: `${Math.floor(Math.random() * 2) + 1}h ${Math.floor(Math.random() * 60)}m`,
+          completedAt: new Date(batchDate.getTime() + Math.random() * 3600000) // Random time within an hour
+        },
+        environment: environment
+      });
     }
     
     // Sort by date descending
-    reportData.sort((a, b) => b.completedAt - a.completedAt);
+    reportData.sort((a, b) => b.date - a.date);
     setFullReportData(reportData);
   };
 
@@ -252,32 +256,51 @@ const Status = () => {
                   <div className="p-4 text-center text-gray-500 text-sm">Loading history...</div>
                 ) : data.length > 0 ? (
                   data.map((batch, index) => {
-                    const formatted = formatDateTime(batch.completedAt);
+                    const formatted = formatDateTime(batch.date);
                     return (
                       <div key={index} className="p-4 hover:bg-gray-50 transition-colors duration-150">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-2 h-2 rounded-full ${
-                              batch.status === 'Success' ? 'bg-green-500' : 
-                              batch.status === 'Running' ? 'bg-blue-500' : 
-                              'bg-yellow-500'
-                            }`}></div>
-                            <div>
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded">
-                                  {batch.type}
-                                </span>
-                                <span className={`px-2 py-0.5 text-xs font-medium rounded ${
-                                  batch.status === 'Success' ? 'bg-green-100 text-green-700' : 
-                                  batch.status === 'Running' ? 'bg-blue-100 text-blue-700' : 
-                                  'bg-yellow-100 text-yellow-700'
-                                }`}>
-                                  {batch.status}
-                                </span>
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {formatted.date} at {formatted.time} • {batch.duration}
-                              </div>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div className="text-sm font-medium text-gray-900">
+                              {formatted.date} at {formatted.time}
+                            </div>
+                          </div>
+                          
+                          {/* BANK Status */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded">
+                                BANK
+                              </span>
+                              <span className={`px-2 py-0.5 text-xs font-medium rounded ${
+                                batch.bank.status === 'Success' ? 'bg-green-100 text-green-700' : 
+                                batch.bank.status === 'Running' ? 'bg-blue-100 text-blue-700' : 
+                                'bg-yellow-100 text-yellow-700'
+                              }`}>
+                                {batch.bank.status}
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {batch.bank.duration}
+                            </div>
+                          </div>
+                          
+                          {/* CARD Status */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded">
+                                CARD
+                              </span>
+                              <span className={`px-2 py-0.5 text-xs font-medium rounded ${
+                                batch.card.status === 'Success' ? 'bg-green-100 text-green-700' : 
+                                batch.card.status === 'Running' ? 'bg-blue-100 text-blue-700' : 
+                                'bg-yellow-100 text-yellow-700'
+                              }`}>
+                                {batch.card.status}
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {batch.card.duration}
                             </div>
                           </div>
                         </div>
@@ -499,19 +522,19 @@ const Status = () => {
                      Date & Time
                    </th>
                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                     Type
+                    Type & Status
                    </th>
                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                      Duration
                    </th>
                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                     Status
+                    Overall Status
                    </th>
                  </tr>
                </thead>
                <tbody className="bg-white divide-y divide-gray-200">
                  {fullReportData.map((batch, index) => {
-                   const formatted = formatDateTime(batch.completedAt);
+                   const formatted = formatDateTime(batch.date);
                    return (
                      <tr key={index} className="hover:bg-gray-50">
                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -521,20 +544,53 @@ const Status = () => {
                          </div>
                        </td>
                        <td className="px-6 py-4 whitespace-nowrap">
-                         <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded">
-                           {batch.type}
-                         </span>
+                         <div className="space-y-1">
+                           <div className="flex items-center gap-2">
+                             <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded">
+                               BANK
+                             </span>
+                             <span className={`px-2 py-1 text-xs font-medium rounded ${
+                               batch.bank.status === 'Success' ? 'bg-green-100 text-green-700' : 
+                               'bg-yellow-100 text-yellow-700'
+                             }`}>
+                               {batch.bank.status}
+                             </span>
+                           </div>
+                           <div className="flex items-center gap-2">
+                             <span className="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-700 rounded">
+                               CARD
+                             </span>
+                             <span className={`px-2 py-1 text-xs font-medium rounded ${
+                               batch.card.status === 'Success' ? 'bg-green-100 text-green-700' : 
+                               'bg-yellow-100 text-yellow-700'
+                             }`}>
+                               {batch.card.status}
+                             </span>
+                           </div>
+                         </div>
                        </td>
                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                         {batch.duration}
+                         <div className="space-y-1">
+                           <div className="text-xs">BANK: {batch.bank.duration}</div>
+                           <div className="text-xs">CARD: {batch.card.duration}</div>
+                         </div>
                        </td>
                        <td className="px-6 py-4 whitespace-nowrap">
-                         <span className={`px-2 py-1 text-xs font-medium rounded ${
-                           batch.status === 'Success' ? 'bg-green-100 text-green-700' : 
-                           'bg-yellow-100 text-yellow-700'
-                         }`}>
-                           {batch.status}
-                         </span>
+                         <div className="space-y-1">
+                           <span className={`px-2 py-1 text-xs font-medium rounded ${
+                             batch.bank.status === 'Success' ? 'bg-green-100 text-green-700' : 
+                             'bg-yellow-100 text-yellow-700'
+                           }`}>
+                             BANK: {batch.bank.status}
+                           </span>
+                           <br />
+                           <span className={`px-2 py-1 text-xs font-medium rounded ${
+                             batch.card.status === 'Success' ? 'bg-green-100 text-green-700' : 
+                             'bg-yellow-100 text-yellow-700'
+                           }`}>
+                             CARD: {batch.card.status}
+                           </span>
+                         </div>
                        </td>
                      </tr>
                    );
