@@ -31,6 +31,7 @@
   flex: 1;
   padding: var(--spacing-xl);
   background-color: var(--bg-secondary);
+  padding-top: 0;
 }
 
 /* Sidebar Layout */
@@ -105,8 +106,6 @@
   z-index: var(--z-sticky);
   border-bottom: none;
   overflow: hidden;
-  position: sticky;
-  top: 0;
   width: 100%;
 }
 
