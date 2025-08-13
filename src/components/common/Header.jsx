@@ -19,7 +19,7 @@ const Header = ({ isCollapsed, onToggleCollapse }) => {
             {isCollapsed ? <Menu size={20} /> : <X size={20} />}
           </button>
           <div>
-            <h1 className="header__title" style={{ fontSize: '1.5rem' }}>ESQM</h1>
+            <h1 className="header__title" style={{ fontSize: '1.125rem' }}>ESQM</h1>
             <p className="header__subtitle">Operations Dashboard</p>
           </div>
         </div>
