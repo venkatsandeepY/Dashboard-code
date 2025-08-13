@@ -133,6 +133,8 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateX(6px);
   border-color: rgba(168, 85, 247, 0.3);
+  margin: 0 var(--spacing-sm);
+  border-radius: var(--radius-lg);
 }
 
 .nav-item--active:hover {

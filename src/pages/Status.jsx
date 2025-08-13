@@ -332,7 +332,7 @@ const Status = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-6">
       {/* Header Section */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
@@ -358,7 +358,7 @@ const Status = () => {
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-6 pb-8 mb-4">
         {/* Main Batch Status Table */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
