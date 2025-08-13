@@ -73,7 +73,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(to bottom, #4d4274, #7c60ac);
   position: relative;
   z-index: 2;
   border-radius: 0;
@@ -82,21 +82,14 @@
 }
 
 .sidebar__title {
-  background: linear-gradient(to bottom, #4d4274, #7c60ac);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-inverse);
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-xl);
   letter-spacing: 0.025em;
 }
 
 .sidebar__subtitle {
-  background: linear-gradient(to bottom, #4d4274, #7c60ac);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  opacity: 0.8;
+  color: rgba(255, 255, 255, 0.8);
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-sm);
 }
