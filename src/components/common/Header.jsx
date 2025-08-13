@@ -18,6 +18,10 @@ const Header = ({ isCollapsed, onToggleCollapse }) => {
           >
             {isCollapsed ? <Menu size={20} /> : <X size={20} />}
           </button>
+          <div>
+            <h1 className="header__title" style={{ fontSize: '1.5rem' }}>ESQM</h1>
+            <p className="header__subtitle">Operations Dashboard</p>
+          </div>
         </div>
 
         {/* Centered Search Bar */}
@@ -36,10 +40,6 @@ const Header = ({ isCollapsed, onToggleCollapse }) => {
 
         {/* Right side - Actions */}
         <div className="header__right">
-          <div>
-            <h1 className="header__title" style={{ fontSize: '1.5rem' }}>ESQM</h1>
-            <p className="header__subtitle">Operations Dashboard</p>
-          </div>
           {/* Logo */}
           <img 
             src="/image copy.png" 
