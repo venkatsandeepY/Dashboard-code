@@ -125,10 +125,8 @@
 }
 
 .nav-item--active {
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.95) 0%, 
-    rgba(255, 255, 255, 0.9) 100%);
-  color: var(--color-primary);
+  background: linear-gradient(to bottom, #4d4274, #7c60ac);
+  color: var(--text-inverse);
   font-weight: var(--font-weight-semibold);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateX(6px);
@@ -138,10 +136,8 @@
 }
 
 .nav-item--active:hover {
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.98) 0%, 
-    rgba(255, 255, 255, 0.95) 100%);
-  color: var(--color-primary);
+  background: linear-gradient(to bottom, #4d4274, #7c60ac);
+  color: var(--text-inverse);
   transform: translateX(6px);
 }
 
