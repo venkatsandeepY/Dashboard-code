@@ -160,7 +160,6 @@ describe('Header Component', () => {
     fireEvent.mouseLeave(logo);
     expect(logo.style.opacity).toBe('1');
   });
-});
 
   test('renders logo image', () => {
     render(
