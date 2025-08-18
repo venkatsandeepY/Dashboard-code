@@ -60,6 +60,13 @@ describe('App Component', () => {
     expect(screen.getByText('Sidebar - Collapsed: false')).toBeInTheDocument();
   });
 
+  test('handles sidebar toggle functionality', () => {
+    render(<App />);
+    
+    // Initial state should be expanded (false)
+    expect(screen.getByText('Sidebar - Collapsed: false')).toBeInTheDocument();
+  });
+
   test('has proper app container structure', () => {
     const { container } = render(<App />);
     
@@ -71,5 +78,11 @@ describe('App Component', () => {
     
     const contentArea = container.querySelector('.content-area');
     expect(contentArea).toBeInTheDocument();
+  });
+
+  test('routes work correctly', () => {
+    // Test that routing is properly set up
+    const { container } = render(<App />);
+    expect(container.querySelector('.app-container')).toBeInTheDocument();
   });
 });

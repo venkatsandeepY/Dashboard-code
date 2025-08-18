@@ -76,11 +76,36 @@ describe('Mock Data', () => {
     test('history items have required properties', () => {
       Object.values(mockHistoryData).forEach(history => {
         history.forEach(item => {
-          expect(item).toHaveProperty('type');
-          expect(item).toHaveProperty('completedAt');
+          expect(item).toHaveProperty('date');
+          expect(item).toHaveProperty('bank');
+          expect(item).toHaveProperty('card');
+          expect(item.bank).toHaveProperty('status');
           expect(item).toHaveProperty('duration');
-          expect(item).toHaveProperty('status');
-          expect(item).toHaveProperty('records');
+          expect(item.bank).toHaveProperty('completedAt');
+          expect(item.card).toHaveProperty('status');
+          expect(item.card).toHaveProperty('duration');
+          expect(item.card).toHaveProperty('completedAt');
+        });
+      });
+    });
+
+    test('history dates are valid Date objects', () => {
+      Object.values(mockHistoryData).forEach(history => {
+        history.forEach(item => {
+          expect(item.date).toBeInstanceOf(Date);
+          expect(item.bank.completedAt).toBeInstanceOf(Date);
+          expect(item.card.completedAt).toBeInstanceOf(Date);
+        });
+      });
+    });
+
+    test('history statuses are valid', () => {
+      const validStatuses = ['Success', 'Warning', 'Running'];
+      
+      Object.values(mockHistoryData).forEach(history => {
+        history.forEach(item => {
+          expect(validStatuses).toContain(item.bank.status);
+          expect(validStatuses).toContain(item.card.status);
         });
       });
     });
@@ -119,6 +144,22 @@ describe('Mock Data', () => {
       
       // Should take at least 500ms due to setTimeout
       expect(endTime - startTime).toBeGreaterThanOrEqual(500);
+    });
+
+    test('fetchJobsData handles null environment', async () => {
+      const data = await fetchJobsData(null);
+      expect(data).toEqual([]);
+    });
+
+    test('fetchHistoryData handles undefined environment', async () => {
+      const data = await fetchHistoryData(undefined);
+      expect(data).toEqual([]);
+    });
+
+    test('all API functions return promises', () => {
+      expect(fetchBatchData()).toBeInstanceOf(Promise);
+      expect(fetchJobsData('ASYS')).toBeInstanceOf(Promise);
+      expect(fetchHistoryData('ASYS')).toBeInstanceOf(Promise);
     });
   });
 });

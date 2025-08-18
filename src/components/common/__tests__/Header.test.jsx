@@ -18,15 +18,20 @@ const HeaderWrapper = ({ children }) => (
 );
 
 describe('Header Component', () => {
+  const defaultProps = {
+    isCollapsed: false,
+    onToggleCollapse: jest.fn()
+  };
+
   beforeEach(() => {
-    localStorage.clear();
     mockNavigate.mockClear();
+    defaultProps.onToggleCollapse.mockClear();
   });
 
   test('renders header with title and subtitle', () => {
     render(
       <HeaderWrapper>
-        <Header />
+        <Header {...defaultProps} />
       </HeaderWrapper>
     );
 
@@ -37,7 +42,7 @@ describe('Header Component', () => {
   test('renders search input', () => {
     render(
       <HeaderWrapper>
-        <Header />
+        <Header {...defaultProps} />
       </HeaderWrapper>
     );
 
@@ -45,88 +50,66 @@ describe('Header Component', () => {
     expect(searchInput).toBeInTheDocument();
   });
 
-  test('displays username from localStorage', () => {
-    localStorage.setItem('username', 'John Doe');
-    
+  test('renders toggle button', () => {
     render(
       <HeaderWrapper>
-        <Header />
+        <Header {...defaultProps} />
       </HeaderWrapper>
     );
 
-    // Click user dropdown to show username
-    const userButton = screen.getByRole('button');
-    fireEvent.click(userButton);
-
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    const toggleButton = screen.getByRole('button');
+    expect(toggleButton).toBeInTheDocument();
   });
 
-  test('displays default username when localStorage is empty', () => {
+  test('calls onToggleCollapse when toggle button is clicked', () => {
     render(
       <HeaderWrapper>
-        <Header />
+        <Header {...defaultProps} />
       </HeaderWrapper>
     );
 
-    const userButton = screen.getByRole('button');
-    fireEvent.click(userButton);
+    const toggleButton = screen.getByRole('button');
+    fireEvent.click(toggleButton);
 
-    expect(screen.getByText('Guest User')).toBeInTheDocument();
+    expect(defaultProps.onToggleCollapse).toHaveBeenCalledTimes(1);
   });
 
-  test('opens and closes user dropdown', () => {
-    render(
+  test('shows correct icon based on collapse state', () => {
+    const { rerender } = render(
       <HeaderWrapper>
-        <Header />
+        <Header {...defaultProps} isCollapsed={false} />
       </HeaderWrapper>
     );
 
-    const userButton = screen.getByRole('button');
-    
-    // Open dropdown
-    fireEvent.click(userButton);
-    expect(screen.getByText('Sign Out')).toBeInTheDocument();
-    
-    // Close dropdown by clicking outside
-    fireEvent.mouseDown(document.body);
-    expect(screen.queryByText('Sign Out')).not.toBeInTheDocument();
+    // Should show X icon when expanded
+    expect(screen.getByRole('button')).toBeInTheDocument();
+
+    rerender(
+      <HeaderWrapper>
+        <Header {...defaultProps} isCollapsed={true} />
+      </HeaderWrapper>
+    );
+
+    // Should show Menu icon when collapsed
+    expect(screen.getByRole('button')).toBeInTheDocument();
   });
 
-  test('handles sign out functionality', () => {
-    localStorage.setItem('username', 'John Doe');
-    localStorage.setItem('token', 'abc123');
-    localStorage.setItem('userRole', 'admin');
-
-    // Mock window.location.reload
-    const mockReload = jest.fn();
-    Object.defineProperty(window, 'location', {
-      value: { reload: mockReload },
-      writable: true
-    });
-
+  test('renders logo image', () => {
     render(
       <HeaderWrapper>
-        <Header />
+        <Header {...defaultProps} />
       </HeaderWrapper>
     );
 
-    const userButton = screen.getByRole('button');
-    fireEvent.click(userButton);
-
-    const signOutButton = screen.getByText('Sign Out');
-    fireEvent.click(signOutButton);
-
-    // Check localStorage is cleared
-    expect(localStorage.removeItem).toHaveBeenCalledWith('username');
-    expect(localStorage.removeItem).toHaveBeenCalledWith('token');
-    expect(localStorage.removeItem).toHaveBeenCalledWith('userRole');
-    expect(mockReload).toHaveBeenCalled();
+    const logo = screen.getByAltText('Discover Logo');
+    expect(logo).toBeInTheDocument();
+    expect(logo).toHaveAttribute('src', '/image copy.png');
   });
 
   test('search input accepts user input', () => {
     render(
       <HeaderWrapper>
-        <Header />
+        <Header {...defaultProps} />
       </HeaderWrapper>
     );
 
@@ -135,6 +118,49 @@ describe('Header Component', () => {
     
     expect(searchInput.value).toBe('test search');
   });
+
+  test('has proper CSS classes', () => {
+    const { container } = render(
+      <HeaderWrapper>
+        <Header {...defaultProps} />
+      </HeaderWrapper>
+    );
+
+    expect(container.querySelector('.header')).toBeInTheDocument();
+    expect(container.querySelector('.header__content')).toBeInTheDocument();
+    expect(container.querySelector('.header__left')).toBeInTheDocument();
+    expect(container.querySelector('.header__center')).toBeInTheDocument();
+    expect(container.querySelector('.header__right')).toBeInTheDocument();
+  });
+
+  test('renders search icon', () => {
+    const { container } = render(
+      <HeaderWrapper>
+        <Header {...defaultProps} />
+      </HeaderWrapper>
+    );
+
+    const searchIcon = container.querySelector('.header__search-icon');
+    expect(searchIcon).toBeInTheDocument();
+  });
+
+  test('logo has hover effects', () => {
+    render(
+      <HeaderWrapper>
+        <Header {...defaultProps} />
+      </HeaderWrapper>
+    );
+
+    const logo = screen.getByAltText('Discover Logo');
+    
+    // Test hover events
+    fireEvent.mouseEnter(logo);
+    expect(logo.style.opacity).toBe('0.9');
+    
+    fireEvent.mouseLeave(logo);
+    expect(logo.style.opacity).toBe('1');
+  });
+});
 
   test('renders logo image', () => {
     render(

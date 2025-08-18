@@ -23,13 +23,11 @@ const SidebarWrapper = ({ children }) => (
 describe('Sidebar Component', () => {
   const defaultProps = {
     isCollapsed: false,
-    onToggleCollapse: jest.fn()
   };
 
   beforeEach(() => {
     mockNavigate.mockClear();
     global.open.mockClear();
-    defaultProps.onToggleCollapse.mockClear();
   });
 
   test('renders sidebar with navigation items', () => {
@@ -45,19 +43,6 @@ describe('Sidebar Component', () => {
     expect(screen.getByText('Status')).toBeInTheDocument();
     expect(screen.getByText('Reports')).toBeInTheDocument();
     expect(screen.getByText('Feedback')).toBeInTheDocument();
-  });
-
-  test('toggles collapse when hamburger menu is clicked', () => {
-    render(
-      <SidebarWrapper>
-        <Sidebar {...defaultProps} />
-      </SidebarWrapper>
-    );
-
-    const toggleButton = screen.getByRole('button');
-    fireEvent.click(toggleButton);
-
-    expect(defaultProps.onToggleCollapse).toHaveBeenCalledTimes(1);
   });
 
   test('applies collapsed class when isCollapsed is true', () => {
@@ -89,7 +74,7 @@ describe('Sidebar Component', () => {
       </SidebarWrapper>
     );
 
-    const dashboardButton = screen.getByText('Dashboard');
+    const dashboardButton = screen.getByText('Dashboard').closest('button');
     fireEvent.click(dashboardButton);
 
     expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
@@ -102,7 +87,7 @@ describe('Sidebar Component', () => {
       </SidebarWrapper>
     );
 
-    const feedbackButton = screen.getByText('Feedback');
+    const feedbackButton = screen.getByText('Feedback').closest('button');
     fireEvent.click(feedbackButton);
 
     expect(global.open).toHaveBeenCalledWith('https://google.com', '_blank');
@@ -130,5 +115,30 @@ describe('Sidebar Component', () => {
     // In collapsed state, labels should not be visible (but still in DOM)
     const dashboardButton = screen.getByText('Dashboard').closest('button');
     expect(dashboardButton).toHaveClass('nav-item--collapsed');
+  });
+
+  test('renders all navigation icons', () => {
+    const { container } = render(
+      <SidebarWrapper>
+        <Sidebar {...defaultProps} />
+      </SidebarWrapper>
+    );
+
+    // Check if SVG icons are rendered for each nav item
+    const svgElements = container.querySelectorAll('svg');
+    expect(svgElements.length).toBeGreaterThanOrEqual(4); // At least 4 nav items
+  });
+
+  test('handles navigation correctly for different routes', () => {
+    render(
+      <SidebarWrapper>
+        <Sidebar {...defaultProps} />
+      </SidebarWrapper>
+    );
+
+    const statusButton = screen.getByText('Status').closest('button');
+    fireEvent.click(statusButton);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/status');
   });
 });

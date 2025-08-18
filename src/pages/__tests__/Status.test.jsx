@@ -27,10 +27,15 @@ describe('Status Component', () => {
     mockData.fetchBatchData.mockResolvedValue(mockBatchData);
     mockData.fetchJobsData.mockResolvedValue(mockJobsData);
     mockData.fetchHistoryData.mockResolvedValue([]);
+    
+    // Mock console.log to avoid noise in tests
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
   });
 
   test('renders status page header', async () => {
@@ -137,5 +142,55 @@ describe('Status Component', () => {
     
     // Verify dropdown is closed (no additional API calls)
     expect(mockData.fetchJobsData).toHaveBeenCalledTimes(1);
+  });
+
+  test('displays runtime information', async () => {
+    render(<Status />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('45m 32s')).toBeInTheDocument();
+    });
+  });
+
+  test('shows current time in header', async () => {
+    render(<Status />);
+    
+    // Should show "Last Updated" text
+    expect(screen.getByText(/Last Updated:/)).toBeInTheDocument();
+  });
+
+  test('handles error states gracefully', async () => {
+    mockData.fetchBatchData.mockRejectedValue(new Error('API Error'));
+    
+    render(<Status />);
+    
+    // Should still render the header even if data fails to load
+    expect(screen.getByText('Batch Status')).toBeInTheDocument();
+  });
+
+  test('displays status badges correctly', async () => {
+    render(<Status />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('ASYS')).toBeInTheDocument();
+    });
+
+    // Check for BANK and CARD labels
+    expect(screen.getAllByText('BANK:')).toHaveLength(1);
+    expect(screen.getAllByText('CARD:')).toHaveLength(1);
+  });
+
+  test('refresh button shows loading state', async () => {
+    render(<Status />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('ASYS')).toBeInTheDocument();
+    });
+
+    const refreshButton = screen.getByText('Refresh');
+    fireEvent.click(refreshButton);
+
+    // Button should be disabled during refresh
+    expect(refreshButton).toBeDisabled();
   });
 });
