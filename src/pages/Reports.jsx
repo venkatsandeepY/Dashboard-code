@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, BarChart ,ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings } from 'react-feather';
+import { Calendar, ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings } from 'react-feather';
+import { BarChart3 } from 'lucide-react';
 import { generateReport } from '../services/reportService';
 
 const Reports = () => {
@@ -16,7 +17,7 @@ const Reports = () => {
   const [apiError, setApiError] = useState('');
 
   const tabs = [
-    { id: 'sla-reports', label: 'SLA Reports', icon: BarChart },
+    { id: 'sla-reports', label: 'SLA Reports', icon: BarChart3 },
     { id: 'snow-incidents', label: 'SNOW Incidents', icon: AlertTriangle },
     { id: 'vits', label: 'VITS', icon: FileText },
     { id: 'admin-tools', label: 'Admin Tools', icon: Settings }
@@ -32,24 +33,10 @@ const Reports = () => {
     { value: 'VST0', label: 'VST0' }
   ];
 
-  const reportTypes = {
-    'sla-reports': [
-      { value: 'bank', label: 'Bank' },
-      { value: 'card', label: 'Card' }
-    ],
-    'snow-incidents': [
-      { value: 'bank', label: 'Bank' },
-      { value: 'card', label: 'Card' }
-    ],
-    'vits': [
-      { value: 'bank', label: 'Bank' },
-      { value: 'card', label: 'Card' }
-    ],
-    'admin-tools': [
-      { value: 'bank', label: 'Bank' },
-      { value: 'card', label: 'Card' }
-    ]
-  };
+  const reportTypes = [
+    { value: 'bank', label: 'Bank' },
+    { value: 'card', label: 'Card' }
+  ];
 
   const validateForm = () => {
     const newErrors = {};
@@ -103,14 +90,6 @@ const Reports = () => {
       setErrors(prev => ({
         ...prev,
         [field]: ''
-      }));
-    }
-
-    // Reset type when tab changes
-    if (field === 'activeTab') {
-      setFilters(prev => ({
-        ...prev,
-        type: ''
       }));
     }
   };
@@ -168,10 +147,6 @@ const Reports = () => {
       day: '2-digit',
       year: 'numeric'
     });
-  };
-
-  const getCurrentTypes = () => {
-    return reportTypes[activeTab] || [];
   };
 
   return (
@@ -271,7 +246,7 @@ const Reports = () => {
                     }`}
                   >
                     <option value="">Select Type</option>
-                    {getCurrentTypes().map((type) => (
+                    {reportTypes.map((type) => (
                       <option key={type.value} value={type.value}>
                         {type.label}
                       </option>
@@ -367,7 +342,7 @@ const Reports = () => {
               <div>
                 <h3 className="text-sm font-medium text-green-800">Report Generated Successfully</h3>
                 <p className="text-sm text-green-700 mt-1">
-                  Your {getCurrentTypes().find(t => t.value === filters.type)?.label || 'report'} for {filters.environment} 
+                  Your {reportTypes.find(t => t.value === filters.type)?.label || 'report'} for {filters.environment} 
                   from {formatDate(filters.fromDate)} to {formatDate(filters.toDate)} has been generated and downloaded.
                 </p>
               </div>

@@ -102,31 +102,12 @@ export const getReportTypes = async (tabId) => {
     // const response = await fetch(`${API_BASE_URL}/reports/types/${tabId}`);
     // return response.json();
 
-    // Mock data - this would come from the backend
-    const reportTypes = {
-      'sla-reports': [
-        { value: 'performance', label: 'Performance Report', description: 'System performance metrics and SLA compliance' },
-        { value: 'availability', label: 'Availability Report', description: 'System uptime and availability statistics' },
-        { value: 'response-time', label: 'Response Time Report', description: 'API and system response time analysis' }
-      ],
-      'snow-incidents': [
-        { value: 'open', label: 'Open Incidents', description: 'Currently active incidents in ServiceNow' },
-        { value: 'resolved', label: 'Resolved Incidents', description: 'Recently resolved incidents and resolution times' },
-        { value: 'critical', label: 'Critical Incidents', description: 'High priority and critical incidents' }
-      ],
-      'vits': [
-        { value: 'transaction', label: 'Transaction Report', description: 'Transaction volume and success rates' },
-        { value: 'volume', label: 'Volume Report', description: 'Data processing volumes and trends' },
-        { value: 'error', label: 'Error Report', description: 'Error rates and failure analysis' }
-      ],
-      'admin-tools': [
-        { value: 'user-activity', label: 'User Activity', description: 'User login and activity patterns' },
-        { value: 'system-health', label: 'System Health', description: 'Overall system health and performance' },
-        { value: 'audit', label: 'Audit Report', description: 'Security and compliance audit trails' }
-      ]
-    };
 
-    return reportTypes[tabId] || [];
+    // Mock data - simplified to just Bank and Card for all tabs
+    return [
+      { value: 'bank', label: 'Bank', description: 'Bank-related reports and data' },
+      { value: 'card', label: 'Card', description: 'Card-related reports and data' }
+    ];
   } catch (error) {
     console.error('Error fetching report types:', error);
     throw new Error('Failed to load report types. Please refresh the page and try again.');
@@ -142,13 +123,13 @@ export const getEnvironments = async () => {
 
     // Mock data
     return [
-      { value: 'ASYS', label: 'ASYS - Production', status: 'active' },
-      { value: 'TSYS', label: 'TSYS - Test', status: 'active' },
-      { value: 'MST0', label: 'MST0 - Master', status: 'active' },
-      { value: 'OSYS', label: 'OSYS - Operations', status: 'active' },
-      { value: 'ECT0', label: 'ECT0 - E-Commerce', status: 'active' },
-      { value: 'QSYS', label: 'QSYS - Quality', status: 'active' },
-      { value: 'VST0', label: 'VST0 - Validation', status: 'maintenance' }
+      { value: 'ASYS', label: 'ASYS', status: 'active' },
+      { value: 'TSYS', label: 'TSYS', status: 'active' },
+      { value: 'MST0', label: 'MST0', status: 'active' },
+      { value: 'OSYS', label: 'OSYS', status: 'active' },
+      { value: 'ECT0', label: 'ECT0', status: 'active' },
+      { value: 'QSYS', label: 'QSYS', status: 'active' },
+      { value: 'VST0', label: 'VST0', status: 'active' }
     ];
   } catch (error) {
     console.error('Error fetching environments:', error);
