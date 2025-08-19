@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings } from 'react-feather';
+import { Calendar, BarChart ,ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings } from 'react-feather';
 import { BarChart3 } from 'lucide-react';
 import { generateReport } from '../services/reportService';
 
