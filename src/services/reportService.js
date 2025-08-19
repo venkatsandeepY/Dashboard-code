@@ -1,6 +1,6 @@
 // Report Service - Handles all report generation API calls
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_REACT_APP_API_URL || '/api';
 
 // Simulate API delay for realistic UX
 const simulateDelay = (ms = 2000) => new Promise(resolve => setTimeout(resolve, ms));
