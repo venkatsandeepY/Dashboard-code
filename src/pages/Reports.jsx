@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, ChevronDown, AlertCircle, CheckCircle, Download, Filter } from 'lucide-react';
+import { Calendar, ChevronDown, AlertCircle, CheckCircle, Download, Filter, BarChart3, AlertTriangle, FileText, Settings } from 'react-feather';
 import { generateReport } from '../services/reportService';
 
 const Reports = () => {
@@ -16,42 +16,38 @@ const Reports = () => {
   const [apiError, setApiError] = useState('');
 
   const tabs = [
-    { id: 'sla-reports', label: 'SLA Reports' },
-    { id: 'snow-incidents', label: 'SNOW Incidents' },
-    { id: 'vits', label: 'VITS' },
-    { id: 'admin-tools', label: 'Admin Tools' }
+    { id: 'sla-reports', label: 'SLA Reports', icon: BarChart3 },
+    { id: 'snow-incidents', label: 'SNOW Incidents', icon: AlertTriangle },
+    { id: 'vits', label: 'VITS', icon: FileText },
+    { id: 'admin-tools', label: 'Admin Tools', icon: Settings }
   ];
 
   const environments = [
-    { value: 'ASYS', label: 'ASYS - Production' },
-    { value: 'TSYS', label: 'TSYS - Test' },
-    { value: 'MST0', label: 'MST0 - Master' },
-    { value: 'OSYS', label: 'OSYS - Operations' },
-    { value: 'ECT0', label: 'ECT0 - E-Commerce' },
-    { value: 'QSYS', label: 'QSYS - Quality' },
-    { value: 'VST0', label: 'VST0 - Validation' }
+    { value: 'ASYS', label: 'ASYS' },
+    { value: 'TSYS', label: 'TSYS' },
+    { value: 'MST0', label: 'MST0' },
+    { value: 'OSYS', label: 'OSYS' },
+    { value: 'ECT0', label: 'ECT0' },
+    { value: 'QSYS', label: 'QSYS' },
+    { value: 'VST0', label: 'VST0' }
   ];
 
   const reportTypes = {
     'sla-reports': [
-      { value: 'performance', label: 'Performance Report' },
-      { value: 'availability', label: 'Availability Report' },
-      { value: 'response-time', label: 'Response Time Report' }
+      { value: 'bank', label: 'Bank' },
+      { value: 'card', label: 'Card' }
     ],
     'snow-incidents': [
-      { value: 'open', label: 'Open Incidents' },
-      { value: 'resolved', label: 'Resolved Incidents' },
-      { value: 'critical', label: 'Critical Incidents' }
+      { value: 'bank', label: 'Bank' },
+      { value: 'card', label: 'Card' }
     ],
     'vits': [
-      { value: 'transaction', label: 'Transaction Report' },
-      { value: 'volume', label: 'Volume Report' },
-      { value: 'error', label: 'Error Report' }
+      { value: 'bank', label: 'Bank' },
+      { value: 'card', label: 'Card' }
     ],
     'admin-tools': [
-      { value: 'user-activity', label: 'User Activity' },
-      { value: 'system-health', label: 'System Health' },
-      { value: 'audit', label: 'Audit Report' }
+      { value: 'bank', label: 'Bank' },
+      { value: 'card', label: 'Card' }
     ]
   };
 
@@ -214,7 +210,10 @@ const Reports = () => {
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  {tab.label}
+                  <div className="flex items-center gap-2">
+                    <tab.icon className="w-4 h-4" />
+                    {tab.label}
+                  </div>
                 </button>
               ))}
             </nav>
