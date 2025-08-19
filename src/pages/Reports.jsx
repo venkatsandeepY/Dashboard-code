@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, BarChart ,ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings } from 'react-feather';
-import { BarChart3 } from 'lucide-react';
 import { generateReport } from '../services/reportService';
 
 const Reports = () => {
@@ -17,7 +16,7 @@ const Reports = () => {
   const [apiError, setApiError] = useState('');
 
   const tabs = [
-    { id: 'sla-reports', label: 'SLA Reports', icon: BarChart3 },
+    { id: 'sla-reports', label: 'SLA Reports', icon: BarChart },
     { id: 'snow-incidents', label: 'SNOW Incidents', icon: AlertTriangle },
     { id: 'vits', label: 'VITS', icon: FileText },
     { id: 'admin-tools', label: 'Admin Tools', icon: Settings }
