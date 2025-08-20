@@ -159,6 +159,12 @@ const Reports = () => {
   };
 
   const handleGenerateReport = async () => {
+    // For SLA Reports, load and filter data instead of generating a file
+    if (activeTab === 'sla-reports') {
+      await handleSlaSubmit();
+      return;
+    }
+
     if (!validateForm()) {
       return;
     }
