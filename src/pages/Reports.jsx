@@ -2,7 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings, Search, ChevronLeft, ChevronRight } from 'react-feather';
 import { BarChart3 } from 'lucide-react';
 import { generateReport } from '../services/reportService';
-import { getSlaDetails, prepareChartData } from '../utils/mockSlaData';
+import { 
+  getSlaDetails, 
+  filterData, 
+  prepareChartData, 
+  csvFromRows, 
+  formatDateMDY, 
+  toDaysHrsMins 
+} from '../utils/slaDataService';
 import SlaRuntimeChart from '../components/SlaRuntimeChart';
 
 const Reports = () => {
@@ -17,13 +24,14 @@ const Reports = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [reportGenerated, setReportGenerated] = useState(false);
   const [apiError, setApiError] = useState('');
-  const [slaData, setSlaData] = useState({
-    runtimeData: [],
-    applicationDetails: [],
-    summary: {}
-  });
+  
+  // SLA Data State - Single Source of Truth
+  const [rawData, setRawData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showSlaData, setShowSlaData] = useState(false);
+  
+  // Table State
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'runDate', direction: 'desc' });
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,9 +57,39 @@ const Reports = () => {
 
   const reportTypes = [
     { value: 'ALL', label: 'ALL' },
-    { value: 'bank', label: 'Bank' },
-    { value: 'card', label: 'Card' }
+    { value: 'BANK', label: 'BANK' },
+    { value: 'CARD', label: 'CARD' }
   ];
+
+  // Load initial data when component mounts
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  const loadInitialData = async () => {
+    console.log('🚀 Loading initial SLA data...');
+    setLoading(true);
+    try {
+      const result = await getSlaDetails({});
+      setRawData(result.rawData);
+      setFilteredData(result.filteredData);
+      setShowSlaData(true);
+    } catch (error) {
+      console.error('❌ Error loading initial data:', error);
+      setApiError('Failed to load initial data. Please refresh the page.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Apply filters whenever filters change
+  const applyFilters = () => {
+    console.log('🔄 Applying filters:', filters);
+    const filtered = filterData(rawData, filters);
+    setFilteredData(filtered);
+    setCurrentPage(1); // Reset pagination
+    setSearchTerm(''); // Reset search
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -163,23 +201,6 @@ const Reports = () => {
     return `${month}_${day}_${year}`;
   };
 
-  // Load SLA data when component mounts or filters change
-  const loadSlaData = async () => {
-    if (activeTab !== 'sla-reports') return;
-    
-    setLoading(true);
-    try {
-      const data = await getSlaDetails(filters);
-      setSlaData(data);
-      setShowSlaData(true);
-    } catch (error) {
-      console.error('Error loading SLA data:', error);
-      setApiError('Failed to load SLA data. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Handle form submission for SLA reports
   const handleSlaSubmit = async () => {
     if (activeTab !== 'sla-reports') return;
@@ -188,29 +209,22 @@ const Reports = () => {
       return;
     }
 
-    await loadSlaData();
-    setCurrentPage(1); // Reset to first page when filters change
+    applyFilters();
   };
 
-  // Prepare chart data
-  // Prepare chart data based on current filters
-  const getChartData = (type) => {
-    if (slaData.runtimeData.length === 0) {
-      return { labels: [], datasets: [] };
-    }
-    
-    // Use the filtered runtime data and prepare chart for specific type
-    const chartData = prepareChartData(slaData.runtimeData, type);
-    return chartData;
+  // Chart data preparation
+  const getChartData = (chartType) => {
+    console.log('📊 Preparing chart data for:', chartType, 'with', filteredData.length, 'records');
+    return prepareChartData(filteredData, chartType);
   };
   
-  // Determine what to show in charts based on type filter
+  // Determine chart types based on filter selection
   let leftChartType, rightChartType;
-  if (filters.type === 'ALL' || !filters.type) {
+  if (!filters.type || filters.type === 'ALL') {
     leftChartType = 'CARD';
     rightChartType = 'BANK';
   } else {
-    // If specific type selected, show that type in both charts
+    // Show selected type in both charts
     leftChartType = filters.type;
     rightChartType = filters.type;
   }
@@ -218,8 +232,8 @@ const Reports = () => {
   const leftChartData = getChartData(leftChartType);
   const rightChartData = getChartData(rightChartType);
 
-  // Filter and sort application details
-  const filteredApplicationDetails = slaData.applicationDetails.filter(item => {
+  // Table data processing - search within filtered data
+  const searchFilteredData = filteredData.filter(item => {
     if (!searchTerm) return true;
     
     const searchLower = searchTerm.toLowerCase();
@@ -228,15 +242,24 @@ const Reports = () => {
       item.type.toLowerCase().includes(searchLower) ||
       item.phase.toLowerCase().includes(searchLower) ||
       item.status.toLowerCase().includes(searchLower) ||
-      item.runDate.includes(searchTerm)
+      formatDateMDY(item.runDate).includes(searchTerm)
     );
   });
 
-  const sortedApplicationDetails = [...filteredApplicationDetails].sort((a, b) => {
+  // Sort the search-filtered data
+  const sortedData = [...searchFilteredData].sort((a, b) => {
     if (sortConfig.key) {
       const aValue = a[sortConfig.key];
       const bValue = b[sortConfig.key];
       
+      // Handle date sorting
+      if (sortConfig.key === 'runDate' || sortConfig.key === 'lrd') {
+        const dateA = new Date(aValue);
+        const dateB = new Date(bValue);
+        return sortConfig.direction === 'asc' ? dateA - dateB : dateB - dateA;
+      }
+      
+      // Handle string sorting
       if (aValue < bValue) {
         return sortConfig.direction === 'asc' ? -1 : 1;
       }
@@ -248,9 +271,9 @@ const Reports = () => {
   });
 
   // Pagination
-  const totalPages = Math.ceil(sortedApplicationDetails.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = sortedApplicationDetails.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedData = sortedData.slice(startIndex, startIndex + itemsPerPage);
 
   // Handle sorting
   const handleSort = (key) => {
@@ -263,23 +286,8 @@ const Reports = () => {
 
   // Handle CSV download
   const handleDownloadCSV = () => {
-    const headers = ['Run Date', 'Type', 'LRD', 'ENV', 'Phase', 'Start Time', 'End Time', 'Days:Hrs:Mins', 'Status'];
-    const csvContent = [
-      headers.join(','),
-      ...sortedApplicationDetails.map(row => [
-        row.runDate,
-        row.type,
-        row.lrd,
-        row.env,
-        row.phase,
-        row.startTime,
-        row.endTime,
-        row.duration,
-        row.status
-      ].join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    console.log('📄 Downloading CSV with', sortedData.length, 'records');
+    const blob = csvFromRows(sortedData);
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -293,10 +301,9 @@ const Reports = () => {
   // Get status color
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Success': return 'text-green-600 bg-green-50';
-      case 'Warning': return 'text-yellow-600 bg-yellow-50';
-      case 'Failed': return 'text-red-600 bg-red-50';
-      case 'In Progress': return 'text-blue-600 bg-blue-50';
+      case 'COMPLETED': return 'text-green-600 bg-green-50';
+      case 'FAILED': return 'text-red-600 bg-red-50';
+      case 'PENDING': return 'text-yellow-600 bg-yellow-50';
       default: return 'text-gray-600 bg-gray-50';
     }
   };
@@ -537,7 +544,7 @@ const Reports = () => {
                       Application Details - {filters.environment || 'ALL'}
                     </h3>
                     <p className="text-sm text-gray-600 mt-1">
-                      {sortedApplicationDetails.length} records found
+                      {sortedData.length} records found
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
@@ -567,6 +574,12 @@ const Reports = () => {
               {loading ? (
                 <div className="p-8 text-center">
                   <div className="text-gray-500">Loading application details...</div>
+                </div>
+              ) : filteredData.length === 0 ? (
+                <div className="p-8 text-center">
+                  <div className="text-gray-400 mb-2">📊</div>
+                  <div className="text-gray-500 font-medium">No data for selected filters</div>
+                  <div className="text-gray-400 text-sm mt-2">Try adjusting your filter criteria</div>
                 </div>
               ) : (
                 <>
@@ -607,13 +620,13 @@ const Reports = () => {
                         {paginatedData.map((row) => (
                           <tr key={row.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {row.runDate}
+                              {formatDateMDY(row.runDate)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                               {row.type}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {row.lrd}
+                              {formatDateMDY(row.lrd)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                               {row.env}
@@ -622,13 +635,13 @@ const Reports = () => {
                               {row.phase}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {row.startTime}
+                              {row.startTime.toLocaleTimeString('en-US', { hour12: false })}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {row.endTime}
+                              {row.endTime.toLocaleTimeString('en-US', { hour12: false })}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {row.duration}
+                              {toDaysHrsMins(row.startTime, row.endTime)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(row.status)}`}>
@@ -646,7 +659,7 @@ const Reports = () => {
                     <div className="px-6 py-4 border-t border-gray-200">
                       <div className="flex items-center justify-between">
                         <div className="text-sm text-gray-700">
-                          Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, sortedApplicationDetails.length)} of {sortedApplicationDetails.length} results
+                          Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, sortedData.length)} of {sortedData.length} results
                         </div>
                         <div className="flex items-center gap-2">
                           <button

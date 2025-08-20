@@ -24,9 +24,21 @@ ChartJS.register(
 const SlaRuntimeChart = ({ title, data, environment, type }) => {
   const chartRef = useRef();
 
+  // Destroy chart on unmount or data change to prevent stale data
+  useEffect(() => {
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+    };
+  }, [data]);
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 300
+    },
     plugins: {
       legend: {
         position: 'top',
@@ -98,9 +110,9 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
           }
         },
         beginAtZero: true,
-        max: 40,
+        max: 10,
         ticks: {
-          stepSize: 10,
+          stepSize: 2,
           callback: function(value) {
             return value + 'h';
           }
@@ -126,6 +138,21 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
       }
     }
   };
+
+  // Show "No data" message if no data available
+  if (!data || !data.labels || data.labels.length === 0) {
+    return (
+      <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="h-80 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-gray-400 mb-2">📊</div>
+            <div className="text-gray-500 font-medium">{title}</div>
+            <div className="text-gray-400 text-sm mt-2">No data for selected filters</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4">
