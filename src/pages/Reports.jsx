@@ -500,16 +500,16 @@ const Reports = () => {
             {/* Runtime Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <SlaRuntimeChart
-                title={`Weighted Avg vs Actual Runtime — ${filters.type === 'ALL' ? 'CARD' : filters.type} (Duration in Hours)`}
+                title={`Weighted Avg vs Actual Runtime — ${filters.type && filters.type !== 'ALL' ? filters.type : 'CARD'} (Duration in Hours)`}
                 data={cardChartData}
                 environment={filters.environment || 'ALL'}
-                type={filters.type === 'ALL' ? 'CARD' : filters.type}
+                type={filters.type && filters.type !== 'ALL' ? filters.type : 'CARD'}
               />
               <SlaRuntimeChart
-                title={`Weighted Avg vs Actual Runtime — ${filters.type === 'ALL' ? 'BANK' : filters.type} (Duration in Hours)`}
+                title={`Weighted Avg vs Actual Runtime — ${filters.type && filters.type !== 'ALL' ? filters.type : 'BANK'} (Duration in Hours)`}
                 data={bankChartData}
                 environment={filters.environment || 'ALL'}
-                type={filters.type === 'ALL' ? 'BANK' : filters.type}
+                type={filters.type && filters.type !== 'ALL' ? filters.type : 'BANK'}
               />
             </div>
 
