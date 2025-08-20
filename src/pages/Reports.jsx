@@ -23,6 +23,7 @@ const Reports = () => {
     summary: {}
   });
   const [loading, setLoading] = useState(false);
+  const [showSlaData, setShowSlaData] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'runDate', direction: 'desc' });
   const [currentPage, setCurrentPage] = useState(1);
@@ -166,6 +167,7 @@ const Reports = () => {
     try {
       const data = await getSlaDetails(filters);
       setSlaData(data);
+      setShowSlaData(true);
     } catch (error) {
       console.error('Error loading SLA data:', error);
       setApiError('Failed to load SLA data. Please try again.');
@@ -173,13 +175,6 @@ const Reports = () => {
       setLoading(false);
     }
   };
-
-  // Load data when tab becomes active
-  useEffect(() => {
-    if (activeTab === 'sla-reports') {
-      loadSlaData();
-    }
-  }, [activeTab]);
 
   // Handle form submission for SLA reports
   const handleSlaSubmit = async () => {
@@ -451,12 +446,12 @@ const Reports = () => {
                 {(isGenerating || loading) ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    {activeTab === 'sla-reports' ? 'Loading...' : 'Generating...'}
+                    {activeTab === 'sla-reports' ? 'Generating...' : 'Generating...'}
                   </>
                 ) : (
                   <>
                     <Download className="w-4 h-4" />
-                    {activeTab === 'sla-reports' ? 'Load Data' : 'Generate Report'}
+                    Generate Report
                   </>
                 )}
               </button>
@@ -494,18 +489,18 @@ const Reports = () => {
         )}
 
         {/* SLA Reports Content */}
-        {activeTab === 'sla-reports' && (
+        {activeTab === 'sla-reports' && showSlaData && (
           <>
             {/* Runtime Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <SlaRuntimeChart
-                title="Weighted Avg vs Actual Runtime — CARD (Duration)"
+                title="Weighted Avg vs Actual Runtime — CARD (Duration in Hours)"
                 data={cardChartData}
                 environment={filters.environment || 'ALL'}
                 type="CARD"
               />
               <SlaRuntimeChart
-                title="Weighted Avg vs Actual Runtime — BANK (Duration)"
+                title="Weighted Avg vs Actual Runtime — BANK (Duration in Hours)"
                 data={bankChartData}
                 environment={filters.environment || 'ALL'}
                 type="BANK"

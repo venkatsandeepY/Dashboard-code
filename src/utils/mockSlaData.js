@@ -38,12 +38,12 @@ export const generateRuntimeData = (days = 30) => {
     
     environments.forEach(env => {
       types.forEach(type => {
-        // Generate weighted average (5-25 minutes with some consistency)
-        const baseWeightedAvg = rng.range(8, 20);
+        // Generate weighted average (0.5-3 hours with some consistency)
+        const baseWeightedAvg = rng.float(0.5, 3);
         const weightedAvg = baseWeightedAvg + rng.float(-2, 2);
         
         // Generate actual runtime (can vary more from weighted avg)
-        const actualRuntime = Math.max(1, weightedAvg + rng.float(-8, 12));
+        const actualRuntime = Math.max(0.1, weightedAvg + rng.float(-1, 2));
         
         data.push({
           date: dateStr,

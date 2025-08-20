@@ -61,7 +61,7 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
             return `ENV: ${environment} | TYPE: ${type}`;
           },
           label: function(context) {
-            return `${context.dataset.label}: ${context.parsed.y} minutes`;
+            return `${context.dataset.label}: ${context.parsed.y.toFixed(2)} hours`;
           }
         },
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -91,7 +91,7 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
         display: true,
         title: {
           display: true,
-          text: 'Duration (minutes)',
+          text: 'Duration (hours)',
           font: {
             size: 12,
             weight: 'bold'
