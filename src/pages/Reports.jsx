@@ -353,138 +353,140 @@ const Reports = () => {
             </nav>
           </div>
 
-          {/* Report Filters Section */}
-          <div className="p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <Filter className="w-5 h-5 text-gray-500" />
-              <h2 className="text-lg font-semibold text-gray-900">Report Filters</h2>
-            </div>
+          {/* Report Filters Section - Only show for SLA Reports */}
+          {activeTab === 'sla-reports' && (
+            <div className="p-6">
+              <div className="flex items-center gap-2 mb-6">
+                <Filter className="w-5 h-5 text-gray-500" />
+                <h2 className="text-lg font-semibold text-gray-900">Report Filters</h2>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-              {/* Environment Dropdown */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Environment <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <select
-                    value={filters.environment}
-                    onChange={(e) => handleFilterChange('environment', e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                      errors.environment ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    } appearance-none pr-10`}
-                  >
-                    <option value="">Select Environment</option>
-                    {environments.map((env) => (
-                      <option key={env.value} value={env.value}>
-                        {env.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                {/* Environment Dropdown */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Environment <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={filters.environment}
+                      onChange={(e) => handleFilterChange('environment', e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                        errors.environment ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
+                      } appearance-none pr-10`}
+                    >
+                      <option value="">Select Environment</option>
+                      {environments.map((env) => (
+                        <option key={env.value} value={env.value}>
+                          {env.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                  </div>
+                  {errors.environment && (
+                    <div className="flex items-center gap-1 text-red-600 text-xs">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.environment}
+                    </div>
+                  )}
                 </div>
-                {errors.environment && (
-                  <div className="flex items-center gap-1 text-red-600 text-xs">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.environment}
-                  </div>
-                )}
-              </div>
 
-              {/* Type Dropdown */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Type <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <select
-                    value={filters.type}
-                    onChange={(e) => handleFilterChange('type', e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                      errors.type ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    } appearance-none pr-10`}
-                  >
-                    <option value="">Select Type</option>
-                    {reportTypes.map((type) => (
-                      <option key={type.value} value={type.value}>
-                        {type.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                {/* Type Dropdown */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Type <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={filters.type}
+                      onChange={(e) => handleFilterChange('type', e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                        errors.type ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
+                      } appearance-none pr-10`}
+                    >
+                      <option value="">Select Type</option>
+                      {reportTypes.map((type) => (
+                        <option key={type.value} value={type.value}>
+                          {type.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                  </div>
+                  {errors.type && (
+                    <div className="flex items-center gap-1 text-red-600 text-xs">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.type}
+                    </div>
+                  )}
                 </div>
-                {errors.type && (
-                  <div className="flex items-center gap-1 text-red-600 text-xs">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.type}
-                  </div>
-                )}
+
+                {/* From Date */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    From Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    value={filters.fromDate}
+                    onChange={(e) => handleFilterChange('fromDate', e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      errors.fromDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {errors.fromDate && (
+                    <div className="flex items-center gap-1 text-red-600 text-xs">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.fromDate}
+                    </div>
+                  )}
+                </div>
+
+                {/* To Date */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    To Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    value={filters.toDate}
+                    onChange={(e) => handleFilterChange('toDate', e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      errors.toDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {errors.toDate && (
+                    <div className="flex items-center gap-1 text-red-600 text-xs">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.toDate}
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* From Date */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  From Date <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  value={filters.fromDate}
-                  onChange={(e) => handleFilterChange('fromDate', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                    errors.fromDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                  }`}
-                />
-                {errors.fromDate && (
-                  <div className="flex items-center gap-1 text-red-600 text-xs">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.fromDate}
-                  </div>
-                )}
-              </div>
-
-              {/* To Date */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  To Date <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  value={filters.toDate}
-                  onChange={(e) => handleFilterChange('toDate', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                    errors.toDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                  }`}
-                />
-                {errors.toDate && (
-                  <div className="flex items-center gap-1 text-red-600 text-xs">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.toDate}
-                  </div>
-                )}
+              {/* Generate Report Button */}
+              <div className="flex justify-end">
+                <button
+                  onClick={activeTab === 'sla-reports' ? handleSlaSubmit : handleGenerateReport}
+                  disabled={isGenerating || loading}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  {(isGenerating || loading) ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      {activeTab === 'sla-reports' ? 'Generating...' : 'Generating...'}
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" />
+                      Generate Report
+                    </>
+                  )}
+                </button>
               </div>
             </div>
-
-            {/* Generate Report Button */}
-            <div className="flex justify-end">
-              <button
-                onClick={activeTab === 'sla-reports' ? handleSlaSubmit : handleGenerateReport}
-                disabled={isGenerating || loading}
-                className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-              >
-                {(isGenerating || loading) ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    {activeTab === 'sla-reports' ? 'Generating...' : 'Generating...'}
-                  </>
-                ) : (
-                  <>
-                    <Download className="w-4 h-4" />
-                    Generate Report
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Success Message */}
