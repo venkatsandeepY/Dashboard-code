@@ -14,6 +14,7 @@
     "test:ci": "jest --ci --coverage --watchAll=false"
   },
   "dependencies": {
+    "bootstrap": "^5.3.7",
     "chart.js": "^4.5.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings, Search, ChevronLeft, ChevronRight } from 'react-feather';
-import { BarChart3 } from 'lucide-react';
+import { Calendar, ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings, Search, ChevronLeft, ChevronRight, BarChart } from 'react-feather';
 import { generateReport } from '../services/reportService';
 import { 
   getSlaDetails, 
@@ -38,7 +37,7 @@ const Reports = () => {
   const [itemsPerPage] = useState(10);
 
   const tabs = [
-    { id: 'sla-reports', label: 'SLA Reports', icon: BarChart3 },
+    { id: 'sla-reports', label: 'SLA Reports', icon: BarChart },
     { id: 'snow-incidents', label: 'SNOW Incidents', icon: AlertTriangle },
     { id: 'vits', label: 'VITS', icon: FileText },
     { id: 'admin-tools', label: 'Admin Tools', icon: Settings }
@@ -522,19 +521,31 @@ const Reports = () => {
         {activeTab === 'sla-reports' && showSlaData && (
           <>
             {/* Runtime Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <SlaRuntimeChart
-                title={`Weighted Avg vs Actual Runtime — ${leftChartType} (Duration in Hours)`}
-                data={leftChartData}
-                environment={filters.environment || 'ALL'}
-                type={leftChartType}
-              />
-              <SlaRuntimeChart
-                title={`Weighted Avg vs Actual Runtime — ${rightChartType} (Duration in Hours)`}
-                data={rightChartData}
-                environment={filters.environment || 'ALL'}
-                type={rightChartType}
-              />
+            <div className="row mb-4">
+              <div className="col-lg-6 mb-4">
+                <div className="card h-100">
+                  <div className="card-body">
+                    <SlaRuntimeChart
+                      title={`Weighted Avg vs Actual Runtime — ${leftChartType} (Duration in Hours)`}
+                      data={leftChartData}
+                      environment={filters.environment || 'ALL'}
+                      type={leftChartType}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-6 mb-4">
+                <div className="card h-100">
+                  <div className="card-body">
+                    <SlaRuntimeChart
+                      title={`Weighted Avg vs Actual Runtime — ${rightChartType} (Duration in Hours)`}
+                      data={rightChartData}
+                      environment={filters.environment || 'ALL'}
+                      type={rightChartType}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Application Details Table */}

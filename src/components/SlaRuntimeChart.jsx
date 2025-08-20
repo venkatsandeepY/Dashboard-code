@@ -138,12 +138,12 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
   // Show "No data" message if no data available
   if (!data || !data.labels || data.labels.length === 0) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <div className="h-80 flex items-center justify-center">
+      <div className="card border-0">
+        <div className="card-body d-flex align-items-center justify-content-center" style={{ height: '320px' }}>
           <div className="text-center">
-            <div className="text-gray-400 mb-2">📊</div>
-            <div className="text-gray-500 font-medium">{title}</div>
-            <div className="text-gray-400 text-sm mt-2">No data for selected filters</div>
+            <div className="text-muted mb-2" style={{ fontSize: '2rem' }}>📊</div>
+            <div className="text-secondary fw-medium">{title}</div>
+            <div className="text-muted small mt-2">No data for selected filters</div>
           </div>
         </div>
       </div>
@@ -151,8 +151,8 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <div className="h-80">
+    <div className="card border-0">
+      <div className="card-body p-0" style={{ height: '320px' }}>
         <Line 
           data={data} 
           options={options}
