@@ -50,7 +50,7 @@ export const generateRuntimeData = (days = 30) => {
         const baseWeightedAvg = rng.float(5, 35);
         const weightedAvg = baseWeightedAvg + rng.float(-2, 2);
         
-        // Generate actual runtime (can vary more from weighted avg, 0-40 hours)
+        // Generate actual runtime (can vary more from weighted avg, 0.5-40 hours)
         const actualRuntime = Math.max(0.5, Math.min(40, weightedAvg + rng.float(-5, 5)));
         
         data.push({
@@ -64,7 +64,8 @@ export const generateRuntimeData = (days = 30) => {
     });
   }
   
-  console.log('Generated runtime data sample:', data.slice(0, 5));
+  console.log('Generated runtime data:', data.length, 'records');
+  console.log('Sample runtime data:', data.slice(0, 10));
   return data;
 };
 
@@ -127,55 +128,9 @@ export const generateApplicationDetails = (count = 700) => {
     return dateB - dateA;
   });
   
-  console.log('Generated application details sample:', sorted.slice(0, 5));
+  console.log('Generated application details:', sorted.length, 'records');
+  console.log('Sample application data:', sorted.slice(0, 5));
   return sorted;
-};
-
-// Filter runtime data based on filters
-export const filterRuntimeData = (data, filters) => {
-  console.log('Filtering runtime data:', { filters, dataLength: data.length });
-  
-  const filtered = data.filter(item => {
-    // Environment filter
-    if (filters.environment && filters.environment.trim() !== '' && filters.environment !== 'ALL') {
-      if (item.env !== filters.environment) {
-        console.log(`Environment filter: ${item.env} !== ${filters.environment}`);
-        return false;
-      }
-    }
-    
-    // Type filter
-    if (filters.type && filters.type.trim() !== '' && filters.type !== 'ALL') {
-      if (item.type !== filters.type) {
-        console.log(`Type filter: ${item.type} !== ${filters.type}`);
-        return false;
-      }
-    }
-    
-    // Date range filter - convert MM-DD-YYYY to YYYY-MM-DD for comparison
-    if (filters.fromDate) {
-      const itemDate = convertToISODate(item.date);
-      const fromDate = convertToISODate(filters.fromDate);
-      if (itemDate < fromDate) {
-        console.log(`From date filter: ${itemDate} < ${fromDate}`);
-        return false;
-      }
-    }
-    
-    if (filters.toDate) {
-      const itemDate = convertToISODate(item.date);
-      const toDate = convertToISODate(filters.toDate);
-      if (itemDate > toDate) {
-        console.log(`To date filter: ${itemDate} > ${toDate}`);
-        return false;
-      }
-    }
-    
-    return true;
-  });
-  
-  console.log('Filtered runtime data result:', { originalLength: data.length, filteredLength: filtered.length });
-  return filtered;
 };
 
 // Helper function to convert MM-DD-YYYY to YYYY-MM-DD for comparison
@@ -193,64 +148,118 @@ const convertToISODate = (dateStr) => {
     return `${year}-${month}-${day}`;
   }
   
-  // Handle date input format (YYYY-MM-DD from HTML date input)
-  if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
-    return dateStr;
-  }
-  
-  console.log('Unknown date format:', dateStr);
   return dateStr;
 };
 
-// Filter application details based on filters
-export const filterApplicationDetails = (data, filters) => {
-  console.log('Filtering application details:', { filters, dataLength: data.length });
+// FIXED: Filter runtime data based on filters
+export const filterRuntimeData = (data, filters) => {
+  console.log('=== FILTERING RUNTIME DATA ===');
+  console.log('Input data length:', data.length);
+  console.log('Filters:', filters);
   
   const filtered = data.filter(item => {
+    let keep = true;
+    
     // Environment filter
-    if (filters.environment && filters.environment.trim() !== '' && filters.environment !== 'ALL') {
+    if (filters.environment && filters.environment !== 'ALL' && filters.environment !== '') {
       if (item.env !== filters.environment) {
-        console.log(`App details env filter: ${item.env} !== ${filters.environment}`);
-        return false;
+        keep = false;
+        console.log(`Filtered out by env: ${item.env} !== ${filters.environment}`);
       }
     }
     
     // Type filter
-    if (filters.type && filters.type.trim() !== '' && filters.type !== 'ALL') {
+    if (keep && filters.type && filters.type !== 'ALL' && filters.type !== '') {
       if (item.type !== filters.type) {
-        console.log(`App details type filter: ${item.type} !== ${filters.type}`);
-        return false;
+        keep = false;
+        console.log(`Filtered out by type: ${item.type} !== ${filters.type}`);
       }
     }
     
-    // Date range filter - convert MM-DD-YYYY to YYYY-MM-DD for comparison
-    if (filters.fromDate) {
+    // Date range filter
+    if (keep && filters.fromDate) {
+      const itemDate = convertToISODate(item.date);
+      const fromDate = convertToISODate(filters.fromDate);
+      if (itemDate < fromDate) {
+        keep = false;
+        console.log(`Filtered out by from date: ${itemDate} < ${fromDate}`);
+      }
+    }
+    
+    if (keep && filters.toDate) {
+      const itemDate = convertToISODate(item.date);
+      const toDate = convertToISODate(filters.toDate);
+      if (itemDate > toDate) {
+        keep = false;
+        console.log(`Filtered out by to date: ${itemDate} > ${toDate}`);
+      }
+    }
+    
+    return keep;
+  });
+  
+  console.log('Filtered runtime data length:', filtered.length);
+  console.log('Sample filtered data:', filtered.slice(0, 3));
+  return filtered;
+};
+
+// FIXED: Filter application details based on filters
+export const filterApplicationDetails = (data, filters) => {
+  console.log('=== FILTERING APPLICATION DETAILS ===');
+  console.log('Input data length:', data.length);
+  console.log('Filters:', filters);
+  
+  const filtered = data.filter(item => {
+    let keep = true;
+    
+    // Environment filter
+    if (filters.environment && filters.environment !== 'ALL' && filters.environment !== '') {
+      if (item.env !== filters.environment) {
+        keep = false;
+        console.log(`App filtered out by env: ${item.env} !== ${filters.environment}`);
+      }
+    }
+    
+    // Type filter
+    if (keep && filters.type && filters.type !== 'ALL' && filters.type !== '') {
+      if (item.type !== filters.type) {
+        keep = false;
+        console.log(`App filtered out by type: ${item.type} !== ${filters.type}`);
+      }
+    }
+    
+    // Date range filter using runDate
+    if (keep && filters.fromDate) {
       const itemDate = convertToISODate(item.runDate);
       const fromDate = convertToISODate(filters.fromDate);
       if (itemDate < fromDate) {
-        console.log(`App details from date filter: ${itemDate} < ${fromDate}`);
-        return false;
+        keep = false;
+        console.log(`App filtered out by from date: ${itemDate} < ${fromDate}`);
       }
     }
     
-    if (filters.toDate) {
+    if (keep && filters.toDate) {
       const itemDate = convertToISODate(item.runDate);
       const toDate = convertToISODate(filters.toDate);
       if (itemDate > toDate) {
-        console.log(`App details to date filter: ${itemDate} > ${toDate}`);
-        return false;
+        keep = false;
+        console.log(`App filtered out by to date: ${itemDate} > ${toDate}`);
       }
     }
     
-    return true;
+    return keep;
   });
   
-  console.log('Filtered application details result:', { originalLength: data.length, filteredLength: filtered.length });
+  console.log('Filtered application details length:', filtered.length);
+  console.log('Sample filtered app data:', filtered.slice(0, 3));
   return filtered;
 };
 
 // Aggregate runtime data for charts (compute averages for ALL selections)
 export const aggregateRuntimeData = (data) => {
+  console.log('=== AGGREGATING RUNTIME DATA ===');
+  console.log('Input data for aggregation:', data.length);
+  
   const aggregated = {};
   
   data.forEach(item => {
@@ -269,7 +278,7 @@ export const aggregateRuntimeData = (data) => {
     aggregated[key].count += 1;
   });
   
-  return Object.values(aggregated).map(item => ({
+  const result = Object.values(aggregated).map(item => ({
     date: item.date,
     weightedAvg: Math.round((item.weightedAvgSum / item.count) * 100) / 100,
     actualRuntime: Math.round((item.actualRuntimeSum / item.count) * 100) / 100
@@ -279,23 +288,54 @@ export const aggregateRuntimeData = (data) => {
     const dateB = new Date(convertToISODate(b.date));
     return dateA - dateB;
   });
+  
+  console.log('Aggregated data length:', result.length);
+  console.log('Sample aggregated data:', result.slice(0, 3));
+  return result;
 };
 
-// Prepare chart data for Chart.js
+// FIXED: Prepare chart data for Chart.js
 export const prepareChartData = (data, type) => {
-  console.log('Preparing chart data:', { type, dataLength: data.length });
+  console.log('=== PREPARING CHART DATA ===');
+  console.log('Input data length:', data.length);
+  console.log('Chart type:', type);
   
-  // Filter by type - if type is specified and not ALL, filter by that type
+  // If no data, return empty chart
+  if (!data || data.length === 0) {
+    console.log('No data available for chart');
+    return {
+      labels: [],
+      datasets: [
+        {
+          label: 'Weighted Average Runtime',
+          data: [],
+          borderColor: 'rgb(59, 130, 246)',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          tension: 0.1,
+          fill: false
+        },
+        {
+          label: 'Actual Runtime',
+          data: [],
+          borderColor: 'rgb(239, 68, 68)',
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          tension: 0.1,
+          fill: false
+        }
+      ]
+    };
+  }
+  
+  // Filter by type if specified and not ALL
   let filteredData = data;
   if (type && type !== 'ALL') {
     filteredData = data.filter(item => item.type === type);
+    console.log(`Filtered by type ${type}:`, filteredData.length);
   }
-  
-  console.log('Filtered data for chart:', { type, filteredLength: filteredData.length });
   
   const aggregatedData = aggregateRuntimeData(filteredData);
   
-  return {
+  const chartData = {
     labels: aggregatedData.map(item => {
       // Convert MM-DD-YYYY to display format
       const [month, day, year] = item.date.split('-');
@@ -321,40 +361,31 @@ export const prepareChartData = (data, type) => {
       }
     ]
   };
+  
+  console.log('Final chart data:', chartData);
+  return chartData;
 };
 
-// API placeholder functions - replace these with actual API calls
+// FIXED: API placeholder function
 export const getSlaDetails = async (filters) => {
-  // TODO: Replace with actual API call
-  // const response = await fetch('/api/sla/details', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(filters)
-  // });
-  // return response.json();
+  console.log('=== GET SLA DETAILS ===');
+  console.log('Called with filters:', filters);
   
-  // Mock implementation
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log('getSlaDetails called with filters:', filters);
-      
+      // Generate fresh data
       const allRuntimeData = generateRuntimeData(30);
       const allApplicationData = generateApplicationDetails(700);
       
-      console.log('Generated data lengths:', {
-        runtime: allRuntimeData.length,
-        application: allApplicationData.length
-      });
+      console.log('Generated fresh data - Runtime:', allRuntimeData.length, 'Application:', allApplicationData.length);
       
+      // Apply filters
       const filteredRuntimeData = filterRuntimeData(allRuntimeData, filters);
       const filteredApplicationData = filterApplicationDetails(allApplicationData, filters);
       
-      console.log('Final filtered data lengths:', {
-        runtime: filteredRuntimeData.length,
-        application: filteredApplicationData.length
-      });
+      console.log('Final filtered results - Runtime:', filteredRuntimeData.length, 'Application:', filteredApplicationData.length);
       
-      resolve({
+      const result = {
         runtimeData: filteredRuntimeData,
         applicationDetails: filteredApplicationData,
         summary: {
@@ -366,7 +397,10 @@ export const getSlaDetails = async (filters) => {
           environment: filters.environment || 'ALL',
           type: filters.type || 'ALL'
         }
-      });
-    }, 500); // Simulate network delay
+      };
+      
+      console.log('Returning SLA details:', result);
+      resolve(result);
+    }, 500);
   });
 };

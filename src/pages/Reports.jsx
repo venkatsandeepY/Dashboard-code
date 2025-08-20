@@ -196,20 +196,27 @@ const Reports = () => {
   // Prepare chart data based on current filters
   const getChartData = (type) => {
     if (slaData.runtimeData.length === 0) {
-      console.log('No runtime data available for charts');
       return { labels: [], datasets: [] };
     }
     
-    // If type filter is ALL, show all data; otherwise filter by specific type
-    const chartType = filters.type === 'ALL' ? type : filters.type;
-    console.log('Preparing chart data for type:', chartType);
-    const chartData = prepareChartData(slaData.runtimeData, chartType);
-    console.log('Chart data prepared:', chartData);
+    // Use the filtered runtime data and prepare chart for specific type
+    const chartData = prepareChartData(slaData.runtimeData, type);
     return chartData;
   };
   
-  const cardChartData = getChartData('CARD');
-  const bankChartData = getChartData('BANK');
+  // Determine what to show in charts based on type filter
+  let leftChartType, rightChartType;
+  if (filters.type === 'ALL' || !filters.type) {
+    leftChartType = 'CARD';
+    rightChartType = 'BANK';
+  } else {
+    // If specific type selected, show that type in both charts
+    leftChartType = filters.type;
+    rightChartType = filters.type;
+  }
+  
+  const leftChartData = getChartData(leftChartType);
+  const rightChartData = getChartData(rightChartType);
 
   // Filter and sort application details
   const filteredApplicationDetails = slaData.applicationDetails.filter(item => {
@@ -508,16 +515,16 @@ const Reports = () => {
             {/* Runtime Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <SlaRuntimeChart
-                title={`Weighted Avg vs Actual Runtime — ${filters.type && filters.type !== 'ALL' ? filters.type : 'CARD'} (Duration in Hours)`}
-                data={cardChartData}
+                title={`Weighted Avg vs Actual Runtime — ${leftChartType} (Duration in Hours)`}
+                data={leftChartData}
                 environment={filters.environment || 'ALL'}
-                type={filters.type && filters.type !== 'ALL' ? filters.type : 'CARD'}
+                type={leftChartType}
               />
               <SlaRuntimeChart
-                title={`Weighted Avg vs Actual Runtime — ${filters.type && filters.type !== 'ALL' ? filters.type : 'BANK'} (Duration in Hours)`}
-                data={bankChartData}
+                title={`Weighted Avg vs Actual Runtime — ${rightChartType} (Duration in Hours)`}
+                data={rightChartData}
                 environment={filters.environment || 'ALL'}
-                type={filters.type && filters.type !== 'ALL' ? filters.type : 'BANK'}
+                type={rightChartType}
               />
             </div>
 
