@@ -21,10 +21,18 @@ class SeededRandom {
   }
 }
 
-const environments = ['ASYS', 'TSYS', 'ECS'];
+const environments = ['ASYS', 'TSYS', 'MST0', 'OSYS', 'ECT0', 'QSYS', 'VST0'];
 const types = ['BANK', 'CARD'];
 const phases = ['Pre-Processing', 'Main Processing', 'Post-Processing', 'Validation', 'Cleanup'];
 const statuses = ['Completed', 'Failed', 'Pending'];
+
+// Format date as MM-DD-YYYY
+const formatDate = (date) => {
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}-${day}-${year}`;
+};
 
 // Generate runtime data for charts
 export const generateRuntimeData = (days = 30) => {
@@ -34,7 +42,7 @@ export const generateRuntimeData = (days = 30) => {
   for (let i = days - 1; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = formatDate(date);
     
     environments.forEach(env => {
       types.forEach(type => {
@@ -99,9 +107,9 @@ export const generateApplicationDetails = (count = 700) => {
     
     data.push({
       id: i + 1,
-      runDate: runDate.toISOString().split('T')[0],
+      runDate: formatDate(runDate),
       type,
-      lrd: lrd.toISOString().split('T')[0],
+      lrd: formatDate(lrd),
       env,
       phase,
       startTime,
@@ -117,9 +125,173 @@ export const generateApplicationDetails = (count = 700) => {
 
 // Filter runtime data based on filters
 export const filterRuntimeData = (data, filters) => {
+  console.log('Filtering runtime data:', { filters, dataLength: data.length });
   return data.filter(item => {
     // Environment filter
-    if (filters.environment && filters.environment !== '' && filters.environment !== 'ALL' && item.env !== filters.environment) {
+    if (filters.environment && filters.environment !== '' && filters.environment !== 'ALL') {
+      if (item.env !== filters.environment) {
+        return false;
+      }
+    }
+    
+    // Type filter
+    if (filters.type && filters.type !== '' && filters.type !== 'ALL') {
+      if (item.type !== filters.type) {
+        return false;
+      }
+    }
+    
+    // Date range filter - convert MM-DD-YYYY to YYYY-MM-DD for comparison
+    if (filters.fromDate) {
+      const itemDate = convertToISODate(item.date);
+      const fromDate = convertToISODate(filters.fromDate);
+      if (itemDate < fromDate) {
+        return false;
+      }
+    }
+    
+    if (filters.toDate) {
+      const itemDate = convertToISODate(item.date);
+      const toDate = convertToISODate(filters.toDate);
+      if (itemDate > toDate) {
+        return false;
+      }
+    }
+    
+    return true;
+  });
+};
+
+// Helper function to convert MM-DD-YYYY to YYYY-MM-DD for comparison
+const convertToISODate = (dateStr) => {
+  if (!dateStr) return '';
+  
+  // If already in YYYY-MM-DD format, return as is
+  if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    return dateStr;
+  }
+  
+  // If in MM-DD-YYYY format, convert to YYYY-MM-DD
+  if (dateStr.match(/^\d{2}-\d{2}-\d{4}$/)) {
+    const [month, day, year] = dateStr.split('-');
+    return `${year}-${month}-${day}`;
+  }
+  
+  return dateStr;
+};
+
+// Filter application details based on filters
+export const filterApplicationDetails = (data, filters) => {
+  console.log('Filtering application details:', { filters, dataLength: data.length });
+  return data.filter(item => {
+    // Environment filter
+    if (filters.environment && filters.environment !== '' && filters.environment !== 'ALL') {
+      if (item.env !== filters.environment) {
+        return false;
+      }
+    }
+    
+    // Type filter
+    if (filters.type && filters.type !== '' && filters.type !== 'ALL') {
+      if (item.type !== filters.type) {
+        return false;
+      }
+    }
+    
+    // Date range filter - convert MM-DD-YYYY to YYYY-MM-DD for comparison
+    if (filters.fromDate) {
+      const itemDate = convertToISODate(item.runDate);
+      const fromDate = convertToISODate(filters.fromDate);
+      if (itemDate < fromDate) {
+        return false;
+      }
+    }
+    
+    if (filters.toDate) {
+      const itemDate = convertToISODate(item.runDate);
+      const toDate = convertToISODate(filters.toDate);
+      if (itemDate > toDate) {
+        return false;
+      }
+    }
+    
+    return true;
+  });
+};
+
+// Aggregate runtime data for charts (compute averages for ALL selections)
+export const aggregateRuntimeData = (data) => {
+  const aggregated = {};
+  
+  data.forEach(item => {
+    const key = item.date;
+    if (!aggregated[key]) {
+      aggregated[key] = {
+        date: item.date,
+        weightedAvgSum: 0,
+        actualRuntimeSum: 0,
+        count: 0
+      };
+    }
+    
+    aggregated[key].weightedAvgSum += item.weightedAvg;
+    aggregated[key].actualRuntimeSum += item.actualRuntime;
+    aggregated[key].count += 1;
+  });
+  
+  return Object.values(aggregated).map(item => ({
+    date: item.date,
+    weightedAvg: Math.round((item.weightedAvgSum / item.count) * 100) / 100,
+    actualRuntime: Math.round((item.actualRuntimeSum / item.count) * 100) / 100
+  })).sort((a, b) => {
+    // Sort by date - convert MM-DD-YYYY to Date objects for proper sorting
+    const dateA = new Date(convertToISODate(a.date));
+    const dateB = new Date(convertToISODate(b.date));
+    return dateA - dateB;
+  });
+};
+
+// Prepare chart data for Chart.js
+export const prepareChartData = (data, type) => {
+  console.log('Preparing chart data:', { type, dataLength: data.length });
+  
+  // Filter by type - if type is specified and not ALL, filter by that type
+  let filteredData = data;
+  if (type && type !== 'ALL') {
+    filteredData = data.filter(item => item.type === type);
+  }
+  
+  console.log('Filtered data for chart:', { type, filteredLength: filteredData.length });
+  
+  const aggregatedData = aggregateRuntimeData(filteredData);
+  
+  return {
+    labels: aggregatedData.map(item => {
+      // Convert MM-DD-YYYY to display format
+      const [month, day, year] = item.date.split('-');
+      const date = new Date(year, month - 1, day);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }),
+    datasets: [
+      {
+        label: 'Weighted Average Runtime',
+        data: aggregatedData.map(item => item.weightedAvg),
+        borderColor: 'rgb(59, 130, 246)',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        tension: 0.1,
+        fill: false
+      },
+      {
+        label: 'Actual Runtime',
+        data: aggregatedData.map(item => item.actualRuntime),
+        borderColor: 'rgb(239, 68, 68)',
+        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        tension: 0.1,
+        fill: false
+      }
+    ]
+  };
+};
       return false;
     }
     

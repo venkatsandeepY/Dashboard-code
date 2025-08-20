@@ -40,7 +40,11 @@ const Reports = () => {
     { value: 'ALL', label: 'ALL' },
     { value: 'ASYS', label: 'ASYS' },
     { value: 'TSYS', label: 'TSYS' },
-    { value: 'ECS', label: 'ECS' }
+    { value: 'MST0', label: 'MST0' },
+    { value: 'OSYS', label: 'OSYS' },
+    { value: 'ECT0', label: 'ECT0' },
+    { value: 'QSYS', label: 'QSYS' },
+    { value: 'VST0', label: 'VST0' }
   ];
 
   const reportTypes = [
