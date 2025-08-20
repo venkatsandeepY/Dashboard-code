@@ -22,17 +22,6 @@ ChartJS.register(
 );
 
 const SlaRuntimeChart = ({ title, data, environment, type }) => {
-  const chartRef = useRef();
-
-  // Destroy chart on unmount or data change to prevent stale data
-  useEffect(() => {
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-      }
-    };
-  }, [data]);
-
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -158,7 +147,6 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
     <div className="bg-white rounded-lg border border-gray-200 p-4">
       <div className="h-80">
         <Line 
-          ref={chartRef}
           data={data} 
           options={options}
           aria-label={`${title} chart showing weighted average vs actual runtime`}
