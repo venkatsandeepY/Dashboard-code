@@ -98,6 +98,13 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
           }
         },
         beginAtZero: true,
+        max: 40,
+        ticks: {
+          stepSize: 10,
+          callback: function(value) {
+            return value + 'h';
+          }
+        },
         grid: {
           display: true,
           color: 'rgba(0, 0, 0, 0.1)'

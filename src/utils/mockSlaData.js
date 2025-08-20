@@ -38,12 +38,12 @@ export const generateRuntimeData = (days = 30) => {
     
     environments.forEach(env => {
       types.forEach(type => {
-        // Generate weighted average (0.5-3 hours with some consistency)
-        const baseWeightedAvg = rng.float(0.5, 3);
+        // Generate weighted average (5-35 hours with some consistency)
+        const baseWeightedAvg = rng.float(5, 35);
         const weightedAvg = baseWeightedAvg + rng.float(-2, 2);
         
-        // Generate actual runtime (can vary more from weighted avg)
-        const actualRuntime = Math.max(0.1, weightedAvg + rng.float(-1, 2));
+        // Generate actual runtime (can vary more from weighted avg, 0-40 hours)
+        const actualRuntime = Math.max(0.5, Math.min(40, weightedAvg + rng.float(-5, 5)));
         
         data.push({
           date: dateStr,
@@ -119,12 +119,12 @@ export const generateApplicationDetails = (count = 700) => {
 export const filterRuntimeData = (data, filters) => {
   return data.filter(item => {
     // Environment filter
-    if (filters.environment && filters.environment !== 'ALL' && item.env !== filters.environment) {
+    if (filters.environment && filters.environment !== '' && filters.environment !== 'ALL' && item.env !== filters.environment) {
       return false;
     }
     
     // Type filter
-    if (filters.type && filters.type !== 'ALL' && item.type !== filters.type) {
+    if (filters.type && filters.type !== '' && filters.type !== 'ALL' && item.type !== filters.type) {
       return false;
     }
     
@@ -145,12 +145,12 @@ export const filterRuntimeData = (data, filters) => {
 export const filterApplicationDetails = (data, filters) => {
   return data.filter(item => {
     // Environment filter
-    if (filters.environment && filters.environment !== 'ALL' && item.env !== filters.environment) {
+    if (filters.environment && filters.environment !== '' && filters.environment !== 'ALL' && item.env !== filters.environment) {
       return false;
     }
     
     // Type filter
-    if (filters.type && filters.type !== 'ALL' && item.type !== filters.type) {
+    if (filters.type && filters.type !== '' && filters.type !== 'ALL' && item.type !== filters.type) {
       return false;
     }
     
@@ -196,7 +196,8 @@ export const aggregateRuntimeData = (data) => {
 
 // Prepare chart data for Chart.js
 export const prepareChartData = (data, type) => {
-  const filteredData = data.filter(item => item.type === type);
+  // Filter by type only if not ALL
+  const filteredData = type === 'ALL' ? data : data.filter(item => item.type === type);
   const aggregatedData = aggregateRuntimeData(filteredData);
   
   return {

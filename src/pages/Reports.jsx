@@ -189,13 +189,19 @@ const Reports = () => {
   };
 
   // Prepare chart data
-  const cardChartData = slaData.runtimeData.length > 0 ? 
-    prepareChartData(slaData.runtimeData, 'CARD') : 
-    { labels: [], datasets: [] };
+  // Prepare chart data based on current filters
+  const getChartData = (type) => {
+    if (slaData.runtimeData.length === 0) {
+      return { labels: [], datasets: [] };
+    }
     
-  const bankChartData = slaData.runtimeData.length > 0 ? 
-    prepareChartData(slaData.runtimeData, 'BANK') : 
-    { labels: [], datasets: [] };
+    // If type filter is ALL, show all data; otherwise filter by specific type
+    const chartType = filters.type === 'ALL' ? type : filters.type;
+    return prepareChartData(slaData.runtimeData, chartType);
+  };
+  
+  const cardChartData = getChartData('CARD');
+  const bankChartData = getChartData('BANK');
 
   // Filter and sort application details
   const filteredApplicationDetails = slaData.applicationDetails.filter(item => {
@@ -494,16 +500,16 @@ const Reports = () => {
             {/* Runtime Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <SlaRuntimeChart
-                title="Weighted Avg vs Actual Runtime — CARD (Duration in Hours)"
+                title={`Weighted Avg vs Actual Runtime — ${filters.type === 'ALL' ? 'CARD' : filters.type} (Duration in Hours)`}
                 data={cardChartData}
                 environment={filters.environment || 'ALL'}
-                type="CARD"
+                type={filters.type === 'ALL' ? 'CARD' : filters.type}
               />
               <SlaRuntimeChart
-                title="Weighted Avg vs Actual Runtime — BANK (Duration in Hours)"
+                title={`Weighted Avg vs Actual Runtime — ${filters.type === 'ALL' ? 'BANK' : filters.type} (Duration in Hours)`}
                 data={bankChartData}
                 environment={filters.environment || 'ALL'}
-                type="BANK"
+                type={filters.type === 'ALL' ? 'BANK' : filters.type}
               />
             </div>
 
