@@ -24,7 +24,7 @@ class SeededRandom {
 const environments = ['ASYS', 'TSYS', 'ECS'];
 const types = ['BANK', 'CARD'];
 const phases = ['Pre-Processing', 'Main Processing', 'Post-Processing', 'Validation', 'Cleanup'];
-const statuses = ['Success', 'Warning', 'Failed', 'In Progress'];
+const statuses = ['Completed', 'Failed', 'Pending'];
 
 // Generate runtime data for charts
 export const generateRuntimeData = (days = 30) => {
