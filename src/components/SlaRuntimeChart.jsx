@@ -158,23 +158,5 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
     </div>
   );
 };
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="card border-0">
-      <div className="card-body p-0" style={{ height: '320px' }}>
-        <Line 
-          data={data} 
-          options={options}
-          aria-label={`${title} chart showing weighted average vs actual runtime`}
-        />
-      </div>
-    </div>
-  );
-};
 
 export default SlaRuntimeChart;
