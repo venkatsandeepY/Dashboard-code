@@ -64,6 +64,7 @@ export const generateRuntimeData = (days = 30) => {
     });
   }
   
+  console.log('Generated runtime data sample:', data.slice(0, 5));
   return data;
 };
 
@@ -120,23 +121,33 @@ export const generateApplicationDetails = (count = 700) => {
   }
   
   // Sort by run date descending (most recent first)
-  return data.sort((a, b) => new Date(b.runDate) - new Date(a.runDate));
+  const sorted = data.sort((a, b) => {
+    const dateA = new Date(convertToISODate(a.runDate));
+    const dateB = new Date(convertToISODate(b.runDate));
+    return dateB - dateA;
+  });
+  
+  console.log('Generated application details sample:', sorted.slice(0, 5));
+  return sorted;
 };
 
 // Filter runtime data based on filters
 export const filterRuntimeData = (data, filters) => {
   console.log('Filtering runtime data:', { filters, dataLength: data.length });
-  return data.filter(item => {
+  
+  const filtered = data.filter(item => {
     // Environment filter
-    if (filters.environment && filters.environment !== '' && filters.environment !== 'ALL') {
+    if (filters.environment && filters.environment.trim() !== '' && filters.environment !== 'ALL') {
       if (item.env !== filters.environment) {
+        console.log(`Environment filter: ${item.env} !== ${filters.environment}`);
         return false;
       }
     }
     
     // Type filter
-    if (filters.type && filters.type !== '' && filters.type !== 'ALL') {
+    if (filters.type && filters.type.trim() !== '' && filters.type !== 'ALL') {
       if (item.type !== filters.type) {
+        console.log(`Type filter: ${item.type} !== ${filters.type}`);
         return false;
       }
     }
@@ -146,6 +157,7 @@ export const filterRuntimeData = (data, filters) => {
       const itemDate = convertToISODate(item.date);
       const fromDate = convertToISODate(filters.fromDate);
       if (itemDate < fromDate) {
+        console.log(`From date filter: ${itemDate} < ${fromDate}`);
         return false;
       }
     }
@@ -154,12 +166,16 @@ export const filterRuntimeData = (data, filters) => {
       const itemDate = convertToISODate(item.date);
       const toDate = convertToISODate(filters.toDate);
       if (itemDate > toDate) {
+        console.log(`To date filter: ${itemDate} > ${toDate}`);
         return false;
       }
     }
     
     return true;
   });
+  
+  console.log('Filtered runtime data result:', { originalLength: data.length, filteredLength: filtered.length });
+  return filtered;
 };
 
 // Helper function to convert MM-DD-YYYY to YYYY-MM-DD for comparison
@@ -177,23 +193,32 @@ const convertToISODate = (dateStr) => {
     return `${year}-${month}-${day}`;
   }
   
+  // Handle date input format (YYYY-MM-DD from HTML date input)
+  if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    return dateStr;
+  }
+  
+  console.log('Unknown date format:', dateStr);
   return dateStr;
 };
 
 // Filter application details based on filters
 export const filterApplicationDetails = (data, filters) => {
   console.log('Filtering application details:', { filters, dataLength: data.length });
-  return data.filter(item => {
+  
+  const filtered = data.filter(item => {
     // Environment filter
-    if (filters.environment && filters.environment !== '' && filters.environment !== 'ALL') {
+    if (filters.environment && filters.environment.trim() !== '' && filters.environment !== 'ALL') {
       if (item.env !== filters.environment) {
+        console.log(`App details env filter: ${item.env} !== ${filters.environment}`);
         return false;
       }
     }
     
     // Type filter
-    if (filters.type && filters.type !== '' && filters.type !== 'ALL') {
+    if (filters.type && filters.type.trim() !== '' && filters.type !== 'ALL') {
       if (item.type !== filters.type) {
+        console.log(`App details type filter: ${item.type} !== ${filters.type}`);
         return false;
       }
     }
@@ -203,6 +228,7 @@ export const filterApplicationDetails = (data, filters) => {
       const itemDate = convertToISODate(item.runDate);
       const fromDate = convertToISODate(filters.fromDate);
       if (itemDate < fromDate) {
+        console.log(`App details from date filter: ${itemDate} < ${fromDate}`);
         return false;
       }
     }
@@ -211,12 +237,16 @@ export const filterApplicationDetails = (data, filters) => {
       const itemDate = convertToISODate(item.runDate);
       const toDate = convertToISODate(filters.toDate);
       if (itemDate > toDate) {
+        console.log(`App details to date filter: ${itemDate} > ${toDate}`);
         return false;
       }
     }
     
     return true;
   });
+  
+  console.log('Filtered application details result:', { originalLength: data.length, filteredLength: filtered.length });
+  return filtered;
 };
 
 // Aggregate runtime data for charts (compute averages for ALL selections)
@@ -306,11 +336,23 @@ export const getSlaDetails = async (filters) => {
   // Mock implementation
   return new Promise((resolve) => {
     setTimeout(() => {
+      console.log('getSlaDetails called with filters:', filters);
+      
       const allRuntimeData = generateRuntimeData(30);
       const allApplicationData = generateApplicationDetails(700);
       
+      console.log('Generated data lengths:', {
+        runtime: allRuntimeData.length,
+        application: allApplicationData.length
+      });
+      
       const filteredRuntimeData = filterRuntimeData(allRuntimeData, filters);
       const filteredApplicationData = filterApplicationDetails(allApplicationData, filters);
+      
+      console.log('Final filtered data lengths:', {
+        runtime: filteredRuntimeData.length,
+        application: filteredApplicationData.length
+      });
       
       resolve({
         runtimeData: filteredRuntimeData,

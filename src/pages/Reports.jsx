@@ -196,12 +196,16 @@ const Reports = () => {
   // Prepare chart data based on current filters
   const getChartData = (type) => {
     if (slaData.runtimeData.length === 0) {
+      console.log('No runtime data available for charts');
       return { labels: [], datasets: [] };
     }
     
     // If type filter is ALL, show all data; otherwise filter by specific type
     const chartType = filters.type === 'ALL' ? type : filters.type;
-    return prepareChartData(slaData.runtimeData, chartType);
+    console.log('Preparing chart data for type:', chartType);
+    const chartData = prepareChartData(slaData.runtimeData, chartType);
+    console.log('Chart data prepared:', chartData);
+    return chartData;
   };
   
   const cardChartData = getChartData('CARD');
