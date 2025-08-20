@@ -61,27 +61,6 @@ const Reports = () => {
     { value: 'CARD', label: 'CARD' }
   ];
 
-  // Load initial data when component mounts
-  useEffect(() => {
-    loadInitialData();
-  }, []);
-
-  const loadInitialData = async () => {
-    console.log('🚀 Loading initial SLA data...');
-    setLoading(true);
-    try {
-      const result = await getSlaDetails({});
-      setRawData(result.rawData);
-      setFilteredData(result.filteredData);
-      setShowSlaData(true);
-    } catch (error) {
-      console.error('❌ Error loading initial data:', error);
-      setApiError('Failed to load initial data. Please refresh the page.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Apply filters whenever filters change
   const applyFilters = () => {
     console.log('🔄 Applying filters:', filters);
@@ -215,7 +194,22 @@ const Reports = () => {
       return;
     }
 
-    applyFilters();
+    console.log('🚀 Loading SLA data after Generate Report clicked...');
+    setLoading(true);
+    setApiError('');
+    
+    try {
+      // Load fresh data
+      const result = await getSlaDetails(filters);
+      setRawData(result.rawData);
+      setFilteredData(result.filteredData);
+      setShowSlaData(true);
+    } catch (error) {
+      console.error('❌ Error loading SLA data:', error);
+      setApiError('Failed to load SLA data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Chart data preparation
