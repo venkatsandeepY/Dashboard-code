@@ -141,6 +141,32 @@ export const filterRuntimeData = (data, filters) => {
   });
 };
 
+// Filter application details based on filters
+export const filterApplicationDetails = (data, filters) => {
+  return data.filter(item => {
+    // Environment filter
+    if (filters.environment && filters.environment !== '' && filters.environment !== 'ALL' && item.env !== filters.environment) {
+      return false;
+    }
+    
+    // Type filter
+    if (filters.type && filters.type !== '' && filters.type !== 'ALL' && item.type !== filters.type) {
+      return false;
+    }
+    
+    // Date range filter
+    if (filters.fromDate && item.runDate < filters.fromDate) {
+      return false;
+    }
+    
+    if (filters.toDate && item.runDate > filters.toDate) {
+      return false;
+    }
+    
+    return true;
+  });
+};
+
 // Aggregate runtime data for charts (compute averages for ALL selections)
 export const aggregateRuntimeData = (data) => {
   const aggregated = {};
