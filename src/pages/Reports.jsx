@@ -24,6 +24,7 @@ const Reports = () => {
   ];
 
   const environments = [
+    { value: 'ALL', label: 'ALL' },
     { value: 'ASYS', label: 'ASYS' },
     { value: 'TSYS', label: 'TSYS' },
     { value: 'MST0', label: 'MST0' },
@@ -34,6 +35,7 @@ const Reports = () => {
   ];
 
   const reportTypes = [
+    { value: 'ALL', label: 'ALL' },
     { value: 'bank', label: 'Bank' },
     { value: 'card', label: 'Card' }
   ];
@@ -142,11 +144,10 @@ const Reports = () => {
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric'
-    });
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}_${day}_${year}`;
   };
 
   return (
@@ -267,17 +268,14 @@ const Reports = () => {
                 <label className="block text-sm font-medium text-gray-700">
                   From Date <span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={filters.fromDate}
-                    onChange={(e) => handleFilterChange('fromDate', e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                      errors.fromDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    } pr-10`}
-                  />
-                  <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                </div>
+                <input
+                  type="date"
+                  value={filters.fromDate}
+                  onChange={(e) => handleFilterChange('fromDate', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                    errors.fromDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
+                  }`}
+                />
                 {errors.fromDate && (
                   <div className="flex items-center gap-1 text-red-600 text-xs">
                     <AlertCircle className="w-3 h-3" />
@@ -291,17 +289,14 @@ const Reports = () => {
                 <label className="block text-sm font-medium text-gray-700">
                   To Date <span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={filters.toDate}
-                    onChange={(e) => handleFilterChange('toDate', e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                      errors.toDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    } pr-10`}
-                  />
-                  <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                </div>
+                <input
+                  type="date"
+                  value={filters.toDate}
+                  onChange={(e) => handleFilterChange('toDate', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                    errors.toDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
+                  }`}
+                />
                 {errors.toDate && (
                   <div className="flex items-center gap-1 text-red-600 text-xs">
                     <AlertCircle className="w-3 h-3" />
