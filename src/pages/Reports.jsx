@@ -794,7 +794,7 @@ const Reports = () => {
                 </p>
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                   🚧 Coming Soon
-                </p>
+                </div>
               </div>
             </div>
           </div>
