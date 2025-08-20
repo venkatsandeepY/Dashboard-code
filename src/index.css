@@ -1,5 +1,2 @@
 /* Import the main styles */
 @import './styles/index.css';
-
-/* Import Bootstrap CSS */
-@import 'bootstrap/dist/css/bootstrap.min.css';
