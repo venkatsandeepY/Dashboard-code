@@ -213,7 +213,7 @@ const Reports = () => {
                     onChange={(e) => handleFilterChange('environment', e.target.value)}
                     className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.environment ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    }`}
+                    } appearance-none pr-10`}
                   >
                     <option value="">Select Environment</option>
                     {environments.map((env) => (
@@ -222,7 +222,7 @@ const Reports = () => {
                       </option>
                     ))}
                   </select>
-                  <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
                 {errors.environment && (
                   <div className="flex items-center gap-1 text-red-600 text-xs">
@@ -243,7 +243,7 @@ const Reports = () => {
                     onChange={(e) => handleFilterChange('type', e.target.value)}
                     className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.type ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    }`}
+                    } appearance-none pr-10`}
                   >
                     <option value="">Select Type</option>
                     {reportTypes.map((type) => (
@@ -252,7 +252,7 @@ const Reports = () => {
                       </option>
                     ))}
                   </select>
-                  <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
                 {errors.type && (
                   <div className="flex items-center gap-1 text-red-600 text-xs">
@@ -274,9 +274,9 @@ const Reports = () => {
                     onChange={(e) => handleFilterChange('fromDate', e.target.value)}
                     className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.fromDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    }`}
+                    } pr-10`}
                   />
-                  <Calendar className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                  <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
                 {errors.fromDate && (
                   <div className="flex items-center gap-1 text-red-600 text-xs">
@@ -298,9 +298,9 @@ const Reports = () => {
                     onChange={(e) => handleFilterChange('toDate', e.target.value)}
                     className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.toDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    }`}
+                    } pr-10`}
                   />
-                  <Calendar className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                  <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
                 {errors.toDate && (
                   <div className="flex items-center gap-1 text-red-600 text-xs">
