@@ -62,7 +62,14 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
             return `ENV: ${environment} | TYPE: ${type}`;
           },
           label: function(context) {
-            return `${context.dataset.label}: ${context.parsed.y.toFixed(2)} hours`;
+            const value = context.parsed.y.toFixed(2);
+            const label = context.dataset.label;
+            
+            if (label.includes('Weighted')) {
+              return `${label}: ${value}h (SLA Target)`;
+            } else {
+              return `${label}: ${value}h (Actual Performance)`;
+            }
           }
         },
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
