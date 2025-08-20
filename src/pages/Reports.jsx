@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings, Search, ChevronLeft, ChevronRight, BarChart } from 'react-feather';
+import { ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings, Search, ChevronLeft, ChevronRight, BarChart } from 'react-feather';
 import { generateReport } from '../services/reportService';
 import { 
   getSlaDetails, 
@@ -59,15 +59,6 @@ const Reports = () => {
     { value: 'BANK', label: 'BANK' },
     { value: 'CARD', label: 'CARD' }
   ];
-
-  // Apply filters whenever filters change
-  const applyFilters = () => {
-    console.log('🔄 Applying filters:', filters);
-    const filtered = filterData(rawData, filters);
-    setFilteredData(filtered);
-    setCurrentPage(1); // Reset pagination
-    setSearchTerm(''); // Reset search
-  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -134,61 +125,11 @@ const Reports = () => {
     setErrors({});
     setApiError('');
     setReportGenerated(false);
-  };
-
-  const handleGenerateReport = async () => {
-    // For SLA Reports, load and filter data instead of generating a file
-    if (activeTab === 'sla-reports') {
-      await handleSlaSubmit();
-      return;
-    }
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsGenerating(true);
-    setApiError('');
-    setReportGenerated(false);
-
-    try {
-      const reportData = {
-        tab: activeTab,
-        environment: filters.environment,
-        type: filters.type,
-        fromDate: filters.fromDate,
-        toDate: filters.toDate
-      };
-
-      await generateReport(reportData);
-      setReportGenerated(true);
-      
-      // Auto-hide success message after 5 seconds
-      setTimeout(() => {
-        setReportGenerated(false);
-      }, 5000);
-
-    } catch (error) {
-      console.error('Report generation failed:', error);
-      setApiError(error.message || 'Failed to generate report. Please try again.');
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${month}_${day}_${year}`;
+    setShowSlaData(false);
   };
 
   // Handle form submission for SLA reports
   const handleSlaSubmit = async () => {
-    if (activeTab !== 'sla-reports') return;
-    
     if (!validateForm()) {
       return;
     }
@@ -467,14 +408,14 @@ const Reports = () => {
               {/* Generate Report Button */}
               <div className="flex justify-end">
                 <button
-                  onClick={activeTab === 'sla-reports' ? handleSlaSubmit : handleGenerateReport}
-                  disabled={isGenerating || loading}
+                  onClick={handleSlaSubmit}
+                  disabled={loading}
                   className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                 >
-                  {(isGenerating || loading) ? (
+                  {loading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      {activeTab === 'sla-reports' ? 'Generating...' : 'Generating...'}
+                      Generating...
                     </>
                   ) : (
                     <>
@@ -487,22 +428,6 @@ const Reports = () => {
             </div>
           )}
         </div>
-
-        {/* Success Message */}
-        {reportGenerated && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <div>
-                <h3 className="text-sm font-medium text-green-800">Report Generated Successfully</h3>
-                <p className="text-sm text-green-700 mt-1">
-                  Your {reportTypes.find(t => t.value === filters.type)?.label || 'report'} for {filters.environment} 
-                  from {formatDate(filters.fromDate)} to {formatDate(filters.toDate)} has been generated and downloaded.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Error Message */}
         {apiError && (

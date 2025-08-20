@@ -131,10 +131,6 @@ export const generateSlaData = (days = 30, recordsPerDay = 25) => {
   }
   
   console.log(`✅ Generated ${data.length} SLA records`);
-  console.log('📊 Sample data:', data.slice(0, 3));
-  console.log('🏢 Environments:', [...new Set(data.map(d => d.env))]);
-  console.log('🏷️ Types:', [...new Set(data.map(d => d.type))]);
-  
   return data;
 };
 
@@ -171,18 +167,10 @@ export const filterData = (data, filters) => {
       if (dateTo && rowDate > dateTo) dateMatch = false;
     }
     
-    const keep = envMatch && typeMatch && dateMatch;
-    
-    if (!keep) {
-      console.log(`❌ Filtered out: ${row.env}-${row.type}-${formatDateMDY(row.runDate)} (env:${envMatch}, type:${typeMatch}, date:${dateMatch})`);
-    }
-    
-    return keep;
+    return envMatch && typeMatch && dateMatch;
   });
   
   console.log('📤 Filtered data length:', filtered.length);
-  console.log('📊 Sample filtered:', filtered.slice(0, 2));
-  
   return filtered;
 };
 
@@ -258,8 +246,6 @@ export const buildSeries = (filteredData) => {
   });
   
   console.log('📈 Chart series built:', { labels: labels.length, weightedAvg: weightedAvg.length, actualAvg: actualAvg.length });
-  console.log('📊 Sample weighted avg:', weightedAvg.slice(0, 5));
-  console.log('📊 Sample actual avg:', actualAvg.slice(0, 5));
   
   return { labels, weightedAvg, actualAvg };
 };
