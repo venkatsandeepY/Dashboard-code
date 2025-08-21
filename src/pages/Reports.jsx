@@ -367,7 +367,6 @@ const Reports = () => {
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     From Date <span className="text-red-500">*</span>
-                  </label>
                   <CustomDatePicker
                     selected={filters.fromDate}
                     onChange={(date) => handleFilterChange('fromDate', date)}
@@ -386,7 +385,6 @@ const Reports = () => {
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     To Date <span className="text-red-500">*</span>
-                  </label>
                   <CustomDatePicker
                     selected={filters.toDate}
                     onChange={(date) => handleFilterChange('toDate', date)}
