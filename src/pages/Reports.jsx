@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings, Search, ChevronLeft, ChevronRight, BarChart } from 'react-feather';
 import { generateReport } from '../services/reportService';
+import CustomDatePicker from '../components/common/CustomDatePicker';
 import { 
   getSlaDetails, 
   filterData, 
@@ -368,14 +369,11 @@ const Reports = () => {
                     From Date <span className="text-red-500">*</span>
                   </label>
                   <input
-                    type="date"
-                    value={filters.fromDate}
-                    onChange={(e) => handleFilterChange('fromDate', e.target.value)}
+                  <CustomDatePicker
+                    selected={filters.fromDate}
+                    onChange={(date) => handleFilterChange('fromDate', date)}
                     placeholder="MM-DD-YYYY"
-                    lang="en-US"
-                    className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                      errors.fromDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    }`}
+                    error={!!errors.fromDate}
                   />
                   {errors.fromDate && (
                     <div className="flex items-center gap-1 text-red-600 text-xs">
@@ -391,14 +389,11 @@ const Reports = () => {
                     To Date <span className="text-red-500">*</span>
                   </label>
                   <input
-                    type="date"
-                    value={filters.toDate}
-                    onChange={(e) => handleFilterChange('toDate', e.target.value)}
+                  <CustomDatePicker
+                    selected={filters.toDate}
+                    onChange={(date) => handleFilterChange('toDate', date)}
                     placeholder="MM-DD-YYYY"
-                    lang="en-US"
-                    className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                      errors.toDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    }`}
+                    error={!!errors.toDate}
                   />
                   {errors.toDate && (
                     <div className="flex items-center gap-1 text-red-600 text-xs">
