@@ -371,6 +371,7 @@ const Reports = () => {
                     type="date"
                     value={filters.fromDate}
                     onChange={(e) => handleFilterChange('fromDate', e.target.value)}
+                    placeholder="mm-dd-yyyy"
                     className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.fromDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
                     }`}
@@ -392,6 +393,7 @@ const Reports = () => {
                     type="date"
                     value={filters.toDate}
                     onChange={(e) => handleFilterChange('toDate', e.target.value)}
+                    placeholder="mm-dd-yyyy"
                     className={`w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.toDate ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
                     }`}
