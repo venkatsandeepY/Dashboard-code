@@ -8,6 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
@@ -19,9 +20,43 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend
+  Filler,
 );
 
 const SlaRuntimeChart = ({ title, data, environment, type }) => {
+  // Calculate average runtime from actual runtime data
+  const calculateAverageRuntime = () => {
+    if (!data || !data.datasets || data.datasets.length < 2) return 0;
+    
+    const actualRuntimeData = data.datasets[1].data; // Second dataset is actual runtime
+    if (!actualRuntimeData || actualRuntimeData.length === 0) return 0;
+    
+    const sum = actualRuntimeData.reduce((acc, value) => acc + (value || 0), 0);
+    return Math.round((sum / actualRuntimeData.length) * 100) / 100;
+  };
+
+  const averageRuntime = calculateAverageRuntime();
+
+  // Create enhanced data with average reference line
+  const enhancedData = data && data.datasets ? {
+    ...data,
+    datasets: [
+      ...data.datasets,
+      {
+        label: `Average Runtime (${averageRuntime}h)`,
+        data: new Array(data.labels?.length || 0).fill(averageRuntime),
+        borderColor: 'rgb(34, 197, 94)',
+        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        borderWidth: 2,
+        borderDash: [10, 5],
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        fill: false,
+        tension: 0
+      }
+    ]
+  } : data;
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -67,6 +102,8 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
             
             if (label.includes('Weighted')) {
               return `${label}: ${value}h (SLA Target)`;
+            } else if (label.includes('Average')) {
+              return `${label}: ${value}h (Reference Line)`;
             } else {
               return `${label}: ${value}h (Actual Performance)`;
             }
@@ -149,12 +186,30 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
   }
 
   return (
-    <div style={{ height: '320px' }}>
+    <div>
+      {/* Summary Text */}
+      <div className="mb-3 p-3 bg-light rounded border-start border-4 border-success">
+        <div className="text-sm text-muted mb-1">
+          <strong>Runtime Summary</strong>
+        </div>
+        <div className="text-sm">
+          The average runtime for <strong>{type}</strong> is <strong>{averageRuntime} hours</strong> over the selected period.
+          {averageRuntime > 0 && (
+            <span className="text-muted ms-2">
+              (Reference line shown in green)
+            </span>
+          )}
+        </div>
+      </div>
+      
+      {/* Chart */}
+      <div style={{ height: '320px' }}>
       <Line 
-        data={data} 
+          data={enhancedData} 
         options={options}
         aria-label={`${title} chart showing weighted average vs actual runtime`}
       />
+      </div>
     </div>
   );
 };
