@@ -368,7 +368,6 @@ const Reports = () => {
                   <label className="block text-sm font-medium text-gray-700">
                     From Date <span className="text-red-500">*</span>
                   </label>
-                  <input
                   <CustomDatePicker
                     selected={filters.fromDate}
                     onChange={(date) => handleFilterChange('fromDate', date)}
@@ -388,7 +387,6 @@ const Reports = () => {
                   <label className="block text-sm font-medium text-gray-700">
                     To Date <span className="text-red-500">*</span>
                   </label>
-                  <input
                   <CustomDatePicker
                     selected={filters.toDate}
                     onChange={(date) => handleFilterChange('toDate', date)}
@@ -449,24 +447,24 @@ const Reports = () => {
               <div className="col-lg-6 mb-4">
                 <div className="card h-100">
                   <div className="card-body">
-                <SlaRuntimeChart
-                  title={`Weighted Avg vs Actual Runtime — ${leftChartType} (Duration in Hours)`}
-                  data={leftChartData}
-                  environment={filters.environment || 'ALL'}
-                  type={leftChartType}
-                />
+                    <SlaRuntimeChart
+                      title={`Weighted Avg vs Actual Runtime — ${leftChartType} (Duration in Hours)`}
+                      data={leftChartData}
+                      environment={filters.environment || 'ALL'}
+                      type={leftChartType}
+                    />
                   </div>
                 </div>
               </div>
               <div className="col-lg-6 mb-4">
                 <div className="card h-100">
                   <div className="card-body">
-                <SlaRuntimeChart
-                  title={`Weighted Avg vs Actual Runtime — ${rightChartType} (Duration in Hours)`}
-                  data={rightChartData}
-                  environment={filters.environment || 'ALL'}
-                  type={rightChartType}
-                />
+                    <SlaRuntimeChart
+                      title={`Weighted Avg vs Actual Runtime — ${rightChartType} (Duration in Hours)`}
+                      data={rightChartData}
+                      environment={filters.environment || 'ALL'}
+                      type={rightChartType}
+                    />
                   </div>
                 </div>
               </div>
