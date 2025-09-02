@@ -1,0 +1,14 @@
+/* Main CSS Entry Point */
+
+/* Import all style modules in the correct order */
+@import './variables.css';
+@import './base.css';
+@import './layout.css';
+@import './components.css';
+@import './animations.css';
+@import './utilities.css';
+
+/* Import Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
