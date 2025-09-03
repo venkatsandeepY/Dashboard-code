@@ -1,0 +1,92 @@
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import App from './App';
+
+// Mocks for child components
+jest.mock('./components/common/Sidebar', () => ({ activeItem, isCollapsed, onToggleCollapse }) => (
+  <button data-testid="sidebar" onClick={onToggleCollapse}>
+    Sidebar-{activeItem}-{String(isCollapsed)}
+  </button>
+));
+jest.mock('./components/common/Header', () => ({ isCollapsed, onToggleCollapse }) => (
+  <button data-testid="header" onClick={onToggleCollapse}>
+    Header-{String(isCollapsed)}
+  </button>
+));
+jest.mock('./components/common/Footer', () => () => (
+  <div data-testid="footer">Footer</div>
+));
+
+jest.mock('./pages/Dashboard', () => () => (
+  <div data-testid="dashboard">Dashboard Page</div>
+));
+jest.mock('./pages/Status', () => () => (
+  <div data-testid="status">Status Page</div>
+));
+jest.mock('./pages/Reports', () => () => (
+  <div data-testid="reports">Reports Page</div>
+));
+
+describe('App integration', () => {
+  it('renders dashboard, sidebar, header, and footer on root route', () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(screen.getByTestId('dashboard')).toBeInTheDocument();
+    expect(screen.getByTestId('sidebar')).toBeInTheDocument();
+    expect(screen.getByTestId('header')).toBeInTheDocument();
+    expect(screen.getByTestId('footer')).toBeInTheDocument();
+  });
+
+  it('renders Status page and sets active sidebar for /status route', () => {
+    render(
+      <MemoryRouter initialEntries={['/status']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(screen.getByTestId('status')).toBeInTheDocument();
+    expect(screen.getByTestId('sidebar').textContent).toContain('status');
+  });
+
+  it('renders Reports page and sets active sidebar for /reports route', () => {
+    render(
+      <MemoryRouter initialEntries={['/reports']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(screen.getByTestId('reports')).toBeInTheDocument();
+    expect(screen.getByTestId('sidebar').textContent).toContain('reports');
+  });
+
+  it('collapses and expands the sidebar when the header button is clicked', () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    );
+    const sidebar = screen.getByTestId('sidebar');
+    const header = screen.getByTestId('header');
+    // Default not collapsed (false)
+    expect(sidebar.textContent).toContain('false');
+    // Click header to toggle collapse
+    fireEvent.click(header);
+    // Should be collapsed (true)
+    expect(sidebar.textContent).toContain('true');
+    // Click again to expand
+    fireEvent.click(header);
+    expect(sidebar.textContent).toContain('false');
+  });
+
+  it('defaults to dashboard sidebar activeItem if path not matched', () => {
+    render(
+      <MemoryRouter initialEntries={['/random']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(screen.getByTestId('dashboard')).toBeInTheDocument();
+    expect(screen.getByTestId('sidebar').textContent).toContain('dashboard');
+  });
+});
