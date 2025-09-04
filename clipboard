@@ -1,92 +1,247 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import App from './App';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import { getSlaTarget } from '../utils/slaDataService';
 
-// Mocks for child components
-jest.mock('./components/common/Sidebar', () => ({ activeItem, isCollapsed, onToggleCollapse }) => (
-  <button data-testid="sidebar" onClick={onToggleCollapse}>
-    Sidebar-{activeItem}-{String(isCollapsed)}
-  </button>
-));
-jest.mock('./components/common/Header', () => ({ isCollapsed, onToggleCollapse }) => (
-  <button data-testid="header" onClick={onToggleCollapse}>
-    Header-{String(isCollapsed)}
-  </button>
-));
-jest.mock('./components/common/Footer', () => () => (
-  <div data-testid="footer">Footer</div>
-));
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+);
 
-jest.mock('./pages/Dashboard', () => () => (
-  <div data-testid="dashboard">Dashboard Page</div>
-));
-jest.mock('./pages/Status', () => () => (
-  <div data-testid="status">Status Page</div>
-));
-jest.mock('./pages/Reports', () => () => (
-  <div data-testid="reports">Reports Page</div>
-));
+const SlaRuntimeChart = ({ title, data, environment, type }) => {
+  const [slaTarget, setSlaTarget] = useState(0);
+  const [isLoadingSlaTarget, setIsLoadingSlaTarget] = useState(true);
 
-describe('App integration', () => {
-  it('renders dashboard, sidebar, header, and footer on root route', () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>
+  // Calculate average runtime from actual runtime data
+  const calculateAverageRuntime = () => {
+    if (!data || !data.datasets || data.datasets.length < 2) return 0;
+    
+    const actualRuntimeData = data.datasets[1].data; // Second dataset is actual runtime
+    if (!actualRuntimeData || actualRuntimeData.length === 0) return 0;
+    
+    const sum = actualRuntimeData.reduce((acc, value) => acc + (value || 0), 0);
+    return Math.round((sum / actualRuntimeData.length) * 100) / 100;
+  };
+
+  const averageRuntime = calculateAverageRuntime();
+
+  // Fetch SLA target when component mounts or type changes
+  useEffect(() => {
+    const fetchSlaTarget = async () => {
+      setIsLoadingSlaTarget(true);
+      try {
+        const target = await getSlaTarget(type);
+        setSlaTarget(target);
+      } catch (error) {
+        console.error('Error fetching SLA target:', error);
+        setSlaTarget(0);
+      } finally {
+        setIsLoadingSlaTarget(false);
+      }
+    };
+
+    if (type) {
+      fetchSlaTarget();
+    }
+  }, [type]);
+
+  // Create enhanced data with average reference line
+  const enhancedData = data && data.datasets ? {
+    ...data,
+    datasets: [
+      ...data.datasets,
+      {
+        label: `Average Runtime (Calculated)`,
+        data: new Array(data.labels?.length || 0).fill(averageRuntime),
+        borderColor: 'rgb(34, 197, 94)',
+        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        borderWidth: 2,
+        borderDash: [10, 5],
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        fill: false,
+        tension: 0
+      }
+    ]
+  } : data;
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: {
+      duration: 300
+    },
+    layout: {
+      padding: {
+        top: 10,
+        bottom: 10,
+        left: 10,
+        right: 10
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'top',
+        align: 'center',
+        labels: {
+          usePointStyle: true,
+          padding: 8,
+          font: {
+            size: 10
+          },
+          boxWidth: 12,
+          boxHeight: 12
+        }
+      },
+      title: {
+        display: true,
+        text: title,
+        font: {
+          size: 12,
+          weight: 'bold'
+        },
+        padding: {
+          top: 5,
+          bottom: 10
+        }
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+          title: function (context) {
+            return `Date: ${context[0].label}`;
+          },
+          afterTitle: function () {
+            return `ENV: ${environment} | TYPE: ${type}`;
+          },
+          label: function (context) {
+            const value = context.parsed.y.toFixed(2);
+            const label = context.dataset.label;
+
+            if (label.includes('SLA Target')) {
+              return `${label}: ${value}h (From SOP)`;
+            } else if (label.includes('Average Runtime')) {
+              return `${label}: ${value}h (Calculated)`;
+            } else if (label.includes('Actual Runtime')) {
+              return `${label}: ${value}h (Performance)`;
+            } else {
+              return `${label}: ${value}h`;
+            }
+          }
+        },
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: 'white',
+        bodyColor: 'white',
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderWidth: 1
+      }
+    },
+    scales: {
+      x: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Date',
+          font: {
+            size: 10,
+            weight: 'bold'
+          }
+        },
+        ticks: {
+          font: {
+            size: 9
+          }
+        },
+        grid: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.1)'
+        }
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Duration (hours)',
+          font: {
+            size: 10,
+            weight: 'bold'
+          }
+        },
+        beginAtZero: true,
+        max: 10,
+        ticks: {
+          stepSize: 2,
+          font: {
+            size: 9
+          },
+          callback: function (value) {
+            return value + 'h';
+          }
+        },
+        grid: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.1)'
+        }
+      }
+    },
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    },
+    elements: {
+      point: {
+        radius: 3,
+        hoverRadius: 5
+      },
+      line: {
+        borderWidth: 2
+      }
+    }
+  };
+
+  // Show "No data" message if no data available
+  if (!data || !data.labels || data.labels.length === 0) {
+    return (
+      <div className="d-flex align-items-center justify-content-center" style={{ height: '400px' }}>
+        <div className="text-center">
+          <div className="text-muted mb-2" style={{ fontSize: '2rem' }}>📊</div>
+          <div className="text-secondary fw-medium">{title}</div>
+          <div className="text-muted small mt-2">No data for selected filters</div>
+        </div>
+      </div>
     );
-    expect(screen.getByTestId('dashboard')).toBeInTheDocument();
-    expect(screen.getByTestId('sidebar')).toBeInTheDocument();
-    expect(screen.getByTestId('header')).toBeInTheDocument();
-    expect(screen.getByTestId('footer')).toBeInTheDocument();
-  });
+  }
 
-  it('renders Status page and sets active sidebar for /status route', () => {
-    render(
-      <MemoryRouter initialEntries={['/status']}>
-        <App />
-      </MemoryRouter>
-    );
-    expect(screen.getByTestId('status')).toBeInTheDocument();
-    expect(screen.getByTestId('sidebar').textContent).toContain('status');
-  });
+  return (
+    <div>
+      {/* Chart */}
+      <div style={{ height: '400px', width: '100%' }}>
+      <Line 
+          data={enhancedData} 
+        options={options}
+        aria-label={`${title} chart showing weighted average vs actual runtime`}
+      />
+      </div>
+    </div>
+  );
+};
 
-  it('renders Reports page and sets active sidebar for /reports route', () => {
-    render(
-      <MemoryRouter initialEntries={['/reports']}>
-        <App />
-      </MemoryRouter>
-    );
-    expect(screen.getByTestId('reports')).toBeInTheDocument();
-    expect(screen.getByTestId('sidebar').textContent).toContain('reports');
-  });
-
-  it('collapses and expands the sidebar when the header button is clicked', () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>
-    );
-    const sidebar = screen.getByTestId('sidebar');
-    const header = screen.getByTestId('header');
-    // Default not collapsed (false)
-    expect(sidebar.textContent).toContain('false');
-    // Click header to toggle collapse
-    fireEvent.click(header);
-    // Should be collapsed (true)
-    expect(sidebar.textContent).toContain('true');
-    // Click again to expand
-    fireEvent.click(header);
-    expect(sidebar.textContent).toContain('false');
-  });
-
-  it('defaults to dashboard sidebar activeItem if path not matched', () => {
-    render(
-      <MemoryRouter initialEntries={['/random']}>
-        <App />
-      </MemoryRouter>
-    );
-    expect(screen.getByTestId('dashboard')).toBeInTheDocument();
-    expect(screen.getByTestId('sidebar').textContent).toContain('dashboard');
-  });
-});
+export default SlaRuntimeChart;
