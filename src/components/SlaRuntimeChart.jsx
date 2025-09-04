@@ -11,6 +11,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { getSlaTarget } from '../utils/slaDataService';
 
 ChartJS.register(
   CategoryScale,
@@ -27,15 +28,16 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
   // Calculate average runtime from actual runtime data
   const calculateAverageRuntime = () => {
     if (!data || !data.datasets || data.datasets.length < 2) return 0;
-    
+
     const actualRuntimeData = data.datasets[1].data; // Second dataset is actual runtime
     if (!actualRuntimeData || actualRuntimeData.length === 0) return 0;
-    
+
     const sum = actualRuntimeData.reduce((acc, value) => acc + (value || 0), 0);
     return Math.round((sum / actualRuntimeData.length) * 100) / 100;
   };
 
   const averageRuntime = calculateAverageRuntime();
+  const slaTarget = getSlaTarget(type);
 
   // Create enhanced data with average reference line
   const enhancedData = data && data.datasets ? {
@@ -43,7 +45,7 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
     datasets: [
       ...data.datasets,
       {
-        label: `Average Runtime (${averageRuntime}h)`,
+        label: `Average Runtime (Calculated)`,
         data: new Array(data.labels?.length || 0).fill(averageRuntime),
         borderColor: 'rgb(34, 197, 94)',
         backgroundColor: 'rgba(34, 197, 94, 0.1)',
@@ -90,22 +92,24 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
         mode: 'index',
         intersect: false,
         callbacks: {
-          title: function(context) {
+          title: function (context) {
             return `Date: ${context[0].label}`;
           },
-          afterTitle: function() {
+          afterTitle: function () {
             return `ENV: ${environment} | TYPE: ${type}`;
           },
-          label: function(context) {
+          label: function (context) {
             const value = context.parsed.y.toFixed(2);
             const label = context.dataset.label;
-            
-            if (label.includes('Weighted')) {
-              return `${label}: ${value}h (SLA Target)`;
-            } else if (label.includes('Average')) {
-              return `${label}: ${value}h (Reference Line)`;
+
+            if (label.includes('SLA Target')) {
+              return `${label}: ${value}h (From SOP)`;
+            } else if (label.includes('Average Runtime')) {
+              return `${label}: ${value}h (Calculated)`;
+            } else if (label.includes('Actual Runtime')) {
+              return `${label}: ${value}h (Performance)`;
             } else {
-              return `${label}: ${value}h (Actual Performance)`;
+              return `${label}: ${value}h`;
             }
           }
         },
@@ -146,7 +150,7 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
         max: 10,
         ticks: {
           stepSize: 2,
-          callback: function(value) {
+          callback: function (value) {
             return value + 'h';
           }
         },
@@ -187,28 +191,13 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
 
   return (
     <div>
-      {/* Summary Text */}
-      <div className="mb-3 p-3 bg-light rounded border-start border-4 border-success">
-        <div className="text-sm text-muted mb-1">
-          <strong>Runtime Summary</strong>
-        </div>
-        <div className="text-sm">
-          The average runtime for <strong>{type}</strong> is <strong>{averageRuntime} hours</strong> over the selected period.
-          {averageRuntime > 0 && (
-            <span className="text-muted ms-2">
-              (Reference line shown in green)
-            </span>
-          )}
-        </div>
-      </div>
-      
       {/* Chart */}
       <div style={{ height: '320px' }}>
-      <Line 
-          data={enhancedData} 
-        options={options}
-        aria-label={`${title} chart showing weighted average vs actual runtime`}
-      />
+        <Line
+          data={enhancedData}
+          options={options}
+          aria-label={`${title} chart showing weighted average vs actual runtime`}
+        />
       </div>
     </div>
   );
