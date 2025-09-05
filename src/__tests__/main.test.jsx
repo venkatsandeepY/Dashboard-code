@@ -9,7 +9,9 @@ jest.mock('react-dom/client', () => ({
   }))
 }));
 
-// Mock the App component
+jest.mock('../App', () => {
+}
+)
 jest.mock('../App', () => {
   return function MockApp() {
     return React.createElement('div', { 'data-testid': 'app' }, 'Mocked App');
