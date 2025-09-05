@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, TrendingUp, FileText } from 'react-feather';
+import { Home, TrendingUp, FileText, MessageCircle } from 'react-feather';
 
 const Sidebar = ({ isCollapsed }) => {
   const navigate = useNavigate();
@@ -9,7 +9,8 @@ const Sidebar = ({ isCollapsed }) => {
   const navigationItems = [
     { id: 'dashboard', icon: Home, label: 'Dashboard', path: '/dashboard' },
     { id: 'status', icon: TrendingUp, label: 'Status', path: '/status' },
-    { id: 'reports', icon: FileText, label: 'Reports', path: '/reports' }
+    { id: 'reports', icon: FileText, label: 'Reports', path: '/reports' },
+    { id: 'feedback', icon: MessageCircle, label: 'Feedback', path: 'https://google.com' }
   ];
 
   const handleNavigation = (path) => {
