@@ -10,13 +10,18 @@ const Sidebar = ({ isCollapsed }) => {
     { id: 'dashboard', icon: Home, label: 'Dashboard', path: '/dashboard' },
     { id: 'status', icon: TrendingUp, label: 'Status', path: '/status' },
     { id: 'reports', icon: FileText, label: 'Reports', path: '/reports' },
-    { id: 'feedback', icon: MessageCircle, label: 'Feedback', path: 'https://google.com' }
+    { id: 'feedback', icon: MessageCircle, label: 'Feedback', path: 'https://google.com' },
   ];
 
   const handleNavigation = (path) => {
+    console.log('Navigating to:', path);
+    console.log('Is external URL:', path.startsWith('http'));
+    
     if (path.startsWith('http')) {
+      console.log('Opening external URL in new tab');
       window.open(path, '_blank');
     } else {
+      console.log('Navigating internally');
       navigate(path);
     }
   };
