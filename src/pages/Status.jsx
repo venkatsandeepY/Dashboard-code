@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Clock, RotateCcw, Calendar, X, Activity } from 'lucide-react';
-import { fetchBatchStatusData } from '../data/mockData';
+import { fetchBatchStatusData, mockBatchStatusData } from '../data/mockData';
 
 const Status = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [batchData, setBatchData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [batchData, setBatchData] = useState(mockBatchStatusData);
+  const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
-  const [expandedType, setExpandedType] = useState(null);
   const [error, setError] = useState(null);
 
   // Update current time every second
@@ -29,13 +28,14 @@ const Status = () => {
 
   const loadBatchData = async () => {
     try {
-      setLoading(true);
       setError(null);
       const data = await fetchBatchStatusData();
       setBatchData(data);
     } catch (error) {
       console.error('Error loading batch data:', error);
       setError('Failed to load batch data. Please try again.');
+      // Use mock data as fallback
+      setBatchData(mockBatchStatusData);
     } finally {
       setLoading(false);
     }
@@ -49,10 +49,10 @@ const Status = () => {
       setBatchData(data);
       // Clear any open dropdowns on refresh
       setExpandedRow(null);
-      setExpandedType(null);
     } catch (error) {
       console.error('Error refreshing batch data:', error);
       setError('Failed to refresh batch data. Please try again.');
+      setBatchData(mockBatchStatusData);
     } finally {
       setRefreshing(false);
     }
@@ -112,10 +112,8 @@ const Status = () => {
     const key = `${environment}-${batchType}`;
     if (expandedRow === key) {
       setExpandedRow(null);
-      setExpandedType(null);
     } else {
       setExpandedRow(key);
-      setExpandedType('phases');
     }
   };
 
