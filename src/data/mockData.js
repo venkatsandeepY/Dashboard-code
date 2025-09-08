@@ -1,5 +1,10 @@
 // Real-time API service for batch status
 export const fetchBatchStatusData = async () => {
+  // Check if we should use mock data in development
+  if (import.meta.env.VITE_MOCK_API === 'true') {
+    return mockBatchStatusData;
+  }
+
   try {
     const response = await fetch('/api/v1/overallstatus');
     if (!response.ok) {
