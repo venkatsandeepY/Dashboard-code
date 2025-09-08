@@ -1,32 +1,30 @@
+import { fetchBatchStatus } from '../services/apiService';
+import { shouldUseMockData } from '../config/environment';
+
 // Real-time API service for batch status
 export const fetchBatchStatusData = async () => {
-  // Check if we should use mock data in development
-  if (import.meta.env.VITE_MOCK_API === 'true') {
+  // Check if we should use mock data
+  if (shouldUseMockData()) {
+    console.log('🔧 Using mock data (configured to use mock data)');
     return mockBatchStatusData;
   }
 
   try {
-    const response = await fetch('/api/v1/overallstatus');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
+    console.log('🌐 Fetching real-time data from backend API...');
+    const data = await fetchBatchStatus();
+    console.log('✅ Successfully fetched real-time data:', data);
     return data;
   } catch (error) {
-    console.error('Error fetching batch status:', error);
-    // Fallback to mock data for development
-    return mockBatchStatusData;
+    console.error('❌ Error fetching batch status from API:', error);
     
-    // Alternative: If you don't want to show mock data and prefer to show backend errors:
-    // throw error; // This will propagate the actual backend error to the UI
-    // 
-    // Or return a structured error response:
-    // return {
-    //   error: true,
-    //   message: error.message || 'Failed to fetch batch status',
-    //   lastRefresh: new Date().toISOString(),
-    //   batchDetails: []
-    // };
+    // Return structured error response with fallback data
+    return {
+      error: true,
+      message: error.message || 'Failed to fetch batch status from backend',
+      lastRefresh: new Date().toISOString(),
+      dataSource: 'FALLBACK',
+      batchDetails: mockBatchStatusData.batchDetails
+    };
   }
 };
 

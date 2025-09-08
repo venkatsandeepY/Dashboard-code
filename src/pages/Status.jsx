@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Clock, RotateCcw, Calendar, X, Activity } from 'react-feather';
 import { fetchBatchStatusData, mockBatchStatusData } from '../data/mockData';
+import { getRefreshInterval } from '../config/environment';
 
 const Status = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -21,19 +22,29 @@ const Status = () => {
   // Load batch data on component mount
   useEffect(() => {
     loadBatchData();
-    // Auto-refresh every 30 seconds
-    const refreshInterval = setInterval(loadBatchData, 30000);
+    // Auto-refresh based on environment configuration
+    const refreshInterval = setInterval(loadBatchData, getRefreshInterval());
     return () => clearInterval(refreshInterval);
   }, []);
 
   const loadBatchData = async () => {
     try {
       setError(null);
+      setLoading(true);
       const data = await fetchBatchStatusData();
+      
+      // Check if the response contains an error
+      if (data.error) {
+        setError(data.message || 'Failed to load batch data from backend');
+        console.warn('Using fallback data due to API error:', data.message);
+      } else {
+        console.log('✅ Successfully loaded real-time data from API');
+      }
+      
       setBatchData(data);
     } catch (error) {
       console.error('Error loading batch data:', error);
-      setError('Failed to load batch data. Please try again.');
+      setError(`Failed to load batch data: ${error.message}`);
       setBatchData(mockBatchStatusData);
     } finally {
       setLoading(false);
@@ -45,11 +56,20 @@ const Status = () => {
       setRefreshing(true);
       setError(null);
       const data = await fetchBatchStatusData();
+      
+      // Check if the response contains an error
+      if (data.error) {
+        setError(data.message || 'Failed to refresh batch data from backend');
+        console.warn('Using fallback data due to API error:', data.message);
+      } else {
+        console.log('✅ Successfully refreshed real-time data from API');
+      }
+      
       setBatchData(data);
       setExpandedRow(null);
     } catch (error) {
       console.error('Error refreshing batch data:', error);
-      setError('Failed to refresh batch data. Please try again.');
+      setError(`Failed to refresh batch data: ${error.message}`);
       setBatchData(mockBatchStatusData);
     } finally {
       setRefreshing(false);
@@ -113,6 +133,7 @@ const Status = () => {
       setExpandedRow(key);
     }
   };
+
 
   const StatusBadge = ({ status }) => {
     return (
@@ -358,6 +379,19 @@ const Status = () => {
           <div className="flex items-center gap-4">
             <div className="text-sm text-gray-600">
               Last Updated: {batchData?.lastRefresh || formatDateTime(currentTime.toISOString()).date + ' ' + formatDateTime(currentTime.toISOString()).time}
+            </div>
+            <div className="flex items-center gap-2">
+              <div className={`px-2 py-1 text-xs font-medium rounded-full ${
+                batchData?.dataSource === 'API' 
+                  ? 'bg-green-100 text-green-800' 
+                  : batchData?.dataSource === 'FALLBACK'
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : 'bg-gray-100 text-gray-800'
+              }`}>
+                {batchData?.dataSource === 'API' ? '🟢 Live Data' : 
+                 batchData?.dataSource === 'FALLBACK' ? '🟡 Fallback Data' : 
+                 '⚪ Mock Data'}
+              </div>
             </div>
             <button 
               onClick={handleRefresh}
