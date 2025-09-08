@@ -177,12 +177,12 @@ const Status = () => {
             <div className="flex items-center gap-3">
               <AlertCircle className="w-6 h-6 text-red-600" />
               <div>
-                <h3 className="text-lg font-medium text-red-800">Error Loading Data</h3>
+                <h3 className="text-lg font-medium text-red-800">System Issue</h3>
                 <p className="text-red-700 mt-1">
-                  Failed to fetch batch status data: {error}
+                  Issue in the system, please try again later.
                 </p>
                 <p className="text-red-600 text-sm mt-2">
-                  Please ensure the API server is running at http://localhost:8080
+                  {error}
                 </p>
               </div>
             </div>

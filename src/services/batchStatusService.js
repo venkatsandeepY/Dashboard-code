@@ -1,8 +1,6 @@
 // Batch Status Service - API integration for batch status data
 // Handles all API calls and data processing for batch status functionality
 
-import { mockBatchData } from '../data/mockData.js';
-
 const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 /**
@@ -11,30 +9,6 @@ const API_BASE_URL = 'http://localhost:8080/api/v1';
  */
 export const fetchOverallStatus = async () => {
   try {
-    // Check if mock API is enabled
-    if (import.meta.env.VITE_MOCK_API === 'true') {
-      // Transform mockBatchData to match API response structure
-      const mockApiResponse = {
-        lastRefresh: new Date().toLocaleString(),
-        batchDetails: Object.entries(mockBatchData).map(([environment, batches]) => ({
-          environment,
-          overallBatchStatus: batches.map(batch => ({
-            batchId: batch.batchId,
-            batchType: batch.batchType,
-            status: batch.status,
-            completion: batch.completion,
-            phase: batch.jobs ? Object.fromEntries(
-              batch.jobs.map(job => [job.jobName, { status: job.status }])
-            ) : {}
-          }))
-        }));
-      };
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return mockApiResponse;
-    }
-    
     const response = await fetch(`${API_BASE_URL}/overallstatus`);
     
     if (!response.ok) {
@@ -45,7 +19,11 @@ export const fetchOverallStatus = async () => {
     return data;
   } catch (error) {
     console.error('Error fetching overall status:', error);
-    throw error;
+    // Throw a more descriptive error message
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Unable to connect to the API server. Please ensure the backend service is running at http://localhost:8080');
+    }
+    throw new Error(`API Error: ${error.message}`);
   }
 };
 
