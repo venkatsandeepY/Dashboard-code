@@ -265,9 +265,24 @@ const Status = () => {
   const getDisplayData = () => {
     if (!batchData?.batchDetails) return [];
     
+    // Define the desired environment order
+    const environmentOrder = ['ASYS', 'TSYS', 'MST0', 'OSYS', 'ECT0', 'QSYS', 'VST0'];
+    
     const displayRows = [];
     
-    batchData.batchDetails.forEach(envData => {
+    // Sort environments according to the specified order
+    const sortedEnvData = batchData.batchDetails.sort((a, b) => {
+      const indexA = environmentOrder.indexOf(a.environment);
+      const indexB = environmentOrder.indexOf(b.environment);
+      
+      // If environment not found in order array, put it at the end
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      
+      return indexA - indexB;
+    });
+    
+    sortedEnvData.forEach(envData => {
       const environment = envData.environment;
       
       if (!envData.overallBatchStatus || envData.overallBatchStatus.length === 0) {
