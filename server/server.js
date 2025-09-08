@@ -8,76 +8,175 @@ const PORT = 8080;
 app.use(cors());
 app.use(express.json());
 
-// Generate realistic sample data that matches the expected API structure
-const generateBatchStatusData = () => {
-  const environments = ['ASYS', 'TSYS', 'MST0', 'OSYS', 'ECT0', 'QSYS', 'VST0'];
-  const batchTypes = ['CARD', 'BANK'];
-  const statuses = ['COMPLETED', 'INPROGRESS', 'NOTSTARTED', 'FAILED'];
-  const phaseNames = ['Pre-Processing', 'Main Processing', 'Post-Processing', 'Validation', 'Cleanup'];
-
-  const batchDetails = environments.map(env => {
-    // Generate 2-4 batches per environment
-    const batchCount = Math.floor(Math.random() * 3) + 2;
-    const overallBatchStatus = [];
-
-    for (let i = 0; i < batchCount; i++) {
-      const batchType = batchTypes[Math.floor(Math.random() * batchTypes.length)];
-      const batchId = `${env}_${batchType}_${String(i + 1).padStart(3, '0')}`;
-      const status = statuses[Math.floor(Math.random() * statuses.length)];
-      
-      // Generate completion percentage based on status
-      let completion;
-      switch (status) {
-        case 'COMPLETED':
-          completion = 100;
-          break;
-        case 'INPROGRESS':
-          completion = Math.floor(Math.random() * 80) + 10; // 10-90%
-          break;
-        case 'FAILED':
-          completion = Math.floor(Math.random() * 50); // 0-50%
-          break;
-        case 'NOTSTARTED':
-        default:
-          completion = 0;
-          break;
-      }
-
-      // Generate phases for this batch
-      const phases = {};
-      const numPhases = Math.floor(Math.random() * 3) + 2; // 2-4 phases
-      
-      for (let p = 0; p < numPhases; p++) {
-        const phaseName = phaseNames[p % phaseNames.length];
-        const phaseStatus = statuses[Math.floor(Math.random() * statuses.length)];
-        
-        phases[phaseName] = {
-          status: phaseStatus,
-          startTime: new Date(Date.now() - Math.random() * 3600000).toISOString(),
-          endTime: phaseStatus === 'COMPLETED' ? new Date().toISOString() : null
-        };
-      }
-
-      overallBatchStatus.push({
-        batchId: batchId,
-        batchType: batchType,
-        status: status,
-        completion: completion,
-        startTime: new Date(Date.now() - Math.random() * 7200000).toISOString(),
-        endTime: status === 'COMPLETED' ? new Date().toISOString() : null,
-        phase: phases
-      });
-    }
-
-    return {
-      environment: env,
-      overallBatchStatus: overallBatchStatus
-    };
-  });
-
+// Static mock data that matches the exact structure provided
+const getMockBatchStatusData = () => {
   return {
-    lastRefresh: new Date().toLocaleString(),
-    batchDetails: batchDetails
+    "lastRefresh": "SEP-05-2025 10:00",
+    "batchDetails": [
+      {
+        "environment": "ASYS",
+        "overallBatchStatus": [
+          {
+            "batchId": "A_20250904_SEP_CRD",
+            "batchType": "CARD",
+            "runDate": "SEP-04-25",
+            "lrd": "OCT-01-25",
+            "startTime": "SEP-04-25 19:40",
+            "endTime": "",
+            "status": "INPROGRESS",
+            "completion": "95",
+            "daysRun": null,
+            "days": "2912560",
+            "hours": "16",
+            "mins": "32",
+            "latest": "2025-09-04 00:00:00",
+            "eta": "SEP-05-25 10:02",
+            "phase": {
+              "POSTRUN": { "status": "COMPLETED" },
+              "CPB": { "status": "COMPLETED" },
+              "FDR": { "status": "COMPLETED" },
+              "PRECPB": { "status": "COMPLETED" },
+              "SOC": { "status": "COMPLETED" },
+              "END": { "status": "COMPLETED" },
+              "ER": { "status": "INPROGRESS" },
+              "CFR": { "status": "COMPLETED" },
+              "POSTCPB": { "status": "COMPLETED" }
+            },
+            "nextLRD": null
+          },
+          {
+            "batchId": "A_20250904_SEP_BNK",
+            "batchType": "BANK",
+            "runDate": "SEP-04-25",
+            "lrd": "OCT-01-25",
+            "startTime": "SEP-04-25 20:41",
+            "endTime": "SEP-05-25 10:00",
+            "status": "COMPLETED",
+            "completion": "100",
+            "daysRun": "0-1-5",
+            "days": "0",
+            "hours": "13",
+            "mins": "19",
+            "latest": "2025-09-04 00:00:00",
+            "eta": "",
+            "phase": {
+              "HBSCOD": { "status": "COMPLETED" },
+              "HBKCOP": { "status": "COMPLETED" },
+              "HBKOD": { "status": "COMPLETED" },
+              "CDS": { "status": "COMPLETED" },
+              "DEFBOO": { "status": "COMPLETED" },
+              "ECS": { "status": "COMPLETED" },
+              "INTRA": { "status": "COMPLETED" },
+              "DM": { "status": "COMPLETED" },
+              "PREPPAY": { "status": "COMPLETED" },
+              "END": { "status": "COMPLETED" },
+              "POSTBOD": { "status": "COMPLETED" },
+              "BTPRNT": { "status": "COMPLETED" }
+            },
+            "nextLRD": null
+          }
+        ]
+      },
+      {
+        "environment": "MSTO",
+        "overallBatchStatus": [
+          {
+            "batchId": "M_20250904_OCT_BNK",
+            "batchType": "BANK",
+            "runDate": "SEP-04-25",
+            "lrd": "SEP-07-25",
+            "startTime": "SEP-04-25 04:03",
+            "endTime": "",
+            "status": "INPROGRESS",
+            "completion": "97",
+            "daysRun": null,
+            "days": "2912561",
+            "hours": "8",
+            "mins": "58",
+            "latest": "2025-09-04 00:00:00",
+            "eta": "",
+            "phase": {
+              "HBSCOD": { "status": "COMPLETED" },
+              "HBKCOP": { "status": "COMPLETED" },
+              "HBKOD": { "status": "COMPLETED" },
+              "CDS": { "status": "NOTSTARTED" },
+              "DEFBOOD": { "status": "COMPLETED" },
+              "INTRA": { "status": "COMPLETED" },
+              "DM": { "status": "COMPLETED" },
+              "PREPPAY": { "status": "COMPLETED" },
+              "POSTBOD": { "status": "COMPLETED" }
+            },
+            "nextLRD": null
+          }
+        ]
+      },
+      {
+        "environment": "ECT0",
+        "overallBatchStatus": [
+          {
+            "batchId": "E_20250904_SEP_CRD",
+            "batchType": "CARD",
+            "runDate": "SEP-04-25",
+            "lrd": "SEP-04-25",
+            "startTime": "SEP-04-25 20:15",
+            "endTime": "SEP-04-25 20:45",
+            "status": "COMPLETED",
+            "completion": "100",
+            "daysRun": "0-1-0",
+            "days": "0",
+            "hours": "0",
+            "mins": "30",
+            "latest": "2025-09-04 00:00:00",
+            "eta": "-",
+            "phase": {},
+            "nextLRD": null
+          }
+        ]
+      },
+      {
+        "environment": "TSYS",
+        "overallBatchStatus": [
+          {
+            "batchId": "O_20250904_OCT_CRD",
+            "batchType": "CARD",
+            "runDate": "SEP-04-25",
+            "lrd": "JAN-13-26",
+            "startTime": "SEP-04-25 20:56",
+            "endTime": "SEP-05-25 01:18",
+            "status": "COMPLETED",
+            "completion": "100",
+            "daysRun": null,
+            "days": "2",
+            "hours": "2",
+            "mins": "22",
+            "latest": "2025-09-04 00:00:00",
+            "eta": "",
+            "phase": {
+              "POSTRUN": { "status": "COMPLETED" },
+              "CPB": { "status": "COMPLETED" },
+              "FDR": { "status": "COMPLETED" },
+              "PRECPB": { "status": "COMPLETED" },
+              "SOC": { "status": "COMPLETED" },
+              "END": { "status": "COMPLETED" },
+              "ER": { "status": "COMPLETED" }
+            },
+            "nextLRD": null
+          }
+        ]
+      },
+      {
+        "environment": "QSYS",
+        "overallBatchStatus": []
+      },
+      {
+        "environment": "VSTO",
+        "overallBatchStatus": []
+      },
+      {
+        "environment": "OSYS",
+        "overallBatchStatus": []
+      }
+    ]
   };
 };
 
@@ -87,7 +186,7 @@ app.get('/api/v1/overallstatus', (req, res) => {
   
   // Simulate realistic API delay
   setTimeout(() => {
-    const data = generateBatchStatusData();
+    const data = getMockBatchStatusData();
     console.log(`[${new Date().toISOString()}] Sending response with ${data.batchDetails.length} environments`);
     res.json(data);
   }, 300);
