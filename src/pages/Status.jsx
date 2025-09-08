@@ -482,36 +482,39 @@ const Status = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex flex-col gap-2">
-                          {/* BANK Phases Button */}
-                          {row.bank.batch && (
-                            <button
-                              onClick={() => handleToggle(row.environment, 'BANK')}
-                              className="flex items-center gap-1 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors duration-150"
-                            >
-                              <Activity className="w-4 h-4" />
-                              BANK Phases
-                              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                                expandedRow === `${row.environment}-BANK` ? 'rotate-180' : ''
-                              }`} />
-                            </button>
-                          )}
-                          
-                          {/* CARD Phases Button */}
-                          {row.card.batch && (
-                            <button
-                              onClick={() => handleToggle(row.environment, 'CARD')}
-                              className="flex items-center gap-1 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors duration-150"
-                            >
-                              <Activity className="w-4 h-4" />
-                              CARD Phases
-                              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                                expandedRow === `${row.environment}-CARD` ? 'rotate-180' : ''
-                              }`} />
-                            </button>
-                          )}
+                        <div className="flex items-center gap-4">
+                          {/* Phases Column */}
+                          <div className="flex flex-col gap-2">
+                            {/* BANK Phases Button */}
+                            {row.bank.batch && (
+                              <button
+                                onClick={() => handleToggle(row.environment, 'BANK')}
+                                className="flex items-center gap-1 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors duration-150"
+                              >
+                                <Activity className="w-4 h-4" />
+                                BANK Phases
+                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                                  expandedRow === `${row.environment}-BANK` ? 'rotate-180' : ''
+                                }`} />
+                              </button>
+                            )}
+                            
+                            {/* CARD Phases Button */}
+                            {row.card.batch && (
+                              <button
+                                onClick={() => handleToggle(row.environment, 'CARD')}
+                                className="flex items-center gap-1 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors duration-150"
+                              >
+                                <Activity className="w-4 h-4" />
+                                CARD Phases
+                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                                  expandedRow === `${row.environment}-CARD` ? 'rotate-180' : ''
+                                }`} />
+                              </button>
+                            )}
+                          </div>
 
-                          {/* History Button */}
+                          {/* History Button - Beside Phases */}
                           <button
                             onClick={() => handleToggle(row.environment, 'HISTORY')}
                             className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-150"
