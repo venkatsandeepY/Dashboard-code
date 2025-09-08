@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Clock, RotateCcw, Calendar, X, Activity, History } from 'lucide-react';
+import { ChevronDown, Clock, RotateCcw, Calendar, X, Activity } from 'react-feather';
 import { fetchBatchStatusData, mockBatchStatusData } from '../data/mockData';
 
 const Status = () => {
@@ -146,7 +146,7 @@ const Status = () => {
             <div className="bg-white rounded-lg border border-yellow-200 overflow-hidden">
               <div className="px-4 py-3 bg-yellow-100 border-b border-yellow-200">
                 <h4 className="text-sm font-semibold text-yellow-900 flex items-center gap-2">
-                  <Activity className="w-4 h-4" />
+                  <Activity size={16} />
                   {type} Phases - {environment}
                 </h4>
               </div>
@@ -165,7 +165,7 @@ const Status = () => {
           <div className="bg-white rounded-lg border border-purple-200 overflow-hidden">
             <div className="px-4 py-3 bg-purple-100 border-b border-purple-200">
               <h4 className="text-sm font-semibold text-purple-900 flex items-center gap-2">
-                <Activity className="w-4 h-4" />
+                <Activity size={16} />
                 {type} Phases - {environment}
               </h4>
             </div>
@@ -205,7 +205,7 @@ const Status = () => {
           <div className="bg-white rounded-lg border border-blue-200 overflow-hidden">
             <div className="px-4 py-3 bg-blue-100 border-b border-blue-200">
               <h4 className="text-sm font-semibold text-blue-900 flex items-center gap-2">
-                <History className="w-4 h-4" />
+                <Activity size={16} />
                 Batch History - {environment}
               </h4>
             </div>
@@ -364,7 +364,7 @@ const Status = () => {
               disabled={refreshing}
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <RotateCcw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+              <RotateCcw size={16} className={refreshing ? 'animate-spin' : ''} />
               Refresh
             </button>
           </div>
@@ -376,7 +376,7 @@ const Status = () => {
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <div className="flex items-center gap-2">
-              <X className="w-5 h-5 text-red-600" />
+              <X size={20} className="text-red-600" />
               <div>
                 <h3 className="text-sm font-medium text-red-800">Error Loading Data</h3>
                 <p className="text-sm text-red-700 mt-1">{error}</p>
@@ -459,7 +459,7 @@ const Status = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div className="flex items-start gap-2">
-                          <Clock className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                          <Clock size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
                           <div>
                             <div className="font-medium">{formatDateTime(row.lastRun).date}</div>
                             <div className="text-xs text-gray-500">{formatDateTime(row.lastRun).time}</div>
@@ -468,7 +468,7 @@ const Status = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div className="flex items-start gap-2">
-                          <Calendar className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                          <Calendar size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
                           <div>
                             <div className="font-medium">{formatDateTime(row.eta).date}</div>
                             <div className="text-xs text-gray-500">{formatDateTime(row.eta).time}</div>
@@ -489,11 +489,11 @@ const Status = () => {
                             {row.bank.batch && (
                               <button
                                 onClick={() => handleToggle(row.environment, 'BANK')}
-                                className="flex items-center gap-1 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors duration-150"
+                                className="flex items-center gap-1 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors duration-150"
                               >
-                                <Activity className="w-4 h-4" />
+                                <Activity size={16} />
                                 BANK Phases
-                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                                <ChevronDown size={16} className={`transition-transform duration-200 ${
                                   expandedRow === `${row.environment}-BANK` ? 'rotate-180' : ''
                                 }`} />
                               </button>
@@ -503,11 +503,11 @@ const Status = () => {
                             {row.card.batch && (
                               <button
                                 onClick={() => handleToggle(row.environment, 'CARD')}
-                                className="flex items-center gap-1 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors duration-150"
+                                className="flex items-center gap-1 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors duration-150"
                               >
-                                <Activity className="w-4 h-4" />
+                                <Activity size={16} />
                                 CARD Phases
-                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                                <ChevronDown size={16} className={`transition-transform duration-200 ${
                                   expandedRow === `${row.environment}-CARD` ? 'rotate-180' : ''
                                 }`} />
                               </button>
@@ -517,11 +517,11 @@ const Status = () => {
                           {/* History Button - Beside Phases */}
                           <button
                             onClick={() => handleToggle(row.environment, 'HISTORY')}
-                            className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-150"
+                            className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors duration-150"
                           >
-                            <History className="w-4 h-4" />
+                            <Activity size={16} />
                             History
-                            <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                            <ChevronDown size={16} className={`transition-transform duration-200 ${
                               expandedRow === `${row.environment}-HISTORY` ? 'rotate-180' : ''
                             }`} />
                           </button>
