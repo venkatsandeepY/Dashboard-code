@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Clock, RotateCcw, Calendar, X, Activity } from 'lucide-react';
+import { ChevronDown, Clock, RotateCcw, Calendar, X, Activity, History } from 'lucide-react';
 import { fetchBatchStatusData, mockBatchStatusData } from '../data/mockData';
 
 const Status = () => {
@@ -34,7 +34,6 @@ const Status = () => {
     } catch (error) {
       console.error('Error loading batch data:', error);
       setError('Failed to load batch data. Please try again.');
-      // Use mock data as fallback
       setBatchData(mockBatchStatusData);
     } finally {
       setLoading(false);
@@ -47,7 +46,6 @@ const Status = () => {
       setError(null);
       const data = await fetchBatchStatusData();
       setBatchData(data);
-      // Clear any open dropdowns on refresh
       setExpandedRow(null);
     } catch (error) {
       console.error('Error refreshing batch data:', error);
@@ -82,7 +80,6 @@ const Status = () => {
     if (!dateStr || dateStr === '-') return { date: '-', time: '-' };
     
     try {
-      // Handle the date format from API (e.g., "SEP-04-25 19:40")
       const date = new Date(dateStr.replace(/(\w{3})-(\d{2})-(\d{2})/, '20$3-$2-$1'));
       
       const dateStr2 = date.toLocaleDateString('en-US', {
@@ -108,8 +105,8 @@ const Status = () => {
     return `${days || 0}d ${hours || 0}h ${mins || 0}m`;
   };
 
-  const handlePhaseToggle = (environment, batchType) => {
-    const key = `${environment}-${batchType}`;
+  const handleToggle = (environment, type) => {
+    const key = `${environment}-${type}`;
     if (expandedRow === key) {
       setExpandedRow(null);
     } else {
@@ -138,7 +135,7 @@ const Status = () => {
     );
   };
 
-  const PhaseRow = ({ environment, batch }) => {
+  const PhaseRow = ({ environment, batch, type }) => {
     const phases = batch.phase || {};
     const phaseEntries = Object.entries(phases);
 
@@ -150,7 +147,7 @@ const Status = () => {
               <div className="px-4 py-3 bg-yellow-100 border-b border-yellow-200">
                 <h4 className="text-sm font-semibold text-yellow-900 flex items-center gap-2">
                   <Activity className="w-4 h-4" />
-                  Phases - {environment} ({batch.batchType})
+                  {type} Phases - {environment}
                 </h4>
               </div>
               <div className="p-4 text-center text-gray-500 text-sm">
@@ -169,7 +166,7 @@ const Status = () => {
             <div className="px-4 py-3 bg-purple-100 border-b border-purple-200">
               <h4 className="text-sm font-semibold text-purple-900 flex items-center gap-2">
                 <Activity className="w-4 h-4" />
-                Phases - {environment} ({batch.batchType})
+                {type} Phases - {environment}
               </h4>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
@@ -201,6 +198,69 @@ const Status = () => {
     );
   };
 
+  const HistoryRow = ({ environment, batches }) => {
+    return (
+      <tr className="bg-blue-50 border-l-4 border-blue-400">
+        <td colSpan="7" className="px-6 py-4">
+          <div className="bg-white rounded-lg border border-blue-200 overflow-hidden">
+            <div className="px-4 py-3 bg-blue-100 border-b border-blue-200">
+              <h4 className="text-sm font-semibold text-blue-900 flex items-center gap-2">
+                <History className="w-4 h-4" />
+                Batch History - {environment}
+              </h4>
+            </div>
+            <div className="p-4">
+              <div className="space-y-4">
+                {batches.map((batch, index) => (
+                  <div key={index} className="border border-gray-200 rounded-lg p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">Batch ID</label>
+                        <div className="text-sm font-medium text-gray-900">{batch.batchId}</div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">Type</label>
+                        <div className="text-sm font-medium text-gray-900">{batch.batchType}</div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">Run Date</label>
+                        <div className="text-sm text-gray-900">{batch.runDate}</div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">Status</label>
+                        <div className="mt-1">
+                          <StatusBadge status={batch.status} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">Start Time</label>
+                        <div className="text-sm text-gray-900">{formatDateTime(batch.startTime).date} {formatDateTime(batch.startTime).time}</div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">End Time</label>
+                        <div className="text-sm text-gray-900">
+                          {batch.endTime ? `${formatDateTime(batch.endTime).date} ${formatDateTime(batch.endTime).time}` : 'Running...'}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">Runtime</label>
+                        <div className="text-sm text-gray-900">{formatRuntime(batch.days, batch.hours, batch.mins)}</div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">Completion</label>
+                        <div className="text-sm text-gray-900">{batch.completion}%</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    );
+  };
+
   // Transform API data for display
   const getDisplayData = () => {
     if (!batchData?.batchDetails) return [];
@@ -211,7 +271,6 @@ const Status = () => {
       const environment = envData.environment;
       
       if (!envData.overallBatchStatus || envData.overallBatchStatus.length === 0) {
-        // Show environment with no batches
         displayRows.push({
           id: `${environment}-empty`,
           environment,
@@ -225,7 +284,6 @@ const Status = () => {
         return;
       }
 
-      // Group batches by type
       const bankBatch = envData.overallBatchStatus.find(b => b.batchType === 'BANK');
       const cardBatch = envData.overallBatchStatus.find(b => b.batchType === 'CARD');
 
@@ -234,11 +292,13 @@ const Status = () => {
         environment,
         bank: bankBatch ? {
           status: bankBatch.status,
-          progress: parseInt(bankBatch.completion) || 0
+          progress: parseInt(bankBatch.completion) || 0,
+          batch: bankBatch
         } : { status: 'No Data', progress: 0 },
         card: cardBatch ? {
           status: cardBatch.status,
-          progress: parseInt(cardBatch.completion) || 0
+          progress: parseInt(cardBatch.completion) || 0,
+          batch: cardBatch
         } : { status: 'No Data', progress: 0 },
         lastRun: bankBatch?.startTime || cardBatch?.startTime,
         eta: bankBatch?.eta || cardBatch?.eta,
@@ -407,28 +467,64 @@ const Status = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-4">
-                          {row.batches && row.batches.map((batch) => (
+                        <div className="flex flex-col gap-2">
+                          {/* BANK Phases Button */}
+                          {row.bank.batch && (
                             <button
-                              key={batch.batchType}
-                              onClick={() => handlePhaseToggle(row.environment, batch.batchType)}
+                              onClick={() => handleToggle(row.environment, 'BANK')}
                               className="flex items-center gap-1 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors duration-150"
                             >
                               <Activity className="w-4 h-4" />
-                              {batch.batchType} Phases
+                              BANK Phases
                               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                                expandedRow === `${row.environment}-${batch.batchType}` ? 'rotate-180' : ''
+                                expandedRow === `${row.environment}-BANK` ? 'rotate-180' : ''
                               }`} />
                             </button>
-                          ))}
+                          )}
+                          
+                          {/* CARD Phases Button */}
+                          {row.card.batch && (
+                            <button
+                              onClick={() => handleToggle(row.environment, 'CARD')}
+                              className="flex items-center gap-1 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors duration-150"
+                            >
+                              <Activity className="w-4 h-4" />
+                              CARD Phases
+                              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                                expandedRow === `${row.environment}-CARD` ? 'rotate-180' : ''
+                              }`} />
+                            </button>
+                          )}
+                          
+                          {/* History Button */}
+                          <button
+                            onClick={() => handleToggle(row.environment, 'HISTORY')}
+                            className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-150"
+                          >
+                            <History className="w-4 h-4" />
+                            History
+                            <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                              expandedRow === `${row.environment}-HISTORY` ? 'rotate-180' : ''
+                            }`} />
+                          </button>
                         </div>
                       </td>
                     </tr>
-                    {row.batches && row.batches.map((batch) => (
-                      expandedRow === `${row.environment}-${batch.batchType}` && (
-                        <PhaseRow key={`${row.environment}-${batch.batchType}-phases`} environment={row.environment} batch={batch} />
-                      )
-                    ))}
+                    
+                    {/* BANK Phases Row */}
+                    {expandedRow === `${row.environment}-BANK` && row.bank.batch && (
+                      <PhaseRow environment={row.environment} batch={row.bank.batch} type="BANK" />
+                    )}
+                    
+                    {/* CARD Phases Row */}
+                    {expandedRow === `${row.environment}-CARD` && row.card.batch && (
+                      <PhaseRow environment={row.environment} batch={row.card.batch} type="CARD" />
+                    )}
+                    
+                    {/* History Row */}
+                    {expandedRow === `${row.environment}-HISTORY` && (
+                      <HistoryRow environment={row.environment} batches={row.batches} />
+                    )}
                   </React.Fragment>
                 ))}
               </tbody>
