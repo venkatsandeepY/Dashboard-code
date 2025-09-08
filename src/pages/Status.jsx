@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Clock, RotateCcw, Calendar, FileText, X, AlertCircle } from 'react-feather';
+import { 
+  batchStatusService, 
+  getStatusColor, 
+  getProgressColor, 
+  getPhaseStatusIcon, 
+  formatDateTime 
+} from '../services/batchStatusService';
 
 const Status = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -23,10 +30,13 @@ const Status = () => {
 
   // Auto-refresh every 60 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      loadBatchData(true);
-    }, 60000);
-    return () => clearInterval(interval);
+    // Start auto-refresh
+    batchStatusService.startAutoRefresh(loadBatchData);
+    
+    // Cleanup on unmount
+    return () => {
+      batchStatusService.stopAutoRefresh();
+    };
   }, []);
 
   // Load batch data on component mount
@@ -35,104 +45,20 @@ const Status = () => {
   }, []);
 
   const loadBatchData = async (isAutoRefresh = false) => {
-    try {
-      if (!isAutoRefresh) {
-        setLoading(true);
-      } else {
-        setRefreshing(true);
-      }
-      setError(null);
-
-      const response = await fetch('http://localhost:8080/api/v1/overallstatus');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      // Process the API data to match our component structure
-      const processedData = processApiData(data);
-      setBatchData(processedData);
-      setLastRefresh(data.lastRefresh || new Date().toLocaleString());
-      
-      // Clear any open dropdowns on refresh
-      setExpandedBatch(null);
-    } catch (error) {
-      console.error('Error loading batch data:', error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
-
-  const processApiData = (apiData) => {
-    // Create a map of environments from API data
-    const envMap = {};
-    if (apiData.batchDetails) {
-      apiData.batchDetails.forEach(envData => {
-        envMap[envData.environment] = envData.overallBatchStatus || [];
-      });
-    }
-
-    // Create processed data for all environments in fixed order
-    return ENVIRONMENT_ORDER.map(env => ({
-      environment: env,
-      batches: envMap[env] || [],
-      hasData: !!(envMap[env] && envMap[env].length > 0)
-    }));
+    const setters = {
+      setBatchData,
+      setLoading,
+      setRefreshing,
+      setError,
+      setLastRefresh,
+      setExpandedBatch
+    };
+    
+    await batchStatusService.loadBatchData(setters, ENVIRONMENT_ORDER, isAutoRefresh);
   };
 
   const handleRefresh = () => {
     loadBatchData();
-  };
-
-  const getStatusColor = (status) => {
-    switch (status?.toUpperCase()) {
-      case 'COMPLETED': return 'text-green-600 bg-green-50 border-green-200';
-      case 'INPROGRESS': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'NOTSTARTED': return 'text-gray-600 bg-gray-50 border-gray-200';
-      case 'FAILED': return 'text-red-600 bg-red-50 border-red-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
-    }
-  };
-
-  const getProgressColor = (status) => {
-    switch (status?.toUpperCase()) {
-      case 'COMPLETED': return 'bg-green-500';
-      case 'INPROGRESS': return 'bg-yellow-500';
-      case 'NOTSTARTED': return 'bg-gray-300';
-      case 'FAILED': return 'bg-red-500';
-      default: return 'bg-gray-300';
-    }
-  };
-
-  const getPhaseStatusIcon = (status) => {
-    switch (status?.toUpperCase()) {
-      case 'COMPLETED': return '✅';
-      case 'INPROGRESS': return '🔄';
-      case 'NOTSTARTED': return '⏳';
-      case 'FAILED': return '❌';
-      default: return '⏳';
-    }
-  };
-
-  const formatDateTime = (date) => {
-    const dateStr = date.toLocaleDateString('en-US', {
-      month: 'numeric',
-      day: 'numeric',
-      year: 'numeric'
-    });
-    
-    const timeStr = date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true
-    });
-    
-    return { date: dateStr, time: timeStr };
   };
 
   const handleBatchToggle = (batchId) => {
