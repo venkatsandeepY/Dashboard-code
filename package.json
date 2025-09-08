@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "VITE_MOCK_API=true vite",
+    "dev:full": "concurrently \"cd server && npm start\" \"npm run dev\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
