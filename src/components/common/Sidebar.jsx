@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, TrendingUp, FileText, MessageCircle } from 'react-feather';
+import { Home, TrendingUp, FileText, MessageSquare } from 'lucide-react';
 
 const Sidebar = ({ isCollapsed }) => {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ const Sidebar = ({ isCollapsed }) => {
     { id: 'dashboard', icon: Home, label: 'Dashboard', path: '/dashboard' },
     { id: 'status', icon: TrendingUp, label: 'Status', path: '/status' },
     { id: 'reports', icon: FileText, label: 'Reports', path: '/reports' },
-    { id: 'feedback', icon: MessageCircle, label: 'Feedback', path: 'https://google.com' }
+    { id: 'feedback', icon: MessageSquare, label: 'Feedback', path: '/feedback' },
   ];
 
   const handleNavigation = (path) => {
