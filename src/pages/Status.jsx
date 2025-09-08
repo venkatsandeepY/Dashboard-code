@@ -256,62 +256,6 @@ const Status = () => {
         </div>
 
         {/* Summary Statistics */}
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Total Environments</p>
-                <p className="text-2xl font-bold text-gray-900">{batchData.length}</p>
-              </div>
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <div className="w-6 h-6 bg-blue-600 rounded"></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Completed</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {batchData.filter(env => env.bank.status === 'Completed' && env.card.status === 'Completed').length}
-                </p>
-              </div>
-              <div className="p-2 bg-green-100 rounded-lg">
-                <div className="w-6 h-6 bg-green-600 rounded"></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">In Progress</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {batchData.filter(env => env.bank.status === 'In Progress' || env.card.status === 'In Progress').length}
-                </p>
-              </div>
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <div className="w-6 h-6 bg-blue-600 rounded"></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Not Started</p>
-                <p className="text-2xl font-bold text-gray-600">
-                  {batchData.filter(env => env.bank.status === 'Not Started' && env.card.status === 'Not Started').length}
-                </p>
-              </div>
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <div className="w-6 h-6 bg-gray-600 rounded"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
