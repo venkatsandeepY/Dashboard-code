@@ -673,7 +673,9 @@ const Status = () => {
   );
 };
 
-export default Status;import React, { useState, useEffect } from 'react';
+export default Status;
+
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, Clock, Play, RotateCcw, Calendar, FileText, X } from 'react-feather';
 import { fetchBatchStatusData, startAutoRefresh, stopAutoRefresh, getPhaseStatusColor, getPhaseStatusIcon } from '../services/batchStatusService';
 
