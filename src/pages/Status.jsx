@@ -18,7 +18,7 @@ const Status = () => {
   const [expandedBatch, setExpandedBatch] = useState(null);
 
   // Fixed environment order as specified
-  const ENVIRONMENT_ORDER = ['ASYS', 'TSYS', 'MSTO', 'OSYS', 'ECT0', 'QSYS', 'VSTO'];
+  const ENVIRONMENT_ORDER = ['ASYS', 'TSYS', 'MST0', 'OSYS', 'ECT0', 'QSYS', 'VST0'];
 
   // Update current time every second
   useEffect(() => {
