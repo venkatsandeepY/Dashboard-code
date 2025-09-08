@@ -16,6 +16,17 @@ export const fetchBatchStatusData = async () => {
     console.error('Error fetching batch status:', error);
     // Fallback to mock data for development
     return mockBatchStatusData;
+    
+    // Alternative: If you don't want to show mock data and prefer to show backend errors:
+    // throw error; // This will propagate the actual backend error to the UI
+    // 
+    // Or return a structured error response:
+    // return {
+    //   error: true,
+    //   message: error.message || 'Failed to fetch batch status',
+    //   lastRefresh: new Date().toISOString(),
+    //   batchDetails: []
+    // };
   }
 };
 
