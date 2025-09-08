@@ -256,6 +256,7 @@ const Status = () => {
         </div>
 
         {/* Summary Statistics */}
+      </div>
     </div>
   );
 };
