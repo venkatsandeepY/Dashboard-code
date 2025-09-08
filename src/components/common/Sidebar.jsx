@@ -1,16 +1,13 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, TrendingUp, FileText, MessageCircle } from 'react-feather';
+import { TrendingUp } from 'react-feather';
 
 const Sidebar = ({ isCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const navigationItems = [
-    { id: 'dashboard', icon: Home, label: 'Dashboard', path: '/dashboard' },
     { id: 'status', icon: TrendingUp, label: 'Status', path: '/status' },
-    { id: 'reports', icon: FileText, label: 'Reports', path: '/reports' },
-    { id: 'feedback', icon: MessageCircle, label: 'Feedback', path: 'https://google.com' }
   ];
 
   const handleNavigation = (path) => {
