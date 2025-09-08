@@ -510,21 +510,18 @@ const Status = () => {
                               }`} />
                             </button>
                           )}
-                          
-                          {/* Phases and History Row */}
-                          <div className="flex items-center gap-4">
-                            {/* History Button */}
-                            <button
-                              onClick={() => handleToggle(row.environment, 'HISTORY')}
-                              className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-150"
-                            >
-                              <History className="w-4 h-4" />
-                              History
-                              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                                expandedRow === `${row.environment}-HISTORY` ? 'rotate-180' : ''
-                              }`} />
-                            </button>
-                          </div>
+
+                          {/* History Button */}
+                          <button
+                            onClick={() => handleToggle(row.environment, 'HISTORY')}
+                            className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-150"
+                          >
+                            <History className="w-4 h-4" />
+                            History
+                            <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                              expandedRow === `${row.environment}-HISTORY` ? 'rotate-180' : ''
+                            }`} />
+                          </button>
                         </div>
                       </td>
                     </tr>
