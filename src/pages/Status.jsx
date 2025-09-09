@@ -97,27 +97,25 @@ const Status = () => {
   };
 
   const formatDateTime = (dateStr) => {
-    if (!dateStr || dateStr === '-') return { date: '-', time: '-' };
+    if (!dateStr || dateStr === '-') return { date: '-', time: '-', full: '-' };
     
-    try {
-      const date = new Date(dateStr.replace(/(\w{3})-(\d{2})-(\d{2})/, '20$3-$2-$1'));
-      
-      const dateStr2 = date.toLocaleDateString('en-US', {
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric'
-      });
-      
-      const timeStr = date.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      });
-      
-      return { date: dateStr2, time: timeStr };
-    } catch (error) {
-      return { date: dateStr, time: '' };
+    // Display the date exactly as it comes from the API
+    // For dates like "SEP-05-2025 10:00", split into date and time parts
+    if (dateStr.includes(' ')) {
+      const [datePart, timePart] = dateStr.split(' ');
+      return { 
+        date: datePart, 
+        time: timePart, 
+        full: dateStr 
+      };
     }
+    
+    // For dates without time, just return the date part
+    return { 
+      date: dateStr, 
+      time: '-', 
+      full: dateStr 
+    };
   };
 
   const formatRuntime = (days, hours, mins) => {
@@ -255,12 +253,12 @@ const Status = () => {
                       </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500 uppercase">Start Time</label>
-                        <div className="text-sm text-gray-900">{formatDateTime(batch.startTime).date} {formatDateTime(batch.startTime).time}</div>
+                        <div className="text-sm text-gray-900">{formatDateTime(batch.startTime).full}</div>
                       </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500 uppercase">End Time</label>
                         <div className="text-sm text-gray-900">
-                          {batch.endTime ? `${formatDateTime(batch.endTime).date} ${formatDateTime(batch.endTime).time}` : 'Running...'}
+                          {batch.endTime ? formatDateTime(batch.endTime).full : 'Running...'}
                         </div>
                       </div>
                       <div>
@@ -378,7 +376,7 @@ const Status = () => {
           </div>
           <div className="flex items-center gap-4">
             <div className="text-sm text-gray-600">
-              Last Updated: {batchData?.lastRefresh || formatDateTime(currentTime.toISOString()).date + ' ' + formatDateTime(currentTime.toISOString()).time}
+              Last Updated: {batchData?.lastRefresh || 'Current Time'}
             </div>
             <div className="flex items-center gap-2">
               <div className={`px-2 py-1 text-xs font-medium rounded-full ${
