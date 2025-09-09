@@ -25,11 +25,10 @@ function AppContent() {
   };
 
   return (
-    <>
-      {/* Banner Notice - Outside app container to show at very top */}
+    <div className="app-container" style={{ margin: 0, padding: 0 }}>
+      {/* Banner Notice */}
       <BannerNotice />
       
-      <div className="app-container" style={{ margin: 0, padding: 0 }}>
       {/* Sidebar */}
       <Sidebar 
         activeItem={getActiveItem()} 
@@ -58,8 +57,7 @@ function AppContent() {
         {/* Footer */}
         <Footer />
       </div>
-      </div>
-    </>
+    </div>
   );
 }
 
