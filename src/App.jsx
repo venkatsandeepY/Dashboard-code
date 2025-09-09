@@ -6,7 +6,6 @@ import Dashboard from './pages/Dashboard';
 import Status from './pages/Status';
 import Reports from './pages/Reports';
 import Footer from './components/common/Footer';
-import BannerNotice from './components/common/BannerNotice';
 
 function AppContent() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -26,9 +25,6 @@ function AppContent() {
 
   return (
     <div className="app-container" style={{ margin: 0, padding: 0 }}>
-      {/* Banner Notice */}
-      <BannerNotice />
-      
       {/* Sidebar */}
       <Sidebar 
         activeItem={getActiveItem()} 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings, Search, ChevronLeft, ChevronRight, BarChart, Plus, Edit, Tool } from 'react-feather';
+import { ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings, Search, ChevronLeft, ChevronRight, BarChart } from 'react-feather';
 import { generateReport } from '../services/reportService';
 import CustomDatePicker from '../components/common/CustomDatePicker';
 import { 
@@ -11,8 +11,6 @@ import {
   toDaysHrsMins 
 } from '../utils/slaDataService';
 import SlaRuntimeChart from '../components/SlaRuntimeChart';
-import { getBanners, addBanner, updateBanner } from '../services/bannerService';
-import EditBannerModal from '../components/modals/EditBannerModal';
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState('sla-reports');
@@ -38,13 +36,6 @@ const Reports = () => {
   const [sortConfig, setSortConfig] = useState({ key: 'runDate', direction: 'desc' });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  
-  // Banner Management State
-  const [banners, setBanners] = useState([]);
-  const [bannerForm, setBannerForm] = useState({ header: '', content: '' });
-  const [bannerLoading, setBannerLoading] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editingBanner, setEditingBanner] = useState(null);
 
   const tabs = [
     { id: 'sla-reports', label: 'SLA Reports', icon: BarChart },
@@ -136,50 +127,6 @@ const Reports = () => {
     setApiError('');
     setReportGenerated(false);
     setShowSlaData(false);
-  };
-
-  // Load banners when admin-tools tab is active
-  useEffect(() => {
-    if (activeTab === 'admin-tools') {
-      loadBanners();
-    }
-  }, [activeTab]);
-
-  const loadBanners = async () => {
-    try {
-      const bannerData = await getBanners();
-      setBanners(bannerData);
-    } catch (error) {
-      console.error('Error loading banners:', error);
-    }
-  };
-
-  const handleBannerSubmit = async (e) => {
-    e.preventDefault();
-    if (!bannerForm.header.trim() || !bannerForm.content.trim()) {
-      return;
-    }
-
-    setBannerLoading(true);
-    try {
-      await addBanner(bannerForm);
-      setBannerForm({ header: '', content: '' });
-      await loadBanners();
-    } catch (error) {
-      console.error('Error adding banner:', error);
-    } finally {
-      setBannerLoading(false);
-    }
-  };
-
-  const handleEditBanner = (banner) => {
-    setEditingBanner(banner);
-    setEditModalOpen(true);
-  };
-
-  const handleSaveBanner = async (id, bannerData) => {
-    await updateBanner(id, bannerData);
-    await loadBanners();
   };
 
   // Handle form submission for SLA reports
@@ -767,191 +714,26 @@ const Reports = () => {
             <div className="px-6 py-4 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Admin Tools</h3>
               <p className="text-sm text-gray-600 mt-1">
-                Administrative tools and system management
+                Administrative tools and system management reports
               </p>
             </div>
             <div className="p-6">
-              {/* Admin Tasks Section */}
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-6">
-                  <Tool className="w-5 h-5 text-gray-500" />
-                  <h2 className="text-lg font-semibold text-gray-900">Admin Tasks</h2>
+              <div className="text-center py-12">
+                <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                  <Settings className="w-8 h-8 text-purple-500" />
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Add Banner Option */}
-                  <div className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-200">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Plus className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">Add Banner</h3>
-                        <p className="text-sm text-gray-600">Create system-wide banner notifications</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Update Batch Phases Option */}
-                  <div className="p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors duration-200 opacity-60">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <Settings className="w-5 h-5 text-gray-500" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">Update Batch Phases</h3>
-                        <p className="text-sm text-gray-600">Manage batch processing phases</p>
-                        <div className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-600 mt-1">
-                          Coming Soon
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Add Banner Section */}
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-6">
-                  <Plus className="w-5 h-5 text-gray-500" />
-                  <h2 className="text-lg font-semibold text-gray-900">Add Banner</h2>
-                </div>
-                
-                <form onSubmit={handleBannerSubmit} className="bg-gray-50 p-6 rounded-lg">
-                  <div className="grid grid-cols-1 gap-6">
-                    {/* Header Field */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Header <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={bannerForm.header}
-                        onChange={(e) => setBannerForm(prev => ({ ...prev, header: e.target.value }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter banner header"
-                        required
-                      />
-                    </div>
-
-                    {/* Content Field */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Content <span className="text-red-500">*</span>
-                      </label>
-                      <textarea
-                        value={bannerForm.content}
-                        onChange={(e) => setBannerForm(prev => ({ ...prev, content: e.target.value }))}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
-                        placeholder="Enter banner content"
-                        required
-                      />
-                    </div>
-
-                    {/* Submit Button */}
-                    <div className="flex justify-end">
-                      <button
-                        type="submit"
-                        disabled={bannerLoading || !bannerForm.header.trim() || !bannerForm.content.trim()}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                      >
-                        {bannerLoading ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            Adding...
-                          </>
-                        ) : (
-                          <>
-                            <Plus size={16} />
-                            Add Banner
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-
-              {/* Banner Details Section */}
-              <div>
-                <div className="flex items-center gap-2 mb-6">
-                  <FileText className="w-5 h-5 text-gray-500" />
-                  <h2 className="text-lg font-semibold text-gray-900">Banner Details</h2>
-                </div>
-                
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Header
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Content
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Active
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {banners.length === 0 ? (
-                          <tr>
-                            <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
-                              No banners found. Add your first banner above.
-                            </td>
-                          </tr>
-                        ) : (
-                          banners.map((banner) => (
-                            <tr key={banner.id} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900">{banner.header}</div>
-                              </td>
-                              <td className="px-6 py-4">
-                                <div className="text-sm text-gray-900 max-w-md truncate">{banner.content}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                                  banner.active 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-gray-100 text-gray-800'
-                                }`}>
-                                  {banner.active ? 'Yes' : 'No'}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <button
-                                  onClick={() => handleEditBanner(banner)}
-                                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors duration-200"
-                                >
-                                  <Edit size={14} />
-                                  Edit
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                <h4 className="text-lg font-medium text-gray-900 mb-2">Under Development</h4>
+                <p className="text-gray-600 max-w-md mx-auto mb-4">
+                  Admin Tools functionality is currently being developed. 
+                  This feature will provide system administration and management capabilities.
+                </p>
+                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                  🚧 Coming Soon
                 </div>
               </div>
             </div>
           </div>
         )}
-
-        {/* Edit Banner Modal */}
-        <EditBannerModal
-          isOpen={editModalOpen}
-          onClose={() => setEditModalOpen(false)}
-          banner={editingBanner}
-          onSave={handleSaveBanner}
-        />
       </div>
     </div>
   );
