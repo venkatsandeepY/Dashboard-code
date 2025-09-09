@@ -787,7 +787,7 @@ const Reports = () => {
             <div className="p-6">
               {/* Overview Section */}
               {activeAdminSection === 'overview' && (
-                <div>
+                <>
                   <div className="flex items-center gap-2 mb-6">
                     <Tool className="w-5 h-5 text-gray-500" />
                     <h2 className="text-lg font-semibold text-gray-900">Admin Tasks</h2>
@@ -826,7 +826,7 @@ const Reports = () => {
                       </div>
                     </button>
                   </div>
-                </div>
+                </>
               )}
 
               {/* Add Banner Section */}
