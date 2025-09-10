@@ -70,14 +70,13 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 };
 
-// Batch Status API
+// Batch Status API - Live Data Only
 export const fetchBatchStatus = async () => {
   try {
     const result = await apiRequest('/api/v1/overallstatus');
     return {
       ...result.data,
-      lastRefresh: result.timestamp,
-      dataSource: 'API'
+      lastRefresh: result.timestamp
     };
   } catch (error) {
     console.error('Failed to fetch batch status:', error);
