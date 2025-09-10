@@ -83,7 +83,7 @@ export const getSlaTarget = (batchType) => {
 
 // Data Generation
 export const generateSlaData = (days = 30, recordsPerDay = 25) => {
-  console.log('🔄 Generating SLA data...');
+  console.log('Generating SLA data...');
   const data = [];
   const rng = new SeededRandom(12345);
 
@@ -142,17 +142,17 @@ export const generateSlaData = (days = 30, recordsPerDay = 25) => {
     });
   }
 
-  console.log(`✅ Generated ${data.length} SLA records`);
+  console.log(`Generated ${data.length} SLA records`);
   return data;
 };
 
 // Core Filtering Function - Single Source of Truth
 export const filterData = (data, filters) => {
-  console.log('🔍 Filtering data with:', filters);
-  console.log('📥 Input data length:', data.length);
+  console.log('Filtering data with:', filters);
+  console.log('Input data length:', data.length);
 
   if (!data || data.length === 0) {
-    console.log('❌ No data to filter');
+    console.log('No data to filter');
     return [];
   }
 
@@ -336,7 +336,7 @@ export const csvFromRows = (rows) => {
 
 // Main API function
 export const getSlaDetails = async (filters) => {
-  console.log('🚀 Getting SLA details with filters:', filters);
+  console.log('Getting SLA details with filters:', filters);
 
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -360,7 +360,7 @@ export const getSlaDetails = async (filters) => {
         }
       };
 
-      console.log('✅ SLA details ready:', result.summary);
+      console.log('SLA details ready:', result.summary);
       resolve(result);
     }, 300);
   });

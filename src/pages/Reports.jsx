@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Settings, Search, ChevronLeft, ChevronRight, BarChart } from 'react-feather';
-import { generateReport } from '../services/reportService';
+import { ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Search, ChevronLeft, ChevronRight, BarChart, Settings } from 'react-feather';
+import { generateReport } from '../services/apiService';
 import CustomDatePicker from '../components/common/CustomDatePicker';
 import { 
   getSlaDetails, 
@@ -135,7 +135,7 @@ const Reports = () => {
       return;
     }
 
-    console.log('🚀 Loading SLA data after Generate Report clicked...');
+    console.log('Loading SLA data after Generate Report clicked...');
     setLoading(true);
     setApiError('');
     
@@ -146,7 +146,7 @@ const Reports = () => {
       setFilteredData(result.filteredData);
       setShowSlaData(true);
     } catch (error) {
-      console.error('❌ Error loading SLA data:', error);
+      console.error('Error loading SLA data:', error);
       setApiError('Failed to load SLA data. Please try again.');
     } finally {
       setLoading(false);
@@ -155,7 +155,7 @@ const Reports = () => {
 
   // Chart data preparation
   const getChartData = (chartType) => {
-    console.log('📊 Preparing chart data for:', chartType, 'with', filteredData.length, 'records');
+    console.log('Preparing chart data for:', chartType, 'with', filteredData.length, 'records');
     return prepareChartData(filteredData, chartType);
   };
   
@@ -248,6 +248,7 @@ const Reports = () => {
       default: return 'text-gray-600 bg-gray-50';
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -512,7 +513,7 @@ const Reports = () => {
                 </div>
               ) : filteredData.length === 0 ? (
                 <div className="p-8 text-center">
-                  <div className="text-gray-400 mb-2">📊</div>
+                  <div className="text-gray-400 mb-2">No Data</div>
                   <div className="text-gray-500 font-medium">No data for selected filters</div>
                   <div className="text-gray-400 text-sm mt-2">Try adjusting your filter criteria</div>
                 </div>
@@ -674,7 +675,7 @@ const Reports = () => {
                   This feature will provide comprehensive ServiceNow incident tracking and analysis.
                 </p>
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
-                  🚧 Coming Soon
+                  Coming Soon
                 </div>
               </div>
             </div>
@@ -701,7 +702,7 @@ const Reports = () => {
                   This feature will provide vendor issue tracking and resolution analytics.
                 </p>
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                  🚧 Coming Soon
+                  Coming Soon
                 </div>
               </div>
             </div>
@@ -710,30 +711,32 @@ const Reports = () => {
 
         {/* Admin Tools Tab */}
         {activeTab === 'admin-tools' && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Admin Tools</h3>
-              <p className="text-sm text-gray-600 mt-1">
-                Administrative tools and system management reports
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="text-center py-12">
-                <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                  <Settings className="w-8 h-8 text-purple-500" />
-                </div>
-                <h4 className="text-lg font-medium text-gray-900 mb-2">Under Development</h4>
-                <p className="text-gray-600 max-w-md mx-auto mb-4">
-                  Admin Tools functionality is currently being developed. 
-                  This feature will provide system administration and management capabilities.
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">Admin Tools</h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Administrative tools and system management
                 </p>
-                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                  🚧 Coming Soon
+              </div>
+              <div className="p-6">
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <Settings className="w-8 h-8 text-gray-500" />
+                  </div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">Admin Tools</h4>
+                  <p className="text-gray-600 max-w-md mx-auto mb-4">
+                    Administrative tools and system management features will be available here.
+                  </p>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                    Coming Soon
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

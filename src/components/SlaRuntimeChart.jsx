@@ -181,7 +181,7 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
     return (
       <div className="d-flex align-items-center justify-content-center" style={{ height: '320px' }}>
         <div className="text-center">
-          <div className="text-muted mb-2" style={{ fontSize: '2rem' }}>📊</div>
+          <div className="text-muted mb-2" style={{ fontSize: '2rem' }}>No Data</div>
           <div className="text-secondary fw-medium">{title}</div>
           <div className="text-muted small mt-2">No data for selected filters</div>
         </div>

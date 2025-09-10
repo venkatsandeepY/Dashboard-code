@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Clock, RotateCcw, Calendar, X, Activity, AlertTriangle } from 'react-feather';
-import { fetchBatchStatusData } from '../services/batchStatusService';
-import { getRefreshInterval } from '../config/environment';
+import { fetchBatchStatusData } from '../services/apiService';
 
 const Status = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -22,23 +21,20 @@ const Status = () => {
   // Load batch data on component mount
   useEffect(() => {
     loadBatchData();
-    // Auto-refresh based on environment configuration
-    const refreshInterval = setInterval(loadBatchData, getRefreshInterval());
-    return () => clearInterval(refreshInterval);
   }, []);
 
   const loadBatchData = async () => {
     try {
       setError(null);
       setLoading(true);
-      console.log('🌐 Fetching live data from backend API...');
+      console.log('Fetching live data from backend API...');
 
       const data = await fetchBatchStatusData();
-      console.log('✅ Successfully loaded live data from API');
+      console.log('Successfully loaded live data from API');
 
       setBatchData(data);
     } catch (error) {
-      console.error('❌ Error loading batch data:', error);
+      console.error('Error loading batch data:', error);
       setError('Backend API is down. Please check the connection and try again.');
       setBatchData(null);
     } finally {
@@ -50,15 +46,15 @@ const Status = () => {
     try {
       setRefreshing(true);
       setError(null);
-      console.log('🔄 Refreshing live data from backend API...');
+      console.log('Refreshing live data from backend API...');
 
       const data = await fetchBatchStatusData();
-      console.log('✅ Successfully refreshed live data from API');
+      console.log('Successfully refreshed live data from API');
 
       setBatchData(data);
       setExpandedRow(null);
     } catch (error) {
-      console.error('❌ Error refreshing batch data:', error);
+      console.error('Error refreshing batch data:', error);
       setError('Backend API is down. Please check the connection and try again.');
       setBatchData(null);
     } finally {
@@ -243,7 +239,7 @@ const Status = () => {
           <div className="bg-white rounded-lg border border-blue-200 overflow-hidden">
             <div className="px-4 py-3 bg-blue-100 border-b border-blue-200">
               <h4 className="text-sm font-semibold text-blue-900 flex items-center gap-2">
-                <Activity size={16} />
+                <Clock size={16} />
                 Batch History - {environment}
               </h4>
             </div>
@@ -281,8 +277,8 @@ const Status = () => {
                         </div>
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-gray-500 uppercase">Runtime</label>
-                        <div className="text-sm text-gray-900">{formatRuntime(batch.days, batch.hours, batch.mins)}</div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">Run Date</label>
+                        <div className="text-sm text-gray-900">{formatDateTime(batch.startTime).full}</div>
                       </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500 uppercase">Completion</label>
@@ -331,7 +327,7 @@ const Status = () => {
           card: { status: 'No Data', progress: 0 },
           lastRun: null,
           eta: null,
-          runtime: '0d 0h 0m',
+          runDate: null,
           batches: []
         });
         return;
@@ -355,11 +351,7 @@ const Status = () => {
         } : { status: 'No Data', progress: 0 },
         lastRun: bankBatch?.lrd || cardBatch?.lrd,
         eta: bankBatch?.eta || cardBatch?.eta,
-        runtime: formatRuntime(
-          bankBatch?.days || cardBatch?.days,
-          bankBatch?.hours || cardBatch?.hours,
-          bankBatch?.mins || cardBatch?.mins
-        ),
+        runDate: bankBatch?.startTime || cardBatch?.startTime,
         batches: envData.overallBatchStatus
       });
     });
@@ -453,7 +445,7 @@ const Status = () => {
                       ETA
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Runtime
+                      Run Date
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
@@ -517,10 +509,13 @@ const Status = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                            {row.runtime}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div className="flex items-start gap-2">
+                            <Calendar size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <div className="font-medium">{formatDateTime(row.runDate).date}</div>
+                              <div className="text-xs text-gray-500">{formatDateTime(row.runDate).time}</div>
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
