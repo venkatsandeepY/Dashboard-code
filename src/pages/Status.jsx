@@ -82,56 +82,22 @@ const Status = () => {
     }
   };
 
-  const formatDateTime = (dateStr) => {
-    if (!dateStr || dateStr === '-') return { date: '-', time: '-', full: '-' };
+  const formatDisplayData = (data) => {
+    if (!data || data === '-' || data === '') return { date: '-', time: '-' };
 
-    // Check if it's an ISO string (contains 'T' or 'Z')
-    if (dateStr.includes('T') || dateStr.includes('Z')) {
-      try {
-        const date = new Date(dateStr);
-        if (isNaN(date.getTime())) {
-          return { date: dateStr, time: '-', full: dateStr };
-        }
-
-        // Convert ISO to your custom format: "SEP-05-2025 10:00"
-        const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-          'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-
-        const month = monthNames[date.getMonth()];
-        const day = date.getDate().toString().padStart(2, '0');
-        const year = date.getFullYear();
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-
-        const datePart = `${month}-${day}-${year}`;
-        const timePart = `${hours}:${minutes}`;
-        const fullStr = `${datePart} ${timePart}`;
-
-        return {
-          date: datePart,
-          time: timePart,
-          full: fullStr
-        };
-      } catch (error) {
-        return { date: dateStr, time: '-', full: dateStr };
-      }
-    }
-
-    // For your custom format like "SEP-05-2025 10:00", split into date and time parts
-    if (dateStr.includes(' ')) {
-      const [datePart, timePart] = dateStr.split(' ');
+    // If data contains space, split into date and time
+    if (data.includes(' ')) {
+      const [datePart, timePart] = data.split(' ');
       return {
         date: datePart,
-        time: timePart,
-        full: dateStr
+        time: timePart
       };
     }
 
-    // For dates without time, just return the date part
+    // If no space, treat as date only
     return {
-      date: dateStr,
-      time: '-',
-      full: dateStr
+      date: data,
+      time: '-'
     };
   };
 
@@ -268,17 +234,17 @@ const Status = () => {
                       </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500 uppercase">Start Time</label>
-                        <div className="text-sm text-gray-900">{formatDateTime(batch.startTime).full}</div>
+                        <div className="text-sm text-gray-900">{batch.startTime || '-'}</div>
                       </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500 uppercase">End Time</label>
                         <div className="text-sm text-gray-900">
-                          {batch.endTime ? formatDateTime(batch.endTime).full : 'Running...'}
+                          {batch.endTime || 'Running...'}
                         </div>
                       </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500 uppercase">Run Date</label>
-                        <div className="text-sm text-gray-900">{formatDateTime(batch.startTime).full}</div>
+                        <div className="text-sm text-gray-900">{batch.runDate || '-'}</div>
                       </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500 uppercase">Completion</label>
@@ -351,7 +317,7 @@ const Status = () => {
         } : { status: 'No Data', progress: 0 },
         lastRun: bankBatch?.lrd || cardBatch?.lrd,
         eta: bankBatch?.eta || cardBatch?.eta,
-        runDate: bankBatch?.startTime || cardBatch?.startTime,
+        runDate: bankBatch?.runDate || cardBatch?.runDate,
         batches: envData.overallBatchStatus
       });
     });
@@ -387,7 +353,7 @@ const Status = () => {
           </div>
           <div className="flex items-center gap-4">
             <div className="text-sm text-gray-600">
-              Last Updated: {batchData?.lastRefresh ? formatDateTime(batchData.lastRefresh).full : 'Current Time'}
+              Last Updated: {batchData?.lastRefresh || 'Current Time'}
             </div>
             <button
               onClick={handleRefresh}
@@ -495,8 +461,8 @@ const Status = () => {
                           <div className="flex items-start gap-2">
                             <Clock size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
                             <div>
-                              <div className="font-medium">{formatDateTime(row.lastRun).date}</div>
-                              <div className="text-xs text-gray-500">{formatDateTime(row.lastRun).time}</div>
+                              <div className="font-medium">{formatDisplayData(row.lastRun).date}</div>
+                              <div className="text-xs text-gray-500">{formatDisplayData(row.lastRun).time}</div>
                             </div>
                           </div>
                         </td>
@@ -504,8 +470,8 @@ const Status = () => {
                           <div className="flex items-start gap-2">
                             <Calendar size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
                             <div>
-                              <div className="font-medium">{formatDateTime(row.eta).date}</div>
-                              <div className="text-xs text-gray-500">{formatDateTime(row.eta).time}</div>
+                              <div className="font-medium">{formatDisplayData(row.eta).date}</div>
+                              <div className="text-xs text-gray-500">{formatDisplayData(row.eta).time}</div>
                             </div>
                           </div>
                         </td>
@@ -513,8 +479,8 @@ const Status = () => {
                           <div className="flex items-start gap-2">
                             <Calendar size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
                             <div>
-                              <div className="font-medium">{formatDateTime(row.runDate).date}</div>
-                              <div className="text-xs text-gray-500">{formatDateTime(row.runDate).time}</div>
+                              <div className="font-medium">{formatDisplayData(row.runDate).date}</div>
+                              <div className="text-xs text-gray-500">{formatDisplayData(row.runDate).time}</div>
                             </div>
                           </div>
                         </td>
