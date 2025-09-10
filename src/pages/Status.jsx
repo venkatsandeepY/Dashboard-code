@@ -83,7 +83,7 @@ const Status = () => {
   };
 
   const formatDisplayData = (data) => {
-    if (!data || data === '-' || data === '') return { date: '-', time: '-' };
+    if (!data || data === '-' || data === '') return { date: '-', time: '' };
 
     // If data contains space, split into date and time
     if (data.includes(' ')) {
@@ -97,7 +97,7 @@ const Status = () => {
     // If no space, treat as date only
     return {
       date: data,
-      time: '-'
+      time: ''
     };
   };
 
@@ -457,7 +457,7 @@ const Status = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 text-sm text-gray-900">
                           <div className="flex items-start gap-2">
                             <Clock size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
                             <div>
@@ -466,7 +466,7 @@ const Status = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 text-sm text-gray-900">
                           <div className="flex items-start gap-2">
                             <Calendar size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
                             <div>
@@ -475,7 +475,7 @@ const Status = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 text-sm text-gray-900">
                           <div className="flex items-start gap-2">
                             <Calendar size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
                             <div>
