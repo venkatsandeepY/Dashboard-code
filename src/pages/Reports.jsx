@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Search, ChevronLeft, ChevronRight, BarChart, Settings } from 'react-feather';
-import { generateReport } from '../services/apiService';
+import { ChevronDown, AlertCircle, CheckCircle, Download, Filter, AlertTriangle, FileText, Search, ChevronLeft, ChevronRight, BarChart, Settings, Plus, Edit, X } from 'react-feather';
+import { generateReport, fetchBanners, updateBanner } from '../services/apiService';
 import CustomDatePicker from '../components/common/CustomDatePicker';
 import { 
   getSlaDetails, 
@@ -36,6 +36,23 @@ const Reports = () => {
   const [sortConfig, setSortConfig] = useState({ key: 'runDate', direction: 'desc' });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  
+  // Banner Management State
+  const [banners, setBanners] = useState([]);
+  const [showAddBanner, setShowAddBanner] = useState(false);
+  const [showBannerTable, setShowBannerTable] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingBanner, setEditingBanner] = useState(null);
+  const [bannerForm, setBannerForm] = useState({
+    header: '',
+    content: '',
+    active: 'No'
+  });
+  const [editForm, setEditForm] = useState({
+    header: '',
+    content: '',
+    active: 'No'
+  });
 
   const tabs = [
     { id: 'sla-reports', label: 'SLA Reports', icon: BarChart },
@@ -127,6 +144,12 @@ const Reports = () => {
     setApiError('');
     setReportGenerated(false);
     setShowSlaData(false);
+    
+    // Reset banner states when switching tabs
+    if (tabId !== 'admin-tools') {
+      setShowAddBanner(false);
+      setShowBannerTable(false);
+    }
   };
 
   // Handle form submission for SLA reports
@@ -248,6 +271,83 @@ const Reports = () => {
       default: return 'text-gray-600 bg-gray-50';
     }
   };
+
+  // Banner Management Functions
+  const loadBanners = async () => {
+    try {
+      console.log('Loading banners...');
+      const bannerData = await fetchBanners();
+      console.log('Banners loaded:', bannerData);
+      setBanners(bannerData);
+    } catch (error) {
+      console.error('Failed to load banners:', error);
+    }
+  };
+
+  const handleAddBanner = async (e) => {
+    e.preventDefault();
+    try {
+      console.log('Adding banner:', bannerForm);
+      const result = await updateBanner(bannerForm);
+      console.log('Banner added successfully:', result);
+      
+      setBannerForm({ header: '', content: '', active: 'No' });
+      setShowAddBanner(false);
+      // Keep the table visible after adding a banner
+      setShowBannerTable(true);
+      
+      // Reload banners to show the new one
+      await loadBanners();
+      console.log('Banners reloaded:', banners);
+      
+      // Dispatch custom event to update header banner
+      window.dispatchEvent(new CustomEvent('bannerUpdated'));
+    } catch (error) {
+      console.error('Failed to add banner:', error);
+    }
+  };
+
+  const handleEditBanner = (banner) => {
+    setEditingBanner(banner);
+    setEditForm({
+      header: banner.header,
+      content: banner.content,
+      active: banner.active
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateBanner = async (e) => {
+    e.preventDefault();
+    try {
+      console.log('Updating banner:', editingBanner, 'with data:', editForm);
+      const updatedBanner = { ...editingBanner, ...editForm };
+      await updateBanner(updatedBanner);
+      setShowEditModal(false);
+      setEditingBanner(null);
+      await loadBanners();
+      // Dispatch custom event to update header banner
+      window.dispatchEvent(new CustomEvent('bannerUpdated'));
+    } catch (error) {
+      console.error('Failed to update banner:', error);
+    }
+  };
+
+  const handleAdminTaskClick = (task) => {
+    if (task === 'add-banner') {
+      setShowAddBanner(!showAddBanner);
+      // Load banners and toggle table visibility when clicking the tile
+      loadBanners();
+      setShowBannerTable(!showBannerTable);
+    }
+  };
+
+  // Load banners when the admin-tools tab is first accessed (but don't show table)
+  useEffect(() => {
+    if (activeTab === 'admin-tools') {
+      loadBanners();
+    }
+  }, [activeTab]);
 
 
   return (
@@ -712,26 +812,239 @@ const Reports = () => {
         {/* Admin Tools Tab */}
         {activeTab === 'admin-tools' && (
           <div className="space-y-6">
+            {/* Admin Tasks Section */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">Admin Tools</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Admin Tasks</h3>
                 <p className="text-sm text-gray-600 mt-1">
-                  Administrative tools and system management
+                  Administrative tasks and system management
                 </p>
               </div>
               <div className="p-6">
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                    <Settings className="w-8 h-8 text-gray-500" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Add Banner Tile */}
+                  <div 
+                    className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 cursor-pointer"
+                    onClick={() => handleAdminTaskClick('add-banner')}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <Plus className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900">Add Banner</h4>
+                        <p className="text-sm text-gray-600">Create and manage system banners</p>
+                      </div>
+                    </div>
                   </div>
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">Admin Tools</h4>
-                  <p className="text-gray-600 max-w-md mx-auto mb-4">
-                    Administrative tools and system management features will be available here.
-                  </p>
-                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                    Coming Soon
+
+                  {/* Update Batch Phases Tile */}
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-6 cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                        <Settings className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900">Update Batch Phases</h4>
+                        <p className="text-sm text-gray-600">Manage batch processing phases</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Add Banner Section */}
+            {showAddBanner && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Add Banner</h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Create a new system banner
+                  </p>
+                </div>
+                <div className="p-6">
+                  <form onSubmit={handleAddBanner} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Header
+                      </label>
+                      <input
+                        type="text"
+                        value={bannerForm.header}
+                        onChange={(e) => setBannerForm({...bannerForm, header: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter banner header"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Content
+                      </label>
+                      <textarea
+                        value={bannerForm.content}
+                        onChange={(e) => setBannerForm({...bannerForm, content: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter banner content"
+                        rows={3}
+                        required
+                      />
+                    </div>
+                    <div className="flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setShowAddBanner(false)}
+                        className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* Banner Details Table */}
+            {showBannerTable && banners.length > 0 && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Banner Details</h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Manage existing banners
+                  </p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 border-b border-gray-200">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Header
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Content
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Active
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {banners.map((banner, index) => (
+                        <tr key={index} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {banner.header}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
+                            {banner.content}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                              banner.active === 'Yes' 
+                                ? 'text-green-600 bg-green-50 border border-green-200' 
+                                : 'text-gray-600 bg-gray-50'
+                            }`}>
+                              {banner.active === 'Yes' ? '✓ Active' : 'Inactive'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button
+                              onClick={() => handleEditBanner(banner)}
+                              className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
+                            >
+                              <Edit className="w-4 h-4" />
+                              Edit
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Edit Banner Modal */}
+        {showEditModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900">Edit Banner</h3>
+                  <button
+                    onClick={() => setShowEditModal(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6">
+                <form onSubmit={handleUpdateBanner} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Header
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.header}
+                      onChange={(e) => setEditForm({...editForm, header: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Content
+                    </label>
+                    <textarea
+                      value={editForm.content}
+                      onChange={(e) => setEditForm({...editForm, content: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      rows={3}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Active
+                    </label>
+                    <select
+                      value={editForm.active}
+                      onChange={(e) => setEditForm({...editForm, active: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                  <div className="flex justify-end gap-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowEditModal(false)}
+                      className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
