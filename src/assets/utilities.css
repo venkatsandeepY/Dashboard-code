@@ -105,8 +105,7 @@
 
 .mr-xs { margin-right: var(--spacing-xs) !important; }
 .mr-sm { margin-right: var(--spacing-sm) !important; }
-.mr-md { margin-right: var(--spacing-md) !important; }
-.mr-lg { margin-right: var(--spacing-lg) !important; }
+.mr-md { margin-right: var(--spacing-md) !important; }.mr-lg { margin-right: var(--spacing-lg) !important; }
 .mr-xl { margin-right: var(--spacing-xl) !important; }
 
 /* Spacing - Padding */
