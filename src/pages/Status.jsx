@@ -27,15 +27,15 @@ const Status = () => {
     try {
       setError(null);
       setLoading(true);
-      console.log('Fetching live data from backend API...');
+      console.log('Loading batch status data from API...');
 
       const data = await fetchBatchStatusData();
-      console.log('Successfully loaded live data from API');
+      console.log('Successfully loaded batch status data');
 
       setBatchData(data);
     } catch (error) {
-      console.error('Error loading batch data:', error);
-      setError('Backend API is down. Please check the connection and try again.');
+      console.error('Error loading batch status data:', error);
+      setError('Error loading batch status data. Please try again.');
       setBatchData(null);
     } finally {
       setLoading(false);
@@ -46,16 +46,16 @@ const Status = () => {
     try {
       setRefreshing(true);
       setError(null);
-      console.log('Refreshing live data from backend API...');
+      console.log('Refreshing batch status data...');
 
       const data = await fetchBatchStatusData();
-      console.log('Successfully refreshed live data from API');
+      console.log('Successfully refreshed batch status data');
 
       setBatchData(data);
       setExpandedRow(null);
     } catch (error) {
-      console.error('Error refreshing batch data:', error);
-      setError('Backend API is down. Please check the connection and try again.');
+      console.error('Error refreshing batch status data:', error);
+      setError('Error refreshing batch status data. Please try again.');
       setBatchData(null);
     } finally {
       setRefreshing(false);
@@ -139,7 +139,18 @@ const Status = () => {
 
   const PhaseRow = ({ environment, batch, type }) => {
     const phases = batch.phase || {};
-    const phaseEntries = Object.entries(phases);
+    
+    // Define the specific order for each batch type
+    const cardPhaseOrder = ['SOC', 'PRECPB', 'CPB', 'POSTCPB', 'POSTRUN', 'FDR', 'CFR', 'ER'];
+    const bankPhaseOrder = ['PREPPAY', 'HSCOD', 'HBKOD', 'HBKCOP', 'POSTBOD', 'DEFBOD', 'INTRA', 'CDS', 'ECS', 'DM', 'BTPRNT'];
+    
+    // Get the appropriate phase order based on batch type
+    const phaseOrder = type === 'CARD' ? cardPhaseOrder : bankPhaseOrder;
+    
+    // Filter and sort phases according to the defined order - only show specified phases
+    const phaseEntries = phaseOrder
+      .filter(phaseName => phases.hasOwnProperty(phaseName))
+      .map(phaseName => [phaseName, phases[phaseName]]);
 
     if (phaseEntries.length === 0) {
       return (
@@ -172,25 +183,43 @@ const Status = () => {
               </h4>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-              {phaseEntries.map(([phaseName, phaseData]) => (
-                <div key={phaseName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${phaseData.status === 'COMPLETED' ? 'bg-green-500' :
-                      phaseData.status === 'INPROGRESS' ? 'bg-blue-500' :
-                        phaseData.status === 'NOTSTARTED' ? 'bg-gray-400' :
-                          'bg-red-500'
-                      }`}></div>
-                    <span className="text-sm font-medium text-gray-900">{phaseName}</span>
+              {phaseEntries.map(([phaseName, phaseData], index) => {
+                const sequenceNumber = index + 1;
+                
+                return (
+                  <div key={phaseName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="flex items-center gap-3">
+                      {/* Sequence Number Badge */}
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-blue-100 text-blue-700 border border-blue-300">
+                          {sequenceNumber}
+                        </div>
+                        <div className={`w-3 h-3 rounded-full ${phaseData.status === 'COMPLETED' ? 'bg-green-500' :
+                          phaseData.status === 'INPROGRESS' ? 'bg-blue-500' :
+                            phaseData.status === 'NOTSTARTED' ? 'bg-gray-400' :
+                              'bg-red-500'
+                          }`}></div>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-gray-900">{phaseName}</span>
+                        <span className="text-xs text-gray-500">
+                          {sequenceNumber === 1 ? '1st' : 
+                           sequenceNumber === 2 ? '2nd' : 
+                           sequenceNumber === 3 ? '3rd' : 
+                           `${sequenceNumber}th`} phase
+                        </span>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-medium rounded ${phaseData.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
+                      phaseData.status === 'INPROGRESS' ? 'bg-blue-100 text-blue-700' :
+                        phaseData.status === 'NOTSTARTED' ? 'bg-gray-100 text-gray-700' :
+                          'bg-red-100 text-red-700'
+                      }`}>
+                      {phaseData.status}
+                    </span>
                   </div>
-                  <span className={`px-2 py-1 text-xs font-medium rounded ${phaseData.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
-                    phaseData.status === 'INPROGRESS' ? 'bg-blue-100 text-blue-700' :
-                      phaseData.status === 'NOTSTARTED' ? 'bg-gray-100 text-gray-700' :
-                        'bg-red-100 text-red-700'
-                    }`}>
-                    {phaseData.status}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </td>
@@ -243,8 +272,8 @@ const Status = () => {
                         </div>
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-gray-500 uppercase">Run Date</label>
-                        <div className="text-sm text-gray-900">{batch.runDate || '-'}</div>
+                        <label className="text-xs font-medium text-gray-500 uppercase">LRD</label>
+                        <div className="text-sm text-gray-900">{batch.lrd || '-'}</div>
                       </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500 uppercase">Completion</label>
@@ -331,7 +360,7 @@ const Status = () => {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <div className="text-gray-500">Loading live data from backend...</div>
+            <div className="text-gray-500">Loading batch status...</div>
           </div>
         </div>
       </div>
@@ -374,7 +403,7 @@ const Status = () => {
             <div className="flex items-center gap-3">
               <AlertTriangle size={24} className="text-red-600" />
               <div>
-                <h3 className="text-lg font-medium text-red-800">Backend API Unavailable</h3>
+                <h3 className="text-lg font-medium text-red-800">Unable to Load Batch Status</h3>
                 <p className="text-sm text-red-700 mt-1">{error}</p>
                 <p className="text-xs text-red-600 mt-2">
                   Please check your network connection and ensure the backend service is running.
