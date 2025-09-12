@@ -103,7 +103,7 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
             const label = context.dataset.label;
 
             if (label.includes('SLA Target')) {
-              return `${label}: ${value}h (From SOP)`;
+              return `${label}: ${value}h`;
             } else if (label.includes('Average Runtime')) {
               return `${label}: ${value}h (Calculated)`;
             } else if (label.includes('Actual Runtime')) {
@@ -147,9 +147,9 @@ const SlaRuntimeChart = ({ title, data, environment, type }) => {
           }
         },
         beginAtZero: true,
-        max: 10,
+        max: 30,
         ticks: {
-          stepSize: 2,
+          stepSize: 5,
           callback: function (value) {
             return value + 'h';
           }

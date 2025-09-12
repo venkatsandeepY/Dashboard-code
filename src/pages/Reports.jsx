@@ -46,13 +46,16 @@ const Reports = () => {
   const [bannerForm, setBannerForm] = useState({
     header: '',
     content: '',
-    active: 'No'
+    active: 'Yes'  // Always active since only one banner exists
   });
   const [editForm, setEditForm] = useState({
     header: '',
     content: '',
-    active: 'No'
+    active: 'Yes'
   });
+
+  // Update Batch Phases State
+  const [showUpdateBatchPhases, setShowUpdateBatchPhases] = useState(false);
 
   const tabs = [
     { id: 'sla-reports', label: 'SLA Reports', icon: BarChart },
@@ -291,9 +294,10 @@ const Reports = () => {
       const result = await updateBanner(bannerForm);
       console.log('Banner added successfully:', result);
       
-      setBannerForm({ header: '', content: '', active: 'No' });
-      setShowAddBanner(false);
-      // Keep the table visible after adding a banner
+      setBannerForm({ header: '', content: '', active: 'Yes' });
+      // Keep the form visible after successfully adding a banner
+      setShowAddBanner(true);
+      // Keep the table visible after successfully adding a banner
       setShowBannerTable(true);
       
       // Reload banners to show the new one
@@ -312,7 +316,7 @@ const Reports = () => {
     setEditForm({
       header: banner.header,
       content: banner.content,
-      active: banner.active
+      active: 'Yes'  // Always active since only one banner exists
     });
     setShowEditModal(true);
   };
@@ -335,10 +339,24 @@ const Reports = () => {
 
   const handleAdminTaskClick = (task) => {
     if (task === 'add-banner') {
-      setShowAddBanner(!showAddBanner);
-      // Load banners and toggle table visibility when clicking the tile
-      loadBanners();
-      setShowBannerTable(!showBannerTable);
+      // Toggle banner management - if already showing, hide it; if hidden, show it
+      if (showAddBanner && showBannerTable) {
+        // Currently showing both, hide everything
+        setShowAddBanner(false);
+        setShowBannerTable(false);
+      } else {
+        // Show both form and table for banner management
+        setShowAddBanner(true);
+        setShowBannerTable(true);
+        loadBanners(); // Load banners when opening
+      }
+      // Close update batch phases if it's open
+      setShowUpdateBatchPhases(false);
+    } else if (task === 'update-batch-phases') {
+      setShowUpdateBatchPhases(!showUpdateBatchPhases);
+      // Close add banner section if it's open
+      setShowAddBanner(false);
+      setShowBannerTable(false);
     }
   };
 
@@ -346,6 +364,9 @@ const Reports = () => {
   useEffect(() => {
     if (activeTab === 'admin-tools') {
       loadBanners();
+      // Reset banner states when switching to admin tools
+      setShowAddBanner(false);
+      setShowBannerTable(false);
     }
   }, [activeTab]);
 
@@ -811,60 +832,75 @@ const Reports = () => {
 
         {/* Admin Tools Tab */}
         {activeTab === 'admin-tools' && (
-          <div className="space-y-6">
-            {/* Admin Tasks Section */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">Admin Tasks</h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  Administrative tasks and system management
-                </p>
+          <div className="flex gap-6">
+            {/* Admin Tools Sidebar */}
+            <div className="w-80 bg-white border border-gray-100 rounded-lg h-fit">
+              <div className="px-6 py-4 border-b border-gray-100">
+                <h3 className="text-lg font-medium text-gray-900">Administrative Tools</h3>
+                <p className="text-sm text-gray-500 mt-1">Manage system configurations</p>
               </div>
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Add Banner Tile */}
-                  <div 
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 cursor-pointer"
-                    onClick={() => handleAdminTaskClick('add-banner')}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-                        <Plus className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-semibold text-gray-900">Add Banner</h4>
-                        <p className="text-sm text-gray-600">Create and manage system banners</p>
-                      </div>
+              
+              <div className="p-4 space-y-3">
+                {/* Banner Management */}
+                <div 
+                  className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
+                    showAddBanner || showBannerTable 
+                      ? 'bg-blue-50 border border-blue-200' 
+                      : 'bg-gray-50 border border-gray-200 hover:bg-gray-100'
+                  }`}
+                  onClick={() => handleAdminTaskClick('add-banner')}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      showAddBanner || showBannerTable ? 'bg-blue-100' : 'bg-gray-200'
+                    }`}>
+                      <Plus className={`w-4 h-4 ${showAddBanner || showBannerTable ? 'text-blue-600' : 'text-gray-600'}`} />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900 text-sm">Banner Management</h4>
+                      <p className="text-xs text-gray-500">Create and manage banners</p>
                     </div>
                   </div>
+                </div>
 
-                  {/* Update Batch Phases Tile */}
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-6 cursor-pointer">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                        <Settings className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-semibold text-gray-900">Update Batch Phases</h4>
-                        <p className="text-sm text-gray-600">Manage batch processing phases</p>
-                      </div>
+                {/* Update Batch Phases */}
+                <div 
+                  className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
+                    showUpdateBatchPhases 
+                      ? 'bg-blue-50 border border-blue-200' 
+                      : 'bg-gray-50 border border-gray-200 hover:bg-gray-100'
+                  }`}
+                  onClick={() => handleAdminTaskClick('update-batch-phases')}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      showUpdateBatchPhases ? 'bg-blue-100' : 'bg-gray-200'
+                    }`}>
+                      <Settings className={`w-4 h-4 ${showUpdateBatchPhases ? 'text-blue-600' : 'text-gray-600'}`} />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900 text-sm">Batch Phases</h4>
+                      <p className="text-xs text-gray-500">Manage processing phases</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
+            {/* Main Content Area */}
+            <div className="flex-1 space-y-6">
+
             {/* Add Banner Section */}
             {showAddBanner && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">Add Banner</h3>
-                  <p className="text-sm text-gray-600 mt-1">
+              <div className="bg-white border border-gray-100 rounded-lg">
+                <div className="px-8 py-6 border-b border-gray-100">
+                  <h3 className="text-lg font-medium text-gray-900">Banner Management</h3>
+                  <p className="text-sm text-gray-500 mt-1">
                     Create a new system banner
                   </p>
                 </div>
-                <div className="p-6">
-                  <form onSubmit={handleAddBanner} className="space-y-4">
+                <div className="px-8 py-6">
+                  <form onSubmit={handleAddBanner} className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Header
@@ -913,10 +949,10 @@ const Reports = () => {
 
             {/* Banner Details Table */}
             {showBannerTable && banners.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">Banner Details</h3>
-                  <p className="text-sm text-gray-600 mt-1">
+              <div className="bg-white border border-gray-100 rounded-lg">
+                <div className="px-8 py-6 border-b border-gray-100">
+                  <h3 className="text-lg font-medium text-gray-900">Banner Details</h3>
+                  <p className="text-sm text-gray-500 mt-1">
                     Manage existing banners
                   </p>
                 </div>
@@ -931,30 +967,18 @@ const Reports = () => {
                           Content
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Active
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {banners.map((banner, index) => (
-                        <tr key={index} className="hover:bg-gray-50">
+                        <tr key={banner.key || index} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {banner.header}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
                             {banner.content}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                              banner.active === 'Yes' 
-                                ? 'text-green-600 bg-green-50 border border-green-200' 
-                                : 'text-gray-600 bg-gray-50'
-                            }`}>
-                              {banner.active === 'Yes' ? '✓ Active' : 'Inactive'}
-                            </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button
@@ -972,6 +996,29 @@ const Reports = () => {
                 </div>
               </div>
             )}
+
+              {/* Update Batch Phases Section */}
+              {showUpdateBatchPhases && (
+                <div className="bg-white border border-gray-100 rounded-lg">
+                  <div className="px-8 py-6 border-b border-gray-100">
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900">Batch Phases</h3>
+                      <p className="text-sm text-gray-500 mt-1">Manage and update batch processing phases</p>
+                    </div>
+                  </div>
+                  <div className="px-8 py-6">
+                    {/* Simple placeholder for future implementation */}
+                    <div className="bg-gray-50 rounded-lg p-12 text-center">
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <Settings className="w-6 h-6 text-gray-400" />
+                      </div>
+                      <p className="text-gray-500 text-base">This feature is under development</p>
+                      <p className="text-gray-400 text-sm mt-1">Coming soon</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -1016,19 +1063,6 @@ const Reports = () => {
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Active
-                    </label>
-                    <select
-                      value={editForm.active}
-                      onChange={(e) => setEditForm({...editForm, active: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </select>
-                  </div>
                   <div className="flex justify-end gap-3 pt-4">
                     <button
                       type="button"
@@ -1049,6 +1083,7 @@ const Reports = () => {
             </div>
           </div>
         )}
+
 
       </div>
     </div>

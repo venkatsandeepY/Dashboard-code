@@ -29,8 +29,8 @@ const STATUSES = ['COMPLETED', 'FAILED', 'PENDING'];
 
 // SLA Target definitions from SOP
 const SLA_TARGETS = {
-  'CARD': 6,  // 6 hours
-  'BANK': 5   // 5 hours
+  'CARD': 13,  // 13 hours
+  'BANK': 13   // 13 hours
 };
 
 // Utility Functions
@@ -282,7 +282,7 @@ export const prepareChartData = (filteredData, chartType = 'ALL') => {
     labels: series.labels,
     datasets: [
       {
-        label: 'SLA Target (From SOP)',
+        label: 'SLA Target',
         data: slaTargetData,
         borderColor: 'rgb(59, 130, 246)',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
