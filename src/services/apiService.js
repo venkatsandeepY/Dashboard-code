@@ -1,9 +1,9 @@
 // API Service for Backend Integration
 // Centralized service for all API calls to the backend microservice
 
-import { getApiBaseUrl } from '../config/environment';
+import configData from '../../env-config';
 
-const API_BASE_URL = getApiBaseUrl();
+const API_BASE_URL = configData.serverUrl;
 
 // Default request configuration
 const defaultConfig = {
@@ -39,8 +39,7 @@ const apiRequest = async (endpoint, options = {}) => {
     
     return {
       success: true,
-      data,
-      timestamp: new Date().toISOString()
+      data
     };
   } catch (error) {
     console.error(`API Error: ${endpoint}`, error);
@@ -54,15 +53,12 @@ const apiRequest = async (endpoint, options = {}) => {
 
 /**
  * Fetch batch status data from the backend API
- * @returns {Promise<Object>} Batch status data with lastRefresh timestamp
+ * @returns {Promise<Object>} Batch status data from the backend
  */
 export const fetchBatchStatus = async () => {
   try {
-    const result = await apiRequest('/api/v1/overallstatus');
-    return {
-      ...result.data,
-      lastRefresh: result.timestamp
-    };
+    const result = await apiRequest('/overallstatus');
+    return result.data;
   } catch (error) {
     console.error('Failed to fetch batch status:', error);
     throw error;
@@ -118,6 +114,50 @@ export const generateReport = async (reportConfig) => {
     });
   }
 };
+
+
+// ============================================================================
+// BANNER MANAGEMENT API
+// ============================================================================
+
+// No mock data - using live backend API only
+
+/**
+ * Fetch all banners from the backend API
+ * @returns {Promise<Array>} Array of banner objects
+ */
+export const fetchBanners = async () => {
+  try {
+    console.log('Fetching banners from backend API: GET /bannerdetails');
+    const result = await apiRequest('/bannerdetails');
+    console.log('Backend response:', result.data);
+    return result.data;
+  } catch (error) {
+    console.error('Failed to fetch banners from backend:', error);
+    throw error;
+  }
+};
+
+/**
+ * Create or update a banner using PUT method
+ * @param {Object} bannerData - Banner data object (with or without key)
+ * @returns {Promise<Object>} Created or updated banner data
+ */
+export const updateBanner = async (bannerData) => {
+  try {
+    console.log('Sending banner data to backend API: PUT /updatebanner', bannerData);
+    const result = await apiRequest('/updatebanner', {
+      method: 'PUT',
+      body: JSON.stringify(bannerData)
+    });
+    console.log('Backend response:', result.data);
+    return result.data;
+  } catch (error) {
+    console.error('Failed to update banner:', error);
+    throw error;
+  }
+};
+
 
 
 // ============================================================================

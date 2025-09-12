@@ -107,24 +107,23 @@ const Status = () => {
   };
 
   const formatTimestamp = (timestamp) => {
-    if (!timestamp) return 'Current Time';
-
+    if (!timestamp) return 'No data available';
+    
     try {
       const date = new Date(timestamp);
-      if (isNaN(date.getTime())) return 'Current Time';
-
+      if (isNaN(date.getTime())) return 'Invalid timestamp';
+      
       return date.toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
-        second: '2-digit',
-        hour12: true
+        hour12: false
       });
     } catch (error) {
       console.error('Error formatting timestamp:', error);
-      return 'Current Time';
+      return 'Invalid timestamp';
     }
   };
 
@@ -404,7 +403,7 @@ const Status = () => {
           </div>
           <div className="flex items-center gap-4">
             <div className="text-sm text-gray-600">
-              Last Updated: {formatTimestamp(batchData?.lastRefresh)}
+              Last Updated: {batchData?.lastRefresh ? formatTimestamp(batchData.lastRefresh) : 'No data available'}
             </div>
             <button
               onClick={handleRefresh}
