@@ -106,6 +106,28 @@ const Status = () => {
     return `${days || 0}d ${hours || 0}h ${mins || 0}m`;
   };
 
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return 'Current Time';
+
+    try {
+      const date = new Date(timestamp);
+      if (isNaN(date.getTime())) return 'Current Time';
+
+      return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+    } catch (error) {
+      console.error('Error formatting timestamp:', error);
+      return 'Current Time';
+    }
+  };
+
   const handleToggle = (environment, type) => {
     const key = `${environment}-${type}`;
     if (expandedRow === key) {
@@ -139,14 +161,14 @@ const Status = () => {
 
   const PhaseRow = ({ environment, batch, type }) => {
     const phases = batch.phase || {};
-    
+
     // Define the specific order for each batch type
     const cardPhaseOrder = ['SOC', 'PRECPB', 'CPB', 'POSTCPB', 'POSTRUN', 'FDR', 'CFR', 'ER'];
     const bankPhaseOrder = ['PREPPAY', 'HSCOD', 'HBKOD', 'HBKCOP', 'POSTBOD', 'DEFBOD', 'INTRA', 'CDS', 'ECS', 'DM', 'BTPRNT'];
-    
+
     // Get the appropriate phase order based on batch type
     const phaseOrder = type === 'CARD' ? cardPhaseOrder : bankPhaseOrder;
-    
+
     // Filter and sort phases according to the defined order - only show specified phases
     const phaseEntries = phaseOrder
       .filter(phaseName => phases.hasOwnProperty(phaseName))
@@ -185,7 +207,7 @@ const Status = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
               {phaseEntries.map(([phaseName, phaseData], index) => {
                 const sequenceNumber = index + 1;
-                
+
                 return (
                   <div key={phaseName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <div className="flex items-center gap-3">
@@ -203,10 +225,10 @@ const Status = () => {
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-gray-900">{phaseName}</span>
                         <span className="text-xs text-gray-500">
-                          {sequenceNumber === 1 ? '1st' : 
-                           sequenceNumber === 2 ? '2nd' : 
-                           sequenceNumber === 3 ? '3rd' : 
-                           `${sequenceNumber}th`} phase
+                          {sequenceNumber === 1 ? '1st' :
+                            sequenceNumber === 2 ? '2nd' :
+                              sequenceNumber === 3 ? '3rd' :
+                                `${sequenceNumber}th`} phase
                         </span>
                       </div>
                     </div>
@@ -382,7 +404,7 @@ const Status = () => {
           </div>
           <div className="flex items-center gap-4">
             <div className="text-sm text-gray-600">
-              Last Updated: {batchData?.lastRefresh || 'Current Time'}
+              Last Updated: {formatTimestamp(batchData?.lastRefresh)}
             </div>
             <button
               onClick={handleRefresh}
